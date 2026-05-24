@@ -29,7 +29,8 @@ RUN addgroup --system --gid 1001 nodejs && \
 
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
-COPY --from=builder --chown=nextjs:nodejs /app/decks ./decks
+
+RUN mkdir -p /app/decks && chown nextjs:nodejs /app/decks
 
 USER nextjs
 

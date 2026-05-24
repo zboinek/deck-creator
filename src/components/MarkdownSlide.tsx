@@ -253,14 +253,27 @@ function makeComponents(slug: string, theme: SlideTheme = "dark"): Components {
         {children}
       </a>
     ),
-    img: ({ src, alt }) => {
+    img: ({ src, alt: rawAlt }) => {
       const resolved = typeof src === "string" ? rewriteImageSrc(src, slug) : "";
+      
+      let alt = rawAlt ?? "";
+      let width: string | undefined = undefined;
+      
+      const parts = alt.split('|');
+      if (parts.length > 1) {
+        const lastPart = parts[parts.length - 1].trim();
+        if (/^(\d+%|\d+px|auto)$/i.test(lastPart)) {
+          width = lastPart;
+          alt = parts.slice(0, -1).join('|').trim();
+        }
+      }
+
       return (
         <img
           src={resolved}
-          alt={alt ?? ""}
+          alt={alt}
           className="max-w-full max-h-full object-contain"
-          style={{ borderRadius: "var(--radius-md)" }}
+          style={{ borderRadius: "var(--radius-md)", width }}
           loading="lazy"
         />
       );
@@ -305,7 +318,7 @@ function FullImageSlide({ images, textContent, slug, theme = "dark" }: {
           src={resolvedSrc}
           alt={image.alt}
           className="max-w-full max-h-full object-contain"
-          style={{ borderRadius: "var(--radius-md)" }}
+          style={{ borderRadius: "var(--radius-md)", width: image.width }}
           loading="lazy"
         />
       </div>
@@ -342,7 +355,7 @@ function TwoColumnSlide({ textContent, images, slug, theme = "dark" }: {
                 src={resolvedSrc}
                 alt={img.alt}
                 className="max-w-full max-h-full object-contain"
-                style={{ borderRadius: "var(--radius-md)" }}
+                style={{ borderRadius: "var(--radius-md)", width: img.width, flex: img.width ? "none" : undefined }}
                 loading="lazy"
               />
             </div>

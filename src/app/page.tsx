@@ -49,6 +49,15 @@ export default async function HomePage() {
           >
             Presentations from Markdown. Create, present, export to PDF.
           </p>
+
+          <div className="mt-6">
+            <Link
+              href="/join"
+              className="join-session-link"
+            >
+              Join a live session &rarr;
+            </Link>
+          </div>
         </header>
 
         {decks.length === 0 ? (

@@ -1,0 +1,9 @@
+services:
+  deck-creator:
+    image: ghcr.io/zboinek/deck-creator:latest
+    container_name: deck-creator
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./deck-creator/decks:/app/decks:ro

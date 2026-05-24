@@ -14,6 +14,7 @@ export type SlideLayout = "default" | "two-column" | "two-column-text" | "full-i
 export interface SlideImage {
   alt: string;
   src: string;
+  width?: string;
 }
 
 export interface ParsedSlide {
@@ -101,7 +102,22 @@ function extractImages(markdown: string): SlideImage[] {
   let match;
   const regex = new RegExp(IMAGE_PATTERN);
   while ((match = regex.exec(markdown)) !== null) {
-    images.push({ alt: match[1], src: match[2] });
+    const rawAlt = match[1];
+    const src = match[2];
+    
+    let alt = rawAlt;
+    let width: string | undefined = undefined;
+    
+    const parts = rawAlt.split('|');
+    if (parts.length > 1) {
+      const lastPart = parts[parts.length - 1].trim();
+      if (/^(\d+%|\d+px|auto)$/i.test(lastPart)) {
+        width = lastPart;
+        alt = parts.slice(0, -1).join('|').trim();
+      }
+    }
+
+    images.push({ alt, src, width });
   }
   return images;
 }
