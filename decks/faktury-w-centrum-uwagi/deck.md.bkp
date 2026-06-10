@@ -1,0 +1,303 @@
+---
+title: "Faktury w centrum uwagi"
+date: 2026-05-24
+description: "Jak i po co przetwarzać tysiące dokumentów za pomocą dużych modeli językowych — w pełni lokalnie, na infrastrukturze on-premise."
+---
+
+# Faktury w centrum uwagi
+
+### Jak i po co przetwarzać tysiące dokumentów za pomocą dużych modeli językowych
+
+> _Notatka prowadzącego:_ Wprowadzenie krótkie — to konferencja Dell Technologies, my występujemy jako partner. POC tej aplikacji został zrealizowany na sprzęcie Dell wypożyczonym specjalnie na potrzeby tego projektu. To istotny kontekst, bo cała ta historia jest o tym, jak duże modele językowe można uruchomić *w pełni lokalnie*, na infrastrukturze postawionej w serwerowni odbiorcy. Aplikacja jest gotowa, wdrożona produkcyjnie i działa. Cel prezentacji: pokazać architekturę i komponenty, które się na to złożyły. Czas: ok. 20 minut.
+
+---
+
+## Problem
+
+### Setki spraw, tysiące dokumentów, jeden cel
+
+- Każda sprawa to **dziesiątki, setki, czasem tysiące plików PDF i skanów**
+- Faktury, umowy, zamówienia, dokumenty magazynowe, korespondencja
+- Wszystkie luzem — bez jawnych relacji między sobą
+- Analiza ręczna: tygodnie pracy zanim w ogóle wiadomo, *co* się w tej masie kryje
+
+### Cel aplikacji
+
+Skrócić czas dojścia od "stos PDF-ów" do "ustrukturyzowanego obrazu sprawy" — z tygodni do godzin.
+
+> _Notatka prowadzącego:_ Zacznijmy od skali problemu. Analityk dostaje sprawę, w której literalnie są setki, a często tysiące dokumentów. Faktury wymieszane z umowami, zamówieniami, dokumentami magazynowymi. Bez aplikacji tę masę trzeba ręcznie przeszukiwać, ręcznie czytać, ręcznie wyciągać kluczowe dane. Naszym celem nie było zrobienie kolejnego "AI workflow", tylko skrócenie konkretnej pętli pracy — od dostarczenia plików do momentu, w którym analityk wie, co ma na biurku.
+
+---
+
+## Założenie projektowe
+
+### Faktura jest centrum grawitacji
+
+- **Faktura** jest dokumentem rozliczeniowym — końcowym węzłem łańcucha zdarzeń
+- **Umowy, zamówienia, dokumenty magazynowe** istnieją po to, żeby fakturę *opisać i uzasadnić*
+- Architektura systemu odwzorowuje tę relację: jeden centralny obiekt, wokół niego dokumenty kontekstu
+- AI nie tylko *czyta tekst* — buduje **relacje** między dokumentem wspierającym a fakturą
+
+> _Notatka prowadzącego:_ To kluczowe założenie, które przekłada się na całą architekturę. Nie traktujemy wszystkich dokumentów równorzędnie. Faktura jest węzłem centralnym, do którego doczepiamy kontekst z innych dokumentów. Dzięki temu wszystkie pipeline'y — od ekstrakcji metadanych po wiązanie dokumentów — mają jasny "target". Wiemy, dla czego coś analizujemy. To jest różnica między "analizuję dokumenty" a "buduję obraz transakcji handlowej".
+
+---
+
+## Twardy wymóg
+
+### 100% on-premise. Zero danych poza serwerownią.
+
+- Cała aplikacja działa w **odizolowanym środowisku odbiorcy**
+- Brak połączenia z chmurą publiczną, brak wywołań do zewnętrznych API LLM
+- OCR, modele językowe, wektorowa baza, frontend — wszystko w lokalnej sieci
+- Dane wrażliwe **nigdy nie opuszczają infrastruktury klienta**
+
+### Konsekwencja techniczna
+
+Każdy komponent musimy zhostować sami. Każdy model musi się zmieścić na lokalnym GPU.
+
+> _Notatka prowadzącego:_ To jest fundamentalny constraint, który ukształtował cały dobór technologii. Nie mogliśmy sięgnąć po OpenAI ani po żadne API zewnętrzne. Każdy LLM, każdy embedding model, każdy OCR — wszystko musi działać lokalnie. To z jednej strony zamyka część dróg, ale z drugiej otwiera ciekawą architekturę: pełna kontrola nad latencją, kosztem inferencji i suwerennością danych. Z tego punktu widzenia partnerstwo z Dell ma sens — POC robiliśmy na ich sprzęcie, bo lokalne LLM-y potrzebują konkretnego GPU compute pod ręką.
+
+---
+
+## Architektura — z lotu ptaka
+
+### Pięć warstw
+
+1. **Ingest** — drag & drop PDF-ów do sprawy
+2. **OCR** — obraz/skan → tekst maszynowy
+3. **Ekstrakcja LLM** — tekst → ustrukturyzowane metadane
+4. **Indeksowanie** — pełnotekstowa wyszukiwarka + embedding-based search
+5. **Warstwa analityczna** — triangulacja, EDA, eksport, audyt
+
+### Wszystko w jednym, izolowanym deploymencie
+
+Frontend (Next.js) ↔ Backend ↔ Worker pool (OCR + LLM) ↔ Storage (DB + obiekt + wektor)
+
+> _Notatka prowadzącego:_ Pięć warstw, każda zoptymalizowana pod swój constraint. Ingest to przede wszystkim ergonomia i niezawodne kolejkowanie. OCR — wybór silnika pod jakość skanów. Ekstrakcja LLM — prompt engineering i strukturyzacja outputu. Indeksowanie — szybkość wyszukiwania na setkach tysięcy fragmentów tekstu. Warstwa analityczna — to już logika domenowa, czyli wszystko, co robimy z wyekstrahowanymi danymi. Jeden monolityczny deployment, bo on-premise — łatwiej utrzymać, łatwiej updateować, łatwiej audytować.
+
+---
+
+## Warstwa 1 — Ingest
+
+### Wrzucasz plik. Reszta dzieje się sama.
+
+- Drag & drop w obrębie sprawy — pliki PDF, skany, dokumenty graficzne
+- Każdy plik trafia do **kolejki przetwarzania** z własnym statusem (`pending → analyzing → analyzed → failed`)
+- Worker pool podejmuje pracę asynchronicznie — analityk **nie czeka**
+- Status każdego pliku widoczny na żywo w panelu sprawy
+
+### Dlaczego asynchronicznie
+
+Przy 200+ dokumentach w sprawie synchroniczny upload zabija UX. Status-driven pipeline pozwala dokładać pliki w trakcie analizy poprzednich.
+
+> _Notatka prowadzącego:_ Wydaje się banalne, ale to fundament. Analityk nie może być zablokowany na 40 minut, czekając aż OCR przemieli stos PDF-ów. Każdy plik dostaje swój statusowy "lifecycle". W UI widać dokładnie, co jest w trakcie, co skończone, co padło. Worker pool można skalować poziomo — dodajemy kolejne procesy, kiedy obciążenie rośnie. To też pomaga w przypadku partial failures: jeden plik z trudnym OCR-em nie blokuje pozostałych 199.
+
+---
+
+## Warstwa 2 — OCR
+
+### Z obrazu na tekst
+
+- Większość dokumentów wchodzi jako **skany** lub **PDF-y bez warstwy tekstowej**
+- Pipeline OCR wykrywa, czy plik ma już tekst, czy wymaga rozpoznania
+- Wyjście: czysty tekst + zachowana struktura wizualna (układ kolumn, tabele)
+- Wynik trafia do storage jako artefakt powiązany z plikiem źródłowym
+
+### Co jest trudne
+
+- Faktury z różnych systemów księgowych — każda inny układ
+- Skany niskiej jakości, pieczątki nad tekstem, ręczne dopiski
+- Tabele z pozycjami, których nie chcemy "spłaszczyć"
+
+> _Notatka prowadzącego:_ OCR brzmi jak rozwiązany problem, ale w praktyce 60% trudności w całym pipeline siedzi tutaj. Faktura z systemu ERP X wygląda zupełnie inaczej niż faktura wystawiona ręcznie w Wordzie. Pieczątki nakładają się na kwoty. Pozycje faktury są w tabelach, których układ trzeba zachować, żeby LLM później rozumiał, że "ta liczba odnosi się do tamtego towaru". Wybraliśmy silnik OCR, który radzi sobie z układem wielokolumnowym i tabelami, a nie tylko z czystym strumieniem tekstu.
+
+---
+
+## Warstwa 3 — Ekstrakcja LLM
+
+### Tekst → ustrukturyzowane metadane
+
+- LLM analizuje tekst dokumentu i wypełnia **zdefiniowany schemat** metadanych
+- Dla faktury: numer, daty (wystawienia, sprzedaży), kwoty, NIP-y, termin i warunki płatności
+- Wyjście modelu — **strict JSON**, walidowany schematem
+- Klasyfikacja typu dokumentu (faktura / zamówienie / umowa / dokument magazynowy) zanim wyciągamy szczegóły
+
+### Normalizacja w locie
+
+NIP-y bez myślników, daty w ISO, kwoty jako liczby. **Bez normalizacji nie da się łączyć danych.**
+
+> _Notatka prowadzącego:_ To jest serce systemu. LLM dostaje cały tekst dokumentu plus precyzyjny prompt z opisem, jakie pola ma wyciągnąć. Wyjście to JSON, który walidujemy schematem — jeśli model halucynuje strukturę, łapiemy to od razu. Bardzo ważna jest normalizacja: NIP jako 10 cyfr bez myślników, kwoty jako number, daty jako ISO. Bez tego nie zmatchujemy faktury z innymi źródłami. Klasyfikacja typu jest osobnym krokiem przed ekstrakcją — bo zupełnie inne pola wyciągamy z umowy, a inne z zamówienia. Wszystko to działa na lokalnym modelu — żaden tekst dokumentu nie wychodzi poza serwerownię.
+
+---
+
+## Warstwa 4 — Wyszukiwanie
+
+### Pełnotekstowo. Po wszystkim, co system widzi.
+
+- Globalne wyszukiwanie po **pełnej treści** wszystkich dokumentów w sprawie
+- Indeks budowany z artefaktów OCR + wyekstrahowanych metadanych
+- Hit highlighting w UI — analityk od razu widzi *gdzie* w pliku jest dopasowanie
+- Skok z wyniku wyszukiwania prosto w PDF na właściwej stronie
+
+### Po co to
+
+To jest najprostsze narzędzie do **wiązania dokumentów ze sobą**: wyszukaj numer zamówienia z faktury → znajdziesz zamówienie. Wyszukaj NIP kontrahenta → wszystkie powiązane dokumenty.
+
+> _Notatka prowadzącego:_ Pełnotekstowe wyszukiwanie to często niedoceniany element AI-systemu. Łatwo zachłysnąć się embeddingami i wektorami, ale prosta wyszukiwarka po stringu nadal jest najszybszą drogą od pytania do odpowiedzi w 80% przypadków. Analityk wpisuje numer zamówienia i widzi wszystkie miejsca, w których on się pojawia — czasem na fakturze, czasem na dokumencie WZ, czasem w umowie. To jest moment, w którym dokumenty zaczynają "rozmawiać" ze sobą.
+
+---
+
+## Warstwa 4b — Wiązanie dokumentów
+
+### Faktura nie jest sama
+
+- AI próbuje **automatycznie podpiąć** zamówienia, umowy, dokumenty magazynowe do faktury
+- Sygnały do dopasowania: numer dokumentu, NIP-y kontrahentów, daty, kwoty
+- Każde powiązanie ma **poziom pewności** — to nie czarna skrzynka
+- Analityk widzi sugestie i może je zatwierdzić lub odrzucić
+
+### Dlaczego to ma znaczenie
+
+Warunki płatności na fakturze i w nadrzędnej umowie często się różnią. **Bez znalezienia umowy nie wiesz, kiedy ta faktura naprawdę miała być zapłacona.**
+
+> _Notatka prowadzącego:_ Tu wchodzimy w warstwę, która jeszcze się rozwija — automatyczne wiązanie dokumentów. Faktura mówi "płatność do 30 dni", ale umowa ramowa mówi "60 dni od daty wystawienia". Które warunki obowiązują? Nie da się tego rozstrzygnąć, jeśli nie połączysz tych dwóch dokumentów. AI proponuje wiązania, ale ostatnie słowo ma człowiek. To jest świadomy wybór — w domenie, w której konsekwencje są poważne, autonomia AI musi być ograniczona.
+
+---
+
+## Warstwa 5 — Triangulacja
+
+### Ta sama informacja z trzech źródeł
+
+| Źródło | Co dostarcza |
+|---|---|
+| Ekstrakcja AI z faktury/umowy | Termin płatności z treści dokumentu |
+| JPK VAT | Termin z deklaracji podatkowej |
+| Tabela kontrolowana | Termin z zewnętrznej deklaracji |
+
+### Co z tego wynika
+
+Trzy źródła = możliwość **wykrycia rozbieżności**. Jeśli wszystkie się zgadzają — wysoka pewność. Jeśli różnią się — flaga do ręcznej weryfikacji.
+
+> _Notatka prowadzącego:_ Triangulacja to jeden z najmocniejszych mechanizmów w tym systemie. Nie ufamy jednemu źródłu. Bierzemy ten sam fakt — termin płatności konkretnej faktury — i sprawdzamy go w trzech niezależnych miejscach. Jeśli AI wyciągnęło z faktury "15.03", JPK VAT pokazuje "15.03", a deklaracja podmiotu też pokazuje "15.03" — możemy spać spokojnie. Jeśli się różnią — to jest dokładnie ten sygnał, którego analityk szuka. To architektura, w której **niepewność jest cechą systemu, a nie błędem**.
+
+---
+
+## Kontrola jakości danych
+
+### EDA — Exploratory Data Analysis
+
+- Widok pokazuje **w ilu dokumentach** dane pole zostało wyekstrahowane
+- Filtrowanie po typie dokumentu (np. tylko faktury) + po brakujących polach
+- "Mam 235 faktur, w 23 brakuje NIP-u sprzedawcy" — wiesz, gdzie kierować uwagę
+- Z poziomu listy braków: bezpośrednie przejście do PDF-a i ręczne uzupełnienie
+
+### Dlaczego to ważne
+
+LLM nie jest perfekcyjny. EDA pokazuje, **gdzie konkretnie zawodzi**, i pozwala to naprawić bez "ślepego" przeglądania wszystkiego.
+
+> _Notatka prowadzącego:_ To jest moim zdaniem najbardziej niedoceniany komponent w systemach AI. Nie wystarczy odpalić LLM-a i powiedzieć "działa". Trzeba wiedzieć, *gdzie* nie działa. Moduł EDA pokazuje, w ilu procentach dokumentów dane pole zostało poprawnie wyekstrahowane. Jeśli w 23 fakturach na 235 brakuje NIP-u sprzedawcy — wiem dokładnie, które to faktury, mogę je otworzyć, sprawdzić co poszło nie tak, i ręcznie uzupełnić. Każde takie uzupełnienie wraca też jako sygnał do dalszego strojenia modelu.
+
+---
+
+## Audytowalność
+
+### Każda zmiana ma autora i timestamp
+
+- Każde pole wyekstrahowane przez AI vs. każde pole edytowane ręcznie — **odróżnialne**
+- Każda ręczna modyfikacja: kto, kiedy, jaka była wartość poprzednia
+- Każdy plik: kto dodał, kto miał dostęp, kto przeglądał
+- Pełna historia w UI — bez kopania w logach
+
+### Po co
+
+W procesach o wysokiej wadze nie wystarczy "wynik AI". Trzeba móc pokazać, **jak ten wynik powstał** i kto go ewentualnie skorygował.
+
+> _Notatka prowadzącego:_ Audytowalność to nie jest dodatek — to wymóg fundamentalny. Każdy rekord w systemie ma swoją historię: czy wartość pochodzi z AI, czy z ręcznej edycji, kto edytował, kiedy. To nie jest tylko wymóg compliance — to też narzędzie debugowania. Jeśli analityk widzi dziwną wartość, może w jednym kliknięciu zobaczyć "ah, ktoś to ręcznie zmienił trzy dni temu". Bez tego nie da się prowadzić poważnej analizy.
+
+---
+
+## Integracja z istniejącym workflow
+
+### Excel nie umiera
+
+- System eksportuje wyniki w **formacie, w którym analitycy już pracują** (Excel)
+- 100% dopasowanie wierszy z istniejącej tabeli analitycznej do plików w systemie (numer dokumentu + NIP)
+- Wzbogacenie istniejącego arkusza o **kolumny z metadanymi z AI**
+- Praca może wracać do systemu w dowolnym momencie
+
+### Filozofia
+
+Nie zmieniamy fundamentalnego sposobu pracy analityka. **Wspomagamy go**, a nie zmuszamy do migracji.
+
+> _Notatka prowadzącego:_ Pułapka, w którą wpada wiele "AI-first" produktów: zakładają, że użytkownik porzuci dotychczasowe narzędzia. Excel nie umiera. Jest sercem analizy w bardzo wielu organizacjach. Nasza aplikacja nie próbuje wyrzucić Excela — eksportuje wyniki w formacie, który płynnie wpina się w arkusz, z którym analityk pracuje od lat. To zmienia adopcję radykalnie. Z "muszę się uczyć nowego narzędzia" na "moje stare narzędzie nagle wie więcej".
+
+---
+
+## Stack technologiczny
+
+### Co siedzi pod spodem
+
+- **Frontend**: Next.js + React — SSR, interaktywne widoki tabel, podgląd PDF
+- **Backend**: API + worker pool dla zadań asynchronicznych
+- **OCR**: silnik obsługujący wielokolumnowe układy i tabele
+- **LLM**: lokalny model open-source, fine-tuned pod ekstrakcję strukturalną
+- **Baza**: relacyjna (metadane + audyt) + obiektowa (PDF-y) + indeks pełnotekstowy
+- **Wszystko w kontenerach** — jeden `docker compose up` w serwerowni klienta
+
+> _Notatka prowadzącego:_ Stack świadomie konserwatywny. Next.js + React, bo zespół frontendowy to ogarnia, a my potrzebujemy szybko iterować na UI. Backend modularny — worker pool oddzielony od API, bo ciężka praca AI nie może blokować requestów użytkownika. LLM lokalny i open-source — z powodów, które już omówiłem: dane nie mogą wyjść. Storage trójdzielny: SQL na metadane i audyt, blob storage na pliki, indeks pełnotekstowy na search. Wszystko zapakowane w kontenery. Deployment to dosłownie `docker compose up` w serwerowni klienta.
+
+---
+
+## Infrastruktura POC
+
+### Dlaczego sprzęt Dell był kluczowy
+
+- POC realizowany na **wypożyczonym sprzęcie Dell** w siedzibie odbiorcy
+- Lokalne LLM-y potrzebują **konkretnego GPU compute** pod ręką — nie da się tego zrobić na zwykłym serwerze biurowym
+- Pełna izolacja: serwer w serwerowni, brak wyjścia na świat, brak chmury
+- Dzięki temu mogliśmy **udowodnić koncepcję na realnych danych** bez wynoszenia czegokolwiek
+
+### Wartość partnerstwa
+
+Bez fizycznego sprzętu klasy enterprise pod ręką **w ogóle nie byłoby POC**. Cloud nie był opcją.
+
+> _Notatka prowadzącego:_ Chcę to wyraźnie podkreślić, bo jesteśmy na konferencji Dell Technologies. Bez sprzętu Dell wypożyczonego na POC ten projekt by nie wystartował. Nie mogliśmy iść do chmury — wymóg on-premise był nienegocjowalny. A jednocześnie nie da się odpalić lokalnego LLM-a na laptopie. Dell dostarczył sprzęt klasy serwerowej z odpowiednim GPU, postawiliśmy go w serwerowni odbiorcy, i dopiero wtedy można było pokazać działający system. Z perspektywy partnerstwa — to jest dokładnie ten scenariusz, w którym sprzęt enterprise i software AI muszą się spotkać.
+
+---
+
+## Co dalej
+
+### Plany rozwoju
+
+- **Automatyczne wiązanie** dokumentów z większą pewnością (sztywne reguły + sygnały z AI)
+- **Sugestie rekomendacji** — system nie tylko opisuje, ale i wskazuje, co wymaga uwagi
+- **Estymacja terminów** — model przewiduje termin wymagalności na podstawie zebranego kontekstu
+- **Continual improvement** ekstrakcji w oparciu o ręczne korekty użytkowników
+
+### Filozofia rozwoju
+
+Wzmacniać analityka, a nie zastępować. Każda decyzja AI musi być **wyjaśnialna** i **odwracalna**.
+
+> _Notatka prowadzącego:_ Kierunek rozwoju jest świadomie zachowawczy w jednej rzeczy: nie chcemy budować "autonomicznego agenta", który sam podejmuje decyzje za analityka. Chcemy budować coraz silniejszego asystenta, który coraz lepiej opisuje rzeczywistość, ale ostateczna decyzja zawsze należy do człowieka. Każda korekta, którą analityk wprowadza, jest dla nas sygnałem — pomaga strojeniu modelu. To pętla zwrotna, która z czasem czyni system coraz dokładniejszym.
+
+---
+
+## Podsumowanie
+
+### Trzy rzeczy do zapamiętania
+
+1. **Faktura w centrum** — architektura odwzorowuje strukturę domeny, nie odwrotnie
+2. **100% on-premise** — wymagało zhostowania całego stacku, łącznie z LLM-em, na sprzęcie odbiorcy
+3. **AI wspomaga, człowiek decyduje** — audytowalność, EDA, ręczne korekty są równie ważne co sama ekstrakcja
+
+### Efekt
+
+System działa, jest wdrożony, przetwarza realne dokumenty. Tygodnie analizy zamieniają się w godziny.
+
+> _Notatka prowadzącego:_ Zamykając: trzy rzeczy, które chciałbym, żeby zostały po tej prezentacji. Pierwsze — że wybór "co jest centrum modelu danych" determinuje cały dalszy design. U nas faktura jest węzłem centralnym. Drugie — że on-premise z lokalnym LLM-em jest dziś realny, jeśli masz odpowiedni sprzęt pod ręką. Trzecie — że dobry system AI nie polega tylko na modelu, ale na całej obudowie: audytowalności, kontroli jakości, integracji z istniejącym workflow. Dziękuję, czas na pytania.
+
+---
+
+## Dziękuję
+
+### Pytania?

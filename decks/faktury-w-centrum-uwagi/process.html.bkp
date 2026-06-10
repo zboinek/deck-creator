@@ -1,0 +1,1170 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Faktury w centrum uwagi — diagram procesu</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root,
+    [data-theme="dark"] {
+      --bg: #0a0a0a;
+      --bg-subtle: #141414;
+      --bg-card: #18181b;
+      --text: #fafafa;
+      --text-secondary: #a1a1aa;
+      --text-muted: #71717a;
+      --border: #27272a;
+      --border-strong: #3f3f46;
+      --accent: #d6f540;
+      --accent-muted: rgba(214, 245, 64, 0.12);
+      --accent-text: #0a0a0a;
+      --purple: #c084fc;
+      --blue: #6366f1;
+      --yellow: #fde68a;
+      --green: #4ade80;
+      --red: #f87171;
+      --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.4);
+      --bg-glow-1: rgba(214, 245, 64, 0.04);
+      --bg-glow-2: rgba(192, 132, 252, 0.04);
+      --boundary-bg: linear-gradient(180deg, rgba(255, 255, 255, 0.018), transparent);
+      --boundary-border: #3f3f46;
+      --font-sans: "Inter", system-ui, -apple-system, sans-serif;
+      --font-mono: "JetBrains Mono", ui-monospace, monospace;
+    }
+
+    [data-theme="light"] {
+      --bg: #ffffff;
+      --bg-subtle: #f7f7f8;
+      --bg-card: #ffffff;
+      --text: #0a0a0a;
+      --text-secondary: #3f3f46;
+      --text-muted: #71717a;
+      --border: #d4d4d8;
+      --border-strong: #a1a1aa;
+      --accent: #84cc16;
+      --accent-muted: rgba(132, 204, 22, 0.10);
+      --accent-text: #ffffff;
+      --purple: #9333ea;
+      --blue: #4f46e5;
+      --green: #16a34a;
+      --red: #dc2626;
+      --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+      --bg-glow-1: rgba(132, 204, 22, 0.06);
+      --bg-glow-2: rgba(147, 51, 234, 0.05);
+      --boundary-bg: transparent;
+      --boundary-border: #a1a1aa;
+    }
+
+    html {
+      transition: background-color 250ms ease, color 250ms ease;
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-sans);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    body {
+      min-height: 100vh;
+      padding: 48px 32px 64px;
+      background-image:
+        radial-gradient(circle at 20% 10%, var(--bg-glow-1), transparent 40%),
+        radial-gradient(circle at 80% 80%, var(--bg-glow-2), transparent 40%);
+      transition: background-color 250ms ease;
+    }
+
+    /* ─── Theme toggle ─── */
+    .theme-toggle {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 50;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 9999px;
+      box-shadow: var(--shadow-card);
+      cursor: pointer;
+      transition: border-color 200ms ease, background 200ms ease;
+    }
+
+    .theme-toggle:hover {
+      border-color: var(--border-strong);
+    }
+
+    .theme-toggle__opt {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 30px;
+      height: 30px;
+      border-radius: 9999px;
+      color: var(--text-muted);
+      transition: background 200ms ease, color 200ms ease;
+    }
+
+    .theme-toggle__opt svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    .theme-toggle__opt--active {
+      background: var(--accent);
+      color: var(--accent-text);
+    }
+
+    main {
+      max-width: 1280px;
+      margin: 0 auto;
+    }
+
+    /* ─── Header ─── */
+    header {
+      margin-bottom: 56px;
+      text-align: center;
+    }
+
+    header .eyebrow {
+      display: inline-block;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 14px;
+      padding: 4px 12px;
+      background: var(--accent-muted);
+      border-radius: 6px;
+    }
+
+    header h1 {
+      font-size: 40px;
+      font-weight: 700;
+      margin: 0 0 10px;
+      letter-spacing: -0.02em;
+    }
+
+    header .subtitle {
+      color: var(--text-secondary);
+      font-size: 16px;
+      margin: 0;
+      font-weight: 400;
+    }
+
+    /* ─── On-premise boundary ─── */
+    .boundary {
+      position: relative;
+      border: 2px dashed var(--boundary-border);
+      border-radius: 20px;
+      padding: 64px 40px 48px;
+      background: var(--boundary-bg);
+    }
+
+    .boundary-label {
+      position: absolute;
+      top: -14px;
+      left: 32px;
+      background: var(--bg);
+      padding: 4px 16px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--accent);
+      border: 1px solid var(--border-strong);
+      border-radius: 6px;
+    }
+
+    .boundary-footer {
+      position: absolute;
+      bottom: -14px;
+      right: 32px;
+      background: var(--bg);
+      padding: 4px 16px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+    }
+
+    .boundary-footer strong {
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    /* ─── Phase block ─── */
+    .phase {
+      margin-bottom: 36px;
+    }
+
+    .phase:last-child {
+      margin-bottom: 0;
+    }
+
+    .phase-label {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 18px;
+    }
+
+    .phase-label::before {
+      content: "";
+      width: 24px;
+      height: 1px;
+      background: var(--border-strong);
+    }
+
+    .phase-label::after {
+      content: "";
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(90deg, var(--border-strong), transparent);
+    }
+
+    .phase-num {
+      color: var(--accent);
+    }
+
+    /* ─── Row layout ─── */
+    .row {
+      display: flex;
+      align-items: stretch;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .row-3 {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 16px;
+    }
+
+    /* ─── Activity node (UML rounded rectangle) ─── */
+    .node {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 16px 20px;
+      min-width: 180px;
+      max-width: 280px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      transition: border-color 200ms ease, transform 200ms ease, box-shadow 200ms ease;
+      position: relative;
+      box-shadow: var(--shadow-card);
+    }
+
+    .node:hover {
+      border-color: var(--border-strong);
+      transform: translateY(-2px);
+    }
+
+    .node--accent {
+      border-color: var(--accent);
+      background: linear-gradient(180deg, var(--accent-muted), var(--bg-card));
+    }
+
+    .node--accent:hover {
+      border-color: var(--accent);
+    }
+
+    .node-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text);
+      margin: 0 0 4px;
+    }
+
+    .node-sub {
+      font-family: var(--font-mono);
+      font-size: 10.5px;
+      font-weight: 500;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      text-transform: uppercase;
+    }
+
+    .node-desc {
+      font-size: 12.5px;
+      color: var(--text-secondary);
+      margin: 8px 0 0;
+      line-height: 1.5;
+    }
+
+    .node-badge {
+      position: absolute;
+      top: -8px;
+      right: 12px;
+      font-family: var(--font-mono);
+      font-size: 9px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      padding: 2px 8px;
+      border-radius: 4px;
+      background: var(--accent);
+      color: var(--accent-text);
+      text-transform: uppercase;
+    }
+
+    /* ─── Actor (UML stick figure) ─── */
+    .actor {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 20px;
+      min-width: 120px;
+    }
+
+    .actor-figure {
+      width: 38px;
+      height: 56px;
+      color: var(--accent);
+    }
+
+    .actor-name {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .actor-role {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      color: var(--text-muted);
+      text-transform: uppercase;
+    }
+
+    /* ─── Arrows ─── */
+    .arrow-right {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      min-width: 80px;
+      color: var(--text-muted);
+    }
+
+    .arrow-right svg {
+      width: 60px;
+      height: 14px;
+    }
+
+    .arrow-label {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      text-align: center;
+    }
+
+    .arrow-down {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      margin: 14px 0;
+      color: var(--text-muted);
+    }
+
+    .arrow-down svg {
+      width: 14px;
+      height: 32px;
+    }
+
+    .arrow-down .arrow-label {
+      margin-top: 2px;
+    }
+
+    /* ─── Queue (UML object) ─── */
+    .queue {
+      background: var(--bg-card);
+      border: 1px solid var(--accent);
+      border-radius: 14px;
+      padding: 18px 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      min-width: 480px;
+      position: relative;
+    }
+
+    .queue::before {
+      content: "«kolejka»";
+      position: absolute;
+      top: -10px;
+      left: 16px;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      color: var(--accent);
+      background: var(--bg);
+      padding: 0 8px;
+    }
+
+    .queue-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .queue-states {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+    }
+
+    .queue-state {
+      padding: 4px 10px;
+      border-radius: 4px;
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      background: var(--bg-subtle);
+    }
+
+    .queue-state--start { color: var(--text-muted); }
+    .queue-state--active { color: var(--blue); border-color: var(--blue); }
+    .queue-state--ok { color: var(--green); border-color: var(--green); }
+    .queue-state--fail { color: var(--red); border-color: var(--red); }
+
+    .queue-arrow {
+      color: var(--text-muted);
+      font-size: 14px;
+    }
+
+    /* ─── Decision diamond (UML) ─── */
+    .decision {
+      width: 140px;
+      height: 80px;
+      background: var(--bg-card);
+      border: 1px solid var(--accent);
+      transform: rotate(45deg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 24px auto;
+      position: relative;
+    }
+
+    .decision-inner {
+      transform: rotate(-45deg);
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--accent);
+      text-align: center;
+      width: 110px;
+    }
+
+    /* ─── Fork bar ─── */
+    .fork {
+      width: 80%;
+      max-width: 600px;
+      height: 4px;
+      background: var(--accent);
+      margin: 18px auto;
+      border-radius: 2px;
+    }
+
+    /* ─── Storage row (UML database/datastore) ─── */
+    .storage-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 16px;
+    }
+
+    .storage {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 18px 20px;
+      position: relative;
+      transition: border-color 200ms ease, transform 200ms ease, box-shadow 200ms ease;
+      box-shadow: var(--shadow-card);
+    }
+
+    .storage:hover {
+      border-color: var(--border-strong);
+      transform: translateY(-2px);
+    }
+
+    .storage::before {
+      content: attr(data-stereotype);
+      position: absolute;
+      top: -10px;
+      left: 14px;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      color: var(--purple);
+      background: var(--bg);
+      padding: 0 8px;
+    }
+
+    .storage-icon {
+      width: 28px;
+      height: 28px;
+      color: var(--purple);
+      margin-bottom: 8px;
+    }
+
+    .storage-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text);
+      margin: 0 0 4px;
+    }
+
+    .storage-desc {
+      font-size: 12px;
+      color: var(--text-secondary);
+      line-height: 1.5;
+      margin: 0;
+    }
+
+    /* ─── Analytics row ─── */
+    .analytics-row {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 12px;
+    }
+
+    .analytics-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px 14px;
+      text-align: center;
+      transition: border-color 200ms ease, transform 200ms ease, box-shadow 200ms ease;
+      box-shadow: var(--shadow-card);
+    }
+
+    .analytics-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-2px);
+    }
+
+    .analytics-icon {
+      width: 22px;
+      height: 22px;
+      color: var(--accent);
+      margin: 0 auto 8px;
+    }
+
+    .analytics-title {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text);
+      margin: 0 0 4px;
+    }
+
+    .analytics-desc {
+      font-size: 10.5px;
+      color: var(--text-muted);
+      line-height: 1.4;
+      margin: 0;
+    }
+
+    /* ─── Start/End nodes ─── */
+    .node-start, .node-end {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      margin: 12px auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .node-start {
+      background: var(--accent);
+    }
+
+    .node-end {
+      background: var(--bg);
+      border: 2px solid var(--accent);
+      position: relative;
+    }
+
+    .node-end::after {
+      content: "";
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: var(--accent);
+    }
+
+    /* ─── Note (UML note with folded corner) ─── */
+    .note {
+      position: relative;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 12px 16px;
+      max-width: 320px;
+      font-size: 12.5px;
+      color: var(--text-secondary);
+      line-height: 1.55;
+      margin: 0 auto;
+    }
+
+    .note::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 14px;
+      height: 14px;
+      background: var(--bg);
+      border-left: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      border-radius: 0 0 0 4px;
+    }
+
+    .note strong {
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    .note-row {
+      display: flex;
+      justify-content: center;
+      margin: 14px 0;
+    }
+
+    /* ─── Legend ─── */
+    .legend {
+      margin-top: 56px;
+      padding: 24px;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 20px;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+    }
+
+    .legend-symbol {
+      flex-shrink: 0;
+      width: 24px;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--accent);
+    }
+
+    .legend-text strong {
+      display: block;
+      font-size: 12px;
+      color: var(--text);
+      margin-bottom: 2px;
+    }
+
+    .legend-text span {
+      font-size: 11px;
+      color: var(--text-muted);
+      line-height: 1.4;
+    }
+
+    /* ─── Mobile-ish guardrail ─── */
+    @media (max-width: 900px) {
+      .row { flex-direction: column; align-items: center; }
+      .arrow-right { transform: rotate(90deg); margin: 8px 0; }
+      .row-3, .storage-row { grid-template-columns: 1fr; }
+      .analytics-row { grid-template-columns: 1fr 1fr; }
+      .queue { min-width: 0; width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <button class="theme-toggle" id="themeToggle" type="button" aria-label="Przełącz motyw">
+    <span class="theme-toggle__opt" data-opt="light" title="Jasny motyw">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <circle cx="12" cy="12" r="4"/>
+        <line x1="12" y1="2" x2="12" y2="4"/>
+        <line x1="12" y1="20" x2="12" y2="22"/>
+        <line x1="4.93" y1="4.93" x2="6.34" y2="6.34"/>
+        <line x1="17.66" y1="17.66" x2="19.07" y2="19.07"/>
+        <line x1="2" y1="12" x2="4" y2="12"/>
+        <line x1="20" y1="12" x2="22" y2="12"/>
+        <line x1="4.93" y1="19.07" x2="6.34" y2="17.66"/>
+        <line x1="17.66" y1="6.34" x2="19.07" y2="4.93"/>
+      </svg>
+    </span>
+    <span class="theme-toggle__opt" data-opt="dark" title="Ciemny motyw">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+      </svg>
+    </span>
+  </button>
+
+  <main>
+    <header>
+      <span class="eyebrow">Architektura · UML Activity Diagram</span>
+      <h1>Faktury w centrum uwagi</h1>
+      <p class="subtitle">Pełen przepływ — od pudła na biurku Ignacego do raportu w Excelu</p>
+    </header>
+
+    <section class="boundary">
+      <span class="boundary-label">⛨ Granica on-premise · serwerownia odbiorcy</span>
+
+      <!-- ─── FAZA 1 — WEJŚCIE ─── -->
+      <div class="phase">
+        <div class="phase-label"><span class="phase-num">01</span> Faza wejścia</div>
+
+        <div class="row">
+          <div class="actor">
+            <svg class="actor-figure" viewBox="0 0 40 60" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="20" cy="8" r="6" />
+              <line x1="20" y1="14" x2="20" y2="36" />
+              <line x1="20" y1="20" x2="6" y2="28" />
+              <line x1="20" y1="20" x2="34" y2="28" />
+              <line x1="20" y1="36" x2="8" y2="56" />
+              <line x1="20" y1="36" x2="32" y2="56" />
+            </svg>
+            <div class="actor-name">Ignacy</div>
+            <div class="actor-role">Analityk · Zetka</div>
+          </div>
+
+          <div class="arrow-right">
+            <svg viewBox="0 0 60 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="2" y1="7" x2="54" y2="7" />
+              <polyline points="48,2 56,7 48,12" />
+            </svg>
+            <span class="arrow-label">drag &amp; drop</span>
+          </div>
+
+          <div class="node">
+            <div class="node-title">Frontend</div>
+            <div class="node-sub">Next.js · React</div>
+            <p class="node-desc">Pojedynczy gest — całe pudło wjeżdża do systemu.</p>
+          </div>
+
+          <div class="arrow-right">
+            <svg viewBox="0 0 60 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="2" y1="7" x2="54" y2="7" />
+              <polyline points="48,2 56,7 48,12" />
+            </svg>
+            <span class="arrow-label">POST /files</span>
+          </div>
+
+          <div class="node">
+            <div class="node-title">API Gateway</div>
+            <div class="node-sub">Backend HTTP</div>
+            <p class="node-desc">Walidacja, przypisanie do sprawy, enqueue.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- arrow down -->
+      <div class="arrow-down">
+        <svg viewBox="0 0 14 32" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="7" y1="2" x2="7" y2="26" />
+          <polyline points="2,20 7,28 12,20" />
+        </svg>
+        <span class="arrow-label">enqueue</span>
+      </div>
+
+      <!-- ─── FAZA 2 — KOLEJKA + WORKERY ─── -->
+      <div class="phase">
+        <div class="phase-label"><span class="phase-num">02</span> Kolejka asynchroniczna</div>
+
+        <div class="row">
+          <div class="queue">
+            <div class="queue-title">Kolejka przetwarzania plików</div>
+            <div class="queue-states">
+              <span class="queue-state queue-state--start">pending</span>
+              <span class="queue-arrow">→</span>
+              <span class="queue-state queue-state--active">analyzing</span>
+              <span class="queue-arrow">→</span>
+              <span class="queue-state queue-state--ok">analyzed</span>
+              <span class="queue-arrow">/</span>
+              <span class="queue-state queue-state--fail">failed</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="arrow-down">
+          <svg viewBox="0 0 14 32" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="7" y1="2" x2="7" y2="26" />
+            <polyline points="2,20 7,28 12,20" />
+          </svg>
+          <span class="arrow-label">consume</span>
+        </div>
+
+        <div class="row">
+          <div class="node node--accent">
+            <span class="node-badge">scalable</span>
+            <div class="node-title">Worker Pool</div>
+            <div class="node-sub">Async · poziomo skalowalny</div>
+            <p class="node-desc">Każdy worker bierze jeden plik. Trudny PDF nie blokuje pozostałych.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- arrow down -->
+      <div class="arrow-down">
+        <svg viewBox="0 0 14 32" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="7" y1="2" x2="7" y2="26" />
+          <polyline points="2,20 7,28 12,20" />
+        </svg>
+      </div>
+
+      <!-- ─── FAZA 3 — AI PIPELINE ─── -->
+      <div class="phase">
+        <div class="phase-label"><span class="phase-num">03</span> AI Pipeline · cała inferencja lokalnie</div>
+
+        <div class="row">
+          <div class="node">
+            <span class="node-badge" style="background: var(--blue); color: white;">OCR</span>
+            <div class="node-title">OCR Engine</div>
+            <div class="node-sub">Struktura · tabele</div>
+            <p class="node-desc">Obraz → tekst z zachowanym układem. Tabela zostaje tabelą.</p>
+          </div>
+
+          <div class="arrow-right">
+            <svg viewBox="0 0 60 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="2" y1="7" x2="54" y2="7" />
+              <polyline points="48,2 56,7 48,12" />
+            </svg>
+            <span class="arrow-label">tekst + układ</span>
+          </div>
+
+          <div class="node node--accent">
+            <span class="node-badge">LLM</span>
+            <div class="node-title">Lokalny LLM</div>
+            <div class="node-sub">Open-source · on-prem</div>
+            <p class="node-desc">Klasyfikacja typu → ekstrakcja pól → strict JSON → walidacja schematu.</p>
+          </div>
+
+          <div class="arrow-right">
+            <svg viewBox="0 0 60 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="2" y1="7" x2="54" y2="7" />
+              <polyline points="48,2 56,7 48,12" />
+            </svg>
+            <span class="arrow-label">struktury</span>
+          </div>
+
+          <div class="node">
+            <div class="node-title">Normalizator</div>
+            <div class="node-sub">NIP · daty · kwoty</div>
+            <p class="node-desc">NIP bez myślników, daty ISO, kwoty jako liczby. Bez tego nic się nie połączy.</p>
+          </div>
+        </div>
+
+        <div class="note-row">
+          <div class="note">
+            <strong>⛔ Constraint:</strong> żaden token z dokumentu nie opuszcza serwerowni. Brak API zewnętrznych. Cały LLM mieli się lokalnie na GPU Dell.
+          </div>
+        </div>
+      </div>
+
+      <!-- arrow down -->
+      <div class="arrow-down">
+        <svg viewBox="0 0 14 32" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="7" y1="2" x2="7" y2="26" />
+          <polyline points="2,20 7,28 12,20" />
+        </svg>
+        <span class="arrow-label">persist</span>
+      </div>
+
+      <!-- Fork bar (UML) -->
+      <div class="fork" title="UML fork node"></div>
+
+      <!-- ─── FAZA 4 — STORAGE ─── -->
+      <div class="phase">
+        <div class="phase-label"><span class="phase-num">04</span> Warstwa składowania</div>
+
+        <div class="storage-row">
+          <div class="storage" data-stereotype="«database»">
+            <svg class="storage-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <ellipse cx="12" cy="5" rx="9" ry="3" />
+              <path d="M3 5v6c0 1.66 4.03 3 9 3s9-1.34 9-3V5" />
+              <path d="M3 11v6c0 1.66 4.03 3 9 3s9-1.34 9-3v-6" />
+            </svg>
+            <div class="storage-title">Relacyjna DB</div>
+            <p class="storage-desc">Metadane · faktura w centrum modelu · pełny log audytowy.</p>
+          </div>
+
+          <div class="storage" data-stereotype="«blob store»">
+            <svg class="storage-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+              <polyline points="14 2 14 8 20 8" />
+            </svg>
+            <div class="storage-title">Object Storage</div>
+            <p class="storage-desc">Oryginalne PDF-y · artefakty OCR · powiązane z rekordami DB.</p>
+          </div>
+
+          <div class="storage" data-stereotype="«index»">
+            <svg class="storage-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="11" cy="11" r="8" />
+              <line x1="21" y1="21" x2="16.65" y2="16.65" />
+            </svg>
+            <div class="storage-title">Full-Text Index</div>
+            <p class="storage-desc">Pełnotekstowa wyszukiwarka po całej treści — wiązanie dokumentów w sekundach.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Fork bar (join + new fork) -->
+      <div class="fork" title="UML join + fork"></div>
+
+      <!-- ─── FAZA 5 — WARSTWA ANALITYCZNA ─── -->
+      <div class="phase">
+        <div class="phase-label"><span class="phase-num">05</span> Warstwa analityczna</div>
+
+        <div class="analytics-row">
+          <div class="analytics-card">
+            <svg class="analytics-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="11" cy="11" r="8" />
+              <line x1="21" y1="21" x2="16.65" y2="16.65" />
+            </svg>
+            <div class="analytics-title">Wyszukiwanie</div>
+            <p class="analytics-desc">Globalne · po pełnej treści · wiązanie dokumentów</p>
+          </div>
+
+          <div class="analytics-card">
+            <svg class="analytics-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="3" />
+              <circle cx="4" cy="4" r="2" />
+              <circle cx="20" cy="4" r="2" />
+              <circle cx="12" cy="20" r="2" />
+              <line x1="12" y1="12" x2="4" y2="4" />
+              <line x1="12" y1="12" x2="20" y2="4" />
+              <line x1="12" y1="12" x2="12" y2="20" />
+            </svg>
+            <div class="analytics-title">Triangulacja</div>
+            <p class="analytics-desc">3 niezależne źródła · zgadzają się? OK. Nie? Flaga.</p>
+          </div>
+
+          <div class="analytics-card">
+            <svg class="analytics-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="18" y1="20" x2="18" y2="10" />
+              <line x1="12" y1="20" x2="12" y2="4" />
+              <line x1="6" y1="20" x2="6" y2="14" />
+            </svg>
+            <div class="analytics-title">EDA</div>
+            <p class="analytics-desc">Kompletność danych · gdzie AI ma braki · ręczna korekta</p>
+          </div>
+
+          <div class="analytics-card">
+            <svg class="analytics-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+              <polyline points="9 12 11 14 15 10" />
+            </svg>
+            <div class="analytics-title">Audyt</div>
+            <p class="analytics-desc">Każda zmiana · kto · kiedy · jaka wartość poprzednia</p>
+          </div>
+
+          <div class="analytics-card">
+            <svg class="analytics-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+              <polyline points="14 2 14 8 20 8" />
+              <line x1="8" y1="13" x2="16" y2="13" />
+              <line x1="8" y1="17" x2="16" y2="17" />
+            </svg>
+            <div class="analytics-title">Eksport</div>
+            <p class="analytics-desc">Powrót do Excela · dopasowanie po numerze + NIP</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- arrow down -->
+      <div class="arrow-down">
+        <svg viewBox="0 0 14 32" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="7" y1="2" x2="7" y2="26" />
+          <polyline points="2,20 7,28 12,20" />
+        </svg>
+        <span class="arrow-label">render w UI</span>
+      </div>
+
+      <!-- ─── FAZA 6 — POWRÓT DO IGNACEGO ─── -->
+      <div class="phase">
+        <div class="phase-label"><span class="phase-num">06</span> Powrót do bohatera</div>
+
+        <div class="row">
+          <div class="node node--accent" style="text-align: center;">
+            <div class="node-title">Ignacy widzi wyniki</div>
+            <div class="node-sub">Piątek · 17:23</div>
+            <p class="node-desc">1840 plików nadal istnieje. Ale tym razem rozumie je system — nie tylko Ignacy.</p>
+          </div>
+        </div>
+
+        <div class="node-end" title="UML activity end node"></div>
+      </div>
+
+      <span class="boundary-footer">⚡ Sprzęt: <strong>serwer Dell + GPU enterprise</strong> · fizycznie w lokalizacji odbiorcy</span>
+    </section>
+
+    <!-- ─── Legenda ─── -->
+    <section class="legend">
+      <div class="legend-item">
+        <span class="legend-symbol">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+            <circle cx="12" cy="6" r="3"/><line x1="12" y1="9" x2="12" y2="18" stroke-linecap="round"/>
+          </svg>
+        </span>
+        <div class="legend-text">
+          <strong>Aktor</strong>
+          <span>Użytkownik wchodzący z systemem w interakcję</span>
+        </div>
+      </div>
+
+      <div class="legend-item">
+        <span class="legend-symbol">
+          <svg width="22" height="14" viewBox="0 0 22 14" fill="none" stroke="currentColor" stroke-width="1.6">
+            <rect x="1" y="1" width="20" height="12" rx="4"/>
+          </svg>
+        </span>
+        <div class="legend-text">
+          <strong>Aktywność</strong>
+          <span>Pojedynczy komponent / czynność w procesie</span>
+        </div>
+      </div>
+
+      <div class="legend-item">
+        <span class="legend-symbol">
+          <svg width="22" height="14" viewBox="0 0 22 14" fill="none">
+            <rect x="0.5" y="3.5" width="21" height="7" rx="1" fill="currentColor"/>
+          </svg>
+        </span>
+        <div class="legend-text">
+          <strong>Fork / Join</strong>
+          <span>Rozdzielenie lub połączenie równoległych ścieżek</span>
+        </div>
+      </div>
+
+      <div class="legend-item">
+        <span class="legend-symbol">
+          <svg width="22" height="14" viewBox="0 0 24 14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="2" y1="7" x2="20" y2="7"/>
+            <polyline points="14,2 22,7 14,12"/>
+          </svg>
+        </span>
+        <div class="legend-text">
+          <strong>Przepływ</strong>
+          <span>Kierunek danych / kolejność wywołań</span>
+        </div>
+      </div>
+
+      <div class="legend-item">
+        <span class="legend-symbol" style="color: var(--purple);">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+            <ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14c0 1.66 4.03 3 9 3s9-1.34 9-3V5"/>
+          </svg>
+        </span>
+        <div class="legend-text">
+          <strong>Datastore</strong>
+          <span>Magazyn danych: DB, blob, indeks</span>
+        </div>
+      </div>
+
+      <div class="legend-item">
+        <span class="legend-symbol">
+          <svg width="20" height="14" viewBox="0 0 24 16" fill="none" stroke="currentColor" stroke-width="1.6">
+            <path d="M2 2h16l4 4v8H2z" stroke-linejoin="round"/>
+            <polyline points="18,2 18,6 22,6"/>
+          </svg>
+        </span>
+        <div class="legend-text">
+          <strong>Notatka</strong>
+          <span>Komentarz architektoniczny lub constraint</span>
+        </div>
+      </div>
+
+      <div class="legend-item">
+        <span class="legend-symbol">
+          <svg width="22" height="14" viewBox="0 0 22 14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-dasharray="3 2">
+            <rect x="1" y="1" width="20" height="12" rx="3"/>
+          </svg>
+        </span>
+        <div class="legend-text">
+          <strong>Granica deploymentu</strong>
+          <span>Wszystko w środku to on-premise, w serwerowni odbiorcy</span>
+        </div>
+      </div>
+
+      <div class="legend-item">
+        <span class="legend-symbol">
+          <span style="display:inline-block;width:16px;height:16px;border-radius:50%;background:var(--accent);"></span>
+        </span>
+        <div class="legend-text">
+          <strong>Element kluczowy</strong>
+          <span>Komponent podświetlony akcentem — krytyczny dla architektury</span>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    (function () {
+      const STORAGE_KEY = "deck-process-theme";
+      const root = document.documentElement;
+      const toggle = document.getElementById("themeToggle");
+      const opts = toggle.querySelectorAll(".theme-toggle__opt");
+
+      function apply(theme) {
+        root.setAttribute("data-theme", theme);
+        opts.forEach(function (el) {
+          el.classList.toggle(
+            "theme-toggle__opt--active",
+            el.dataset.opt === theme
+          );
+        });
+      }
+
+      const stored = localStorage.getItem(STORAGE_KEY);
+      const prefersLight =
+        window.matchMedia &&
+        window.matchMedia("(prefers-color-scheme: light)").matches;
+      apply(stored || (prefersLight ? "light" : "dark"));
+
+      toggle.addEventListener("click", function () {
+        const next =
+          root.getAttribute("data-theme") === "dark" ? "light" : "dark";
+        apply(next);
+        localStorage.setItem(STORAGE_KEY, next);
+      });
+    })();
+  </script>
+</body>
+</html>

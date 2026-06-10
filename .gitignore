@@ -4,5 +4,5 @@ out/
 build/
 *.tsbuildinfo
 next-env.d.ts
-decks/*
+#decks/*
 build-docker.sh
