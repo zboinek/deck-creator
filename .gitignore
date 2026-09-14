@@ -1,8 +1,27 @@
+# Python dla build-pptx.sh
+.venv/
+__pycache__/
+*.pyc
+
+# Next.js / toolchain
 .next/
 node_modules/
 out/
 build/
 *.tsbuildinfo
 next-env.d.ts
-#decks/*
+
+# macOS
+.DS_Store
+
+# Backupy - od tego jest git
+*.bkp
+
+# Deploy: zawiera adres serwera i usera SSH, trzymany lokalnie
 build-docker.sh
+
+# Artefakty renderowania decków - odtwarzalne przez decks/<deck>/build-pdf.sh
+decks/*/deck-print.html
+decks/*/*.pdf
+decks/*/*.pptx
+decks/*/preview/
