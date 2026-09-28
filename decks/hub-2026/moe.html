@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8" />
+<title>Mixture of Experts</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg:#ffffff; --text:#0a0a0a; --muted:#52525b; --dim:#8b8b93;
+    --line:#e4e4e7; --line-strong:#d4d4d8; --cg:rgb(235,123,22);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    width:900px; height:1040px; background:var(--bg); color:var(--text);
+    font-family:Inter, system-ui, sans-serif; padding:40px 44px 36px;
+    display:flex; flex-direction:column;
+  }
+
+  .cap { font-family:'JetBrains Mono',monospace; font-size:12.5px; font-weight:700;
+         letter-spacing:.2em; text-transform:uppercase; color:var(--cg); }
+  h1 { font-size:38px; font-weight:800; letter-spacing:-.022em; line-height:1.08; margin-top:8px; }
+  .sub { font-size:17px; color:var(--muted); margin-top:10px; line-height:1.45; }
+
+  .panel { margin-top:46px; }
+  .plabel { display:flex; align-items:center; gap:14px; margin-bottom:16px; }
+  .plabel span { font-family:'JetBrains Mono',monospace; font-size:12.5px; font-weight:700;
+                 letter-spacing:.14em; text-transform:uppercase; color:var(--dim); white-space:nowrap; }
+  .plabel .ln { flex:1; height:1px; background:var(--line); }
+
+  .flow { display:flex; align-items:center; gap:14px; }
+  .tok {
+    flex-shrink:0; width:78px; height:52px; border:1px solid var(--line-strong); border-radius:4px;
+    display:flex; align-items:center; justify-content:center;
+    font-family:'JetBrains Mono',monospace; font-size:13px; color:var(--muted); background:#fafafa;
+  }
+  .arrow { flex-shrink:0; color:var(--dim); font-size:20px; line-height:1; }
+
+  /* --- model gęsty --- */
+  .dense {
+    flex:1; height:132px; background:var(--cg); border-radius:4px;
+    display:flex; align-items:center; justify-content:center;
+    color:#fff; font-size:21px; font-weight:700; text-shadow:0 1px 1px rgba(0,0,0,.22);
+  }
+
+  /* --- MoE --- */
+  .router {
+    flex-shrink:0; width:62px; height:144px; border:1px solid var(--cg); border-radius:4px;
+    display:flex; align-items:center; justify-content:center; background:rgba(235,123,22,.08);
+  }
+  .router b {
+    writing-mode:vertical-rl; transform:rotate(180deg);
+    font-family:'JetBrains Mono',monospace; font-size:12.5px; font-weight:700;
+    letter-spacing:.14em; text-transform:uppercase; color:var(--cg);
+  }
+  .grid {
+    flex:1; display:grid; grid-template-columns:repeat(8,1fr); gap:6px;
+  }
+  .ex { height:44px; background:#f0f0f2; border:1px solid var(--line); border-radius:3px; }
+  .ex.on { background:var(--cg); border-color:var(--cg); }
+
+  .note { font-size:16px; color:var(--muted); margin-top:18px; }
+  .note b { color:var(--text); font-weight:700; }
+
+  /* --- stopka ze statystykami --- */
+  .stats { margin-top:auto; padding-top:26px; border-top:1px solid var(--line); display:flex; gap:16px; }
+  .stat { flex:1; }
+  .stat .k { font-family:'JetBrains Mono',monospace; font-size:12px; font-weight:700;
+             letter-spacing:.12em; text-transform:uppercase; color:var(--dim); }
+  .stat .v { font-size:34px; font-weight:800; letter-spacing:-.02em; margin-top:6px; }
+  .stat .v.acc { color:var(--cg); }
+  .stat .d { font-size:14.5px; color:var(--muted); margin-top:4px; line-height:1.35; }
+  .punch {
+    margin-top:22px; border-left:3px solid var(--cg); padding-left:18px;
+    font-size:16.5px; line-height:1.5; color:var(--muted);
+  }
+  .punch b { color:var(--text); font-weight:700; }
+</style>
+</head>
+<body>
+
+  <span class="cap">Mixture of Experts</span>
+  <h1>Jak 743 miliardy<br>liczą jak 40 miliardów</h1>
+  <p class="sub">Model nie jest jedną wielką siecią, tylko zbiorem specjalistów. Na każdy token pracuje kilku, a reszta czeka.</p>
+
+  <div class="panel">
+    <div class="plabel"><span>Model gęsty, dawniej</span><i class="ln"></i></div>
+    <div class="flow">
+      <div class="tok">token</div>
+      <div class="arrow">&rarr;</div>
+      <div class="dense">liczy się CAŁOŚĆ</div>
+      <div class="arrow">&rarr;</div>
+    </div>
+    <p class="note">Każdy token przechodzi przez <b>wszystkie parametry</b>. Duży model = wolny model.</p>
+  </div>
+
+  <div class="panel">
+    <div class="plabel"><span>Mixture of Experts, dziś</span><i class="ln"></i></div>
+    <div class="flow">
+      <div class="tok">token</div>
+      <div class="arrow">&rarr;</div>
+      <div class="router"><b>Router</b></div>
+      <div class="arrow">&rarr;</div>
+      <div class="grid">
+        <div class="ex"></div><div class="ex"></div><div class="ex on"></div><div class="ex"></div>
+        <div class="ex"></div><div class="ex"></div><div class="ex"></div><div class="ex"></div>
+        <div class="ex"></div><div class="ex on"></div><div class="ex"></div><div class="ex"></div>
+        <div class="ex"></div><div class="ex"></div><div class="ex"></div><div class="ex on"></div>
+        <div class="ex"></div><div class="ex"></div><div class="ex"></div><div class="ex"></div>
+        <div class="ex on"></div><div class="ex"></div><div class="ex"></div><div class="ex"></div>
+      </div>
+      <div class="arrow">&rarr;</div>
+    </div>
+    <p class="note">Router włącza <b>tylko kilku ekspertów</b>. Pomarańczowe liczą, szare śpią.</p>
+  </div>
+
+  <div class="stats">
+    <div class="stat">
+      <div class="k">W pamięci karty</div>
+      <div class="v">743 mld</div>
+      <div class="d">wszyscy eksperci muszą tam być,<br>płacisz pamięcią</div>
+    </div>
+    <div class="stat">
+      <div class="k">Liczy na token</div>
+      <div class="v acc">40 mld</div>
+      <div class="d">czyli 5% modelu,<br>płacisz prądem jak za mały</div>
+    </div>
+  </div>
+
+  <p class="punch"><b>Dlatego bilionowe modele w ogóle da się uruchomić.</b> Pamięć płaci za całość, a obliczenia za ułamek.</p>
+
+</body>
+</html>

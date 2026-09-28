@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8" />
+<title>Kontrola: co wchodzi i co wychodzi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+<style>
+  :root { --bg:#fff; --text:#0a0a0a; --muted:#52525b; --dim:#8b8b93;
+          --line:#e4e4e7; --line-strong:#d4d4d8; --cg:rgb(235,123,22); }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { width:1600px; height:900px; background:var(--bg); color:var(--text);
+         font-family:Inter, system-ui, sans-serif; padding:50px 64px 40px; position:relative; }
+
+  .head { display:flex; align-items:center; gap:20px; }
+  .cap { font-family:'JetBrains Mono',monospace; font-size:14px; font-weight:700;
+         letter-spacing:.2em; text-transform:uppercase; color:var(--cg); white-space:nowrap; }
+  .rule { flex:1; height:1px; background:var(--line); }
+  h1 { font-size:46px; font-weight:800; letter-spacing:-.024em; margin-top:12px; line-height:1.06; }
+  .sub { font-size:20px; color:var(--muted); margin-top:10px; }
+  .sub b { color:var(--text); font-weight:600; }
+
+  svg.wires { position:absolute; left:0; top:0; width:1600px; height:900px; pointer-events:none; }
+
+  /* granica */
+  .zone { position:absolute; left:64px; top:250px; width:1086px; height:540px;
+          border:2px solid var(--cg); border-radius:16px; background:rgba(235,123,22,.035); }
+  .zonelab { position:absolute; left:96px; top:236px; background:#fff; padding:0 12px;
+             font-family:'JetBrains Mono',monospace; font-size:13px; font-weight:700;
+             letter-spacing:.16em; text-transform:uppercase; color:var(--cg); }
+
+  .node { position:absolute; border:1px solid var(--line-strong); border-radius:9px; background:#fff;
+          display:flex; flex-direction:column; align-items:center; justify-content:center; gap:5px;
+          text-align:center; padding:0 16px; }
+  .node .n { font-size:23px; font-weight:700; letter-spacing:-.01em; }
+  .node .d { font-size:15px; color:var(--dim); line-height:1.3; }
+
+  .agent { position:absolute; background:var(--text); border-radius:11px; color:#fff;
+           display:flex; flex-direction:column; align-items:center; justify-content:center; gap:7px; }
+  .agent .n { font-size:34px; font-weight:800; letter-spacing:-.02em; }
+  .agent .d { font-family:'JetBrains Mono',monospace; font-size:12.5px; letter-spacing:.13em;
+              text-transform:uppercase; color:#a1a1aa; }
+
+  .out { position:absolute; border:2px dashed var(--line-strong); border-radius:9px; background:#fafafa;
+         display:flex; flex-direction:column; align-items:center; justify-content:center; gap:5px;
+         text-align:center; opacity:.65; }
+  .out .n { font-size:22px; font-weight:700; color:var(--dim); }
+  .out .d { font-size:14.5px; color:var(--dim); }
+
+  .blocklab { position:absolute; left:1060px; top:566px; width:180px; text-align:center;
+              background:#fff; padding:6px 0; z-index:5;
+              font-family:'JetBrains Mono',monospace; font-size:13px; font-weight:700;
+              letter-spacing:.13em; text-transform:uppercase; color:var(--cg); }
+
+  /* stopka */
+  .chips { position:absolute; left:64px; bottom:44px; display:flex; gap:14px; }
+  .chip { border:1px solid var(--line-strong); border-radius:999px; padding:13px 24px;
+          font-size:19px; font-weight:600; color:var(--muted);
+          display:flex; align-items:center; gap:12px; }
+  .chip i { width:9px; height:9px; border-radius:50%; background:var(--cg); flex-shrink:0; }
+  .chip b { color:var(--text); font-weight:800; }
+</style>
+</head>
+<body>
+
+  <div class="head"><span class="cap">Kontrola</span><span class="rule"></span></div>
+  <h1>Co wchodzi i co wychodzi</h1>
+  <p class="sub">Pytanie, dane i odpowiedź <b>zostają po jednej stronie granicy</b>. Droga na zewnątrz jest zamknięta.</p>
+
+  <div class="zone"></div>
+  <div class="zonelab">Twoja infrastruktura</div>
+
+  <svg class="wires" viewBox="0 0 1600 900">
+    <defs>
+      <marker id="a" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto">
+        <path d="M0,0 L9,4.5 L0,9 z" fill="#8b8b93"/></marker>
+      <marker id="b" markerWidth="9" markerHeight="9" refX="1" refY="4.5" orient="auto">
+        <path d="M9,0 L0,4.5 L9,9 z" fill="#8b8b93"/></marker>
+    </defs>
+
+    <path d="M 320 520 H 418" stroke="#8b8b93" stroke-width="2.5" fill="none"
+          marker-end="url(#a)" marker-start="url(#b)"/>
+    <path d="M 702 480 L 818 425" stroke="#8b8b93" stroke-width="2.5" fill="none"
+          marker-end="url(#a)" marker-start="url(#b)"/>
+    <path d="M 702 560 L 818 617" stroke="#8b8b93" stroke-width="2.5" fill="none"
+          marker-end="url(#a)" marker-start="url(#b)"/>
+
+    <!-- proba wyjscia na zewnatrz: urwana na granicy -->
+    <path d="M 702 520 H 1108" stroke="#c9c9cf" stroke-width="2.5" fill="none" stroke-dasharray="8 7"/>
+
+    <!-- blokada na linii granicy -->
+    <circle cx="1150" cy="520" r="29" fill="#fff" stroke="rgb(235,123,22)" stroke-width="4"/>
+    <line x1="1130" y1="500" x2="1170" y2="540" stroke="rgb(235,123,22)" stroke-width="4" stroke-linecap="round"/>
+  </svg>
+
+  <div class="node" style="left:110px; top:465px; width:210px; height:110px;">
+    <div class="n">Pracownik</div><div class="d">Slack &middot; Teams</div>
+  </div>
+
+  <div class="agent" style="left:420px; top:440px; width:282px; height:160px;">
+    <div class="n">Hermes</div><div class="d">w kontenerze</div>
+  </div>
+
+  <div class="node" style="left:820px; top:350px; width:270px; height:110px;">
+    <div class="n">Model</div><div class="d">CGC &middot; Twoja serwerownia</div>
+  </div>
+
+  <div class="node" style="left:820px; top:580px; width:270px; height:110px;">
+    <div class="n">Dane firmowe</div><div class="d">ERP &middot; dyski &middot; poczta</div>
+  </div>
+
+  <div class="out" style="left:1258px; top:460px; width:270px; height:120px;">
+    <div class="n">Internet</div><div class="d">API third-party</div>
+  </div>
+  <div class="blocklab">Zablokowane</div>
+
+  <div class="chips">
+    <div class="chip"><i></i>Zatwierdzanie poleceń</div>
+    <div class="chip"><i></i>Izolacja kontenerowa</div>
+    <div class="chip"><i></i><b>Pełny log każdego kroku</b></div>
+  </div>
+
+</body>
+</html>
