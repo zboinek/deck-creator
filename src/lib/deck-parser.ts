@@ -6,6 +6,7 @@ export interface DeckMeta {
   author?: string;
   description?: string;
   theme?: string;
+  category?: string;
   [key: string]: unknown;
 }
 
@@ -201,9 +202,20 @@ export function parseDeck(raw: string): ParsedDeck {
 
   const title = (frontmatter.title as string) || extractTitle(content);
 
+  // gray-matter parses unquoted YAML dates into Date objects; normalize to
+  // YYYY-MM-DD so sorting and rendering stay chronological, not weekday-alphabetical.
+  const rawDate = frontmatter.date;
+  const date =
+    rawDate instanceof Date
+      ? rawDate.toISOString().slice(0, 10)
+      : typeof rawDate === "string"
+        ? rawDate
+        : undefined;
+
   const meta: DeckMeta = {
     ...frontmatter,
     title,
+    date,
   };
 
   return { meta, slides };

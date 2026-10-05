@@ -3,6 +3,7 @@ title: "Od Myślenia do Działania – Tool Use, Function Calling i Pętla Agent
 date: 2026-03-22
 author: "Jakub Zboina"
 description: "Wykład 4: Mechanizm Function Calling, wzorzec ReAct i architektura pętli agentowej – przez pryzmat enaktywizmu i teorii rozszerzonego umysłu"
+category: AI2
 ---
 
 # Od Myślenia do Działania

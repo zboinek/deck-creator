@@ -3,6 +3,7 @@ title: "Frontier u siebie"
 date: 2026-09-07
 author: "Jakub Zboina"
 description: "Comtegra Hub 2026. Modele open-weight są cztery miesiące za frontierem, a stoją na Twoim sprzęcie. O tym, jak uruchomić agenta klasy produkcyjnej pod pełną kontrolą, na czym to postawić i dlaczego 2026 to rok, w którym przestaje to być eksperyment."
+category: Comtegra
 ---
 
 ### Comtegra Hub 2026

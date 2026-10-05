@@ -3,6 +3,7 @@ title: "Emergencja, Etyka i Przyszłość – Kiedy Agent Staje Się Systemem"
 date: 2026-03-29
 author: "Jakub Zboina"
 description: "Wykład 5: MoE pod maską, multi-agent systems, ograniczenia AI, etyka i mapa kompetencji kognitywisty"
+category: AI2
 ---
 
 # Emergencja, Etyka i Przyszłość

@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8" />
+<title>ACI: interfejs zaprojektowany dla agenta</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+<style>
+  /* Limonka (akcent apki) = jedna idea: interfejs projektowany dla agenta
+     (pełny ACI i elementy, które go budują). Model, zadania, interfejs ludzki: szarości. */
+  :root {
+    /* tokeny motywu dark z src/app/globals.css */
+    --bg: #0a0a0a; --text: #fafafa; --muted: #a1a1aa; --dim: #71717a;
+    --line: #27272a; --line-strong: #3f3f46; --cg: #d6f540; --cg-text: #0a0a0a;
+    --soft: #141414; --code: #18181b; --cg-inline: rgba(214, 245, 64, 0.12);
+
+    /* skala wykresu: 1 pp = 20 px  →  20% = 400 px */
+    --bar-w: 400px;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    width: 1600px; height: 900px; background: var(--bg); color: var(--text);
+    font-family: Inter, system-ui, sans-serif; padding: 50px 64px 40px;
+    display: flex; flex-direction: column;
+  }
+  .mono { font-family: 'JetBrains Mono', monospace; }
+  .head { display: flex; align-items: center; gap: 20px; margin-bottom: 12px; }
+  .cap { font-family: 'JetBrains Mono', monospace; font-size: 15px; font-weight: 700;
+         letter-spacing: .2em; text-transform: uppercase; color: var(--cg); white-space: nowrap; }
+  .cap sub { text-transform: none; letter-spacing: .06em; font-size: 12px; }
+  .rule { flex: 1; height: 1px; background: var(--line); }
+  h1 { font-size: 48px; font-weight: 800; letter-spacing: -.024em; line-height: 1.05; }
+  .sub { font-size: 20px; color: var(--muted); margin-top: 10px; }
+  .sub b { color: var(--text); font-weight: 600; }
+
+  .stage { display: grid; grid-template-columns: 720px 1fr; gap: 64px; margin-top: 40px; }
+
+  .lbl { font-family: 'JetBrains Mono', monospace; font-size: 13.5px; font-weight: 700;
+         letter-spacing: .14em; text-transform: uppercase; color: var(--dim); margin-bottom: 16px; }
+  .lbl .nt { text-transform: none; letter-spacing: .04em; }
+
+  /* lewa: HCI vs ACI w ramach Normana */
+  .matrix { display: grid; grid-template-columns: 172px 1fr 1fr; gap: 12px; }
+  .ph { border: 1px solid var(--line-strong); border-radius: 12px 12px 4px 4px; background: var(--soft);
+        padding: 14px 18px 13px; }
+  .ph.aci { border-color: var(--cg); background: var(--cg-inline); }
+  .ph .k { font-family: 'JetBrains Mono', monospace; font-size: 22px; font-weight: 700; color: var(--muted); }
+  .ph.aci .k { color: var(--cg); }
+  .ph .who { font-size: 19px; font-weight: 700; margin-top: 2px; }
+  .ph .how { font-size: 14.5px; color: var(--dim); margin-top: 6px; line-height: 1.35; }
+  .ph.aci .how { color: var(--muted); }
+
+  .gulf { padding: 14px 6px 0 0; }
+  .gulf .n { font-size: 18px; font-weight: 700; line-height: 1.15; }
+  .gulf .q { font-size: 14.5px; color: var(--muted); margin-top: 6px; line-height: 1.35; }
+  .gulf .dir { font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--dim); margin-top: 8px; }
+
+  .cell { border: 1px solid var(--line); border-radius: 4px; background: var(--soft);
+          padding: 14px 18px; min-height: 124px; display: flex; flex-direction: column; justify-content: center; }
+  .cell.aci { border-color: var(--cg); }
+  .cell.last { border-radius: 4px 4px 12px 12px; }
+  .cell .t { font-size: 17px; font-weight: 600; line-height: 1.3; }
+  .cell .c { font-size: 14.5px; color: var(--dim); margin-top: 6px; line-height: 1.35; }
+  .cell.aci .t { color: var(--cg); }
+  .cell.aci .c { color: var(--muted); }
+  .close { font-family: 'JetBrains Mono', monospace; font-size: 12.5px; font-weight: 700; letter-spacing: .1em;
+           text-transform: uppercase; color: var(--dim); margin-bottom: 6px; }
+  .cell.aci .close { color: var(--cg); }
+
+  /* prawa: dowód */
+  .chart { position: relative; }
+  .axis { position: relative; margin-left: 236px; width: var(--bar-w); height: 26px; }
+  .tick { position: absolute; top: 0; transform: translateX(-50%);
+          font-family: 'JetBrains Mono', monospace; font-size: 14px; color: var(--dim); }
+  .tick:first-child { transform: none; }
+  .tick:last-child { transform: translateX(-100%); }
+  .grid { position: absolute; top: 26px; bottom: 0; width: 1px; background: var(--line); }
+
+  .rows { position: relative; }
+  .row { display: grid; grid-template-columns: 212px var(--bar-w); gap: 24px; align-items: center; margin-top: 22px; }
+  .row:first-child { margin-top: 10px; }
+  .rl { text-align: right; }
+  .rl .v { font-family: 'JetBrains Mono', monospace; font-size: 34px; font-weight: 700; line-height: 1; }
+  .rl .v.lo { color: var(--muted); }
+  .rl .v.acc { color: var(--cg); }
+  .rl .n { font-size: 16.5px; font-weight: 600; margin-top: 6px; }
+  .rl .d { font-size: 14.5px; color: var(--dim); margin-top: 3px; }
+  .track { position: relative; height: 54px; border-radius: 6px; border: 1px solid var(--line);
+           background: repeating-linear-gradient(-45deg, #0a0a0a 0 7px, #141414 7px 14px); }
+  .fill { position: absolute; left: -1px; top: -1px; bottom: -1px; border-radius: 6px 0 0 6px; }
+  .fill.shell { background: #3f3f46; }
+  .fill.edit  { background: #71717a; }
+  .fill.aci   { background: var(--cg); }
+  .verdict { position: absolute; top: 50%; transform: translateY(-50%); left: 14px;
+             font-size: 15px; font-weight: 700; white-space: nowrap; color: var(--text); }
+  .fill.aci .verdict { color: var(--cg-text); }
+
+  /* linia bazowa: shell 11,0% = 220 px */
+  .base { position: absolute; left: 456px; top: 0; bottom: -40px; border-left: 2px dashed var(--muted); }
+  .gain { position: absolute; left: 456px; width: 140px; bottom: -40px; height: 26px;
+          display: flex; align-items: center; justify-content: center; }
+  .gain::before { content: ''; position: absolute; left: 0; right: 0; top: 50%; border-top: 2px solid var(--cg); }
+  .gain::after { content: ''; position: absolute; right: -1px; top: 4px; bottom: 4px; border-left: 2px solid var(--cg); }
+  .gain span { position: relative; background: var(--bg); padding: 0 8px;
+               font-family: 'JetBrains Mono', monospace; font-size: 17px; font-weight: 700; color: var(--cg); }
+  .note { margin: 58px 0 0 236px; font-size: 15px; color: var(--dim); line-height: 1.4; }
+  .note b { color: var(--muted); font-weight: 600; }
+
+  .callout { margin-top: auto; border-left: 4px solid var(--cg); padding: 4px 0 4px 20px;
+             font-size: 20px; line-height: 1.4; color: var(--muted); }
+  .callout b { color: var(--text); font-weight: 700; }
+  .callout .mono { font-size: 18px; color: var(--text); }
+  .callout code { font-family: 'JetBrains Mono', monospace; font-size: 18px; color: var(--cg);
+                  background: var(--cg-inline); padding: 1px 6px; border-radius: 4px; }
+  .foot { margin-top: 20px; padding-top: 14px; border-top: 1px solid var(--line);
+          display: flex; align-items: flex-end; justify-content: space-between; gap: 40px; }
+  .src { font-size: 15px; color: var(--dim); line-height: 1.5; }
+  .rule2 { text-align: right; font-size: 17.5px; color: var(--muted); white-space: nowrap; }
+  .rule2 b { color: var(--cg); font-family: 'JetBrains Mono', monospace; font-weight: 700; }
+</style>
+</head>
+<body>
+
+  <div class="head"><span class="cap">I<sub>act</sub> · ACI</span><span class="rule"></span></div>
+  <h1>Agent to nowy rodzaj użytkownika</h1>
+  <p class="sub">ACI to HCI dla modelu językowego: <b>interfejs buduje się pod agenta, a nie przejmuje po człowieku</b>.</p>
+
+  <div class="stage">
+
+    <div class="left">
+      <div class="lbl">Dwie przepaście Normana: dobry interfejs zamyka obie</div>
+      <div class="matrix">
+        <div></div>
+        <div class="ph">
+          <div class="k">HCI</div>
+          <div class="who">człowiek ↔ system</div>
+          <div class="how">mysz, okna, ekran</div>
+        </div>
+        <div class="ph aci">
+          <div class="k">ACI</div>
+          <div class="who">agent ↔ system</div>
+          <div class="how">komendy tekstowe, wyniki przycięte do okna</div>
+        </div>
+
+        <div class="gulf">
+          <div class="n">Przepaść wykonania</div>
+          <div class="q">jak wyrazić intencję w działaniach systemu</div>
+          <div class="dir">intencja → akcja</div>
+        </div>
+        <div class="cell">
+          <div class="close">zamyka</div>
+          <div class="t">mysz, menu, przeciąganie</div>
+          <div class="c">wskazuję to, co widzę</div>
+        </div>
+        <div class="cell aci">
+          <div class="close">zamyka</div>
+          <div class="t">wyszukiwanie i podgląd pliku w oknie</div>
+          <div class="c">agent trafia w kod bez przekopywania repo shellem</div>
+        </div>
+
+        <div class="gulf">
+          <div class="n">Przepaść oceny</div>
+          <div class="q">jak odczytać stan systemu po działaniu</div>
+          <div class="dir">stan → odczyt</div>
+        </div>
+        <div class="cell last">
+          <div class="close">zamyka</div>
+          <div class="t">natychmiastowy podgląd</div>
+          <div class="c">efekt kliknięcia widać od razu</div>
+        </div>
+        <div class="cell aci last">
+          <div class="close">zamyka</div>
+          <div class="t">linter przy każdej edycji</div>
+          <div class="c">błędna składnia odrzucona od razu, z komunikatem</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="right">
+      <div class="lbl">Dowód · SWE-bench Lite · ten sam model, te same zadania</div>
+      <div class="chart">
+        <!-- osie: 1 pp = 20 px, ticki co 5 pp -->
+        <div class="axis">
+          <span class="tick" style="left:0">0</span>
+          <span class="tick" style="left:100px">5</span>
+          <span class="tick" style="left:200px">10</span>
+          <span class="tick" style="left:300px">15</span>
+          <span class="tick" style="left:400px">20%</span>
+        </div>
+        <div class="rows">
+          <div class="grid" style="left:336px; top:0"></div>
+          <div class="grid" style="left:436px; top:0"></div>
+          <div class="grid" style="left:536px; top:0"></div>
+          <div class="grid" style="left:636px; top:0"></div>
+
+          <div class="row">
+            <div class="rl"><div class="v lo">11,0%</div><div class="n">sam shell</div><div class="d">interfejs jak dla człowieka</div></div>
+            <div class="track"><div class="fill shell" style="width:220px"></div></div> <!-- 11,0 × 20 -->
+          </div>
+          <div class="row">
+            <div class="rl"><div class="v lo">15,0%</div><div class="n">edycja bez lintera</div><div class="d">brak informacji zwrotnej</div></div>
+            <div class="track"><div class="fill edit" style="width:300px"></div></div> <!-- 15,0 × 20 -->
+          </div>
+          <div class="row">
+            <div class="rl"><div class="v acc">18,0%</div><div class="n">pełny ACI</div><div class="d">edycja z linterem, wyszukiwanie, podgląd</div></div>
+            <div class="track"><div class="fill aci" style="width:360px"></div></div> <!-- 18,0 × 20 -->
+          </div>
+
+          <div class="base"></div>
+          <div class="gain"><span>+7 pp</span></div>
+        </div>
+        <p class="note">Zmienia się <b>tylko interfejs</b>. Wagi modelu i zadania bez zmian.</p>
+      </div>
+    </div>
+
+  </div>
+
+  <p class="callout">Interfejs to element harnessu, czyli <code>I<sub>act</sub></code> w <span class="mono">H = ⟨I<sub>obs</sub>, C, L, I<sub>act</sub>, S, V⟩</span>. <b>Te same wagi, inny interfejs, inny wynik.</b></p>
+
+  <div class="foot">
+    <div class="src">Yang i in. (2024), SWE-agent: Agent-Computer Interfaces Enable Automated Software Engineering · NeurIPS (Princeton)<br>Przepaść wykonania i oceny: Norman (1986)</div>
+    <div class="rule2">Lepszy interfejs: <b>+7 pp</b> bez zmiany wag</div>
+  </div>
+
+</body>
+</html>

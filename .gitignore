@@ -16,6 +16,7 @@ next-env.d.ts
 
 # Backupy - od tego jest git
 *.bkp
+*.swp
 
 # Deploy: zawiera adres serwera i usera SSH, trzymany lokalnie
 build-docker.sh

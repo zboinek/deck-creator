@@ -2,6 +2,7 @@
 title: "Faktury w centrum uwagi"
 date: 2026-05-24
 description: "Dell Unlocking Tomorrow. Historia Ignacego, pudła z 1840 plikami i pewnego nienegocjowalnego wymagania — czyli jak uruchomić duże modele językowe całkowicie lokalnie."
+category: Comtegra
 ---
 
 ### Historia oparta na faktach
