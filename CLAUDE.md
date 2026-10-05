@@ -122,8 +122,10 @@ Build obrazu i push do `ghcr.io/zboinek/deck-creator` robi Actions tokenem
 z serwera znikają) i `docker compose pull && up -d` przez SSH.
 Endpoint serwera siedzi w sekretach `SSH_HOST/SSH_PORT/SSH_USER/
 SSH_PRIVATE_KEY/SSH_KNOWN_HOSTS` (klucz dedykowany, `deck-creator-ci-deploy`,
-odwoływalny w `authorized_keys`). Pakiet na ghcr jest **publiczny** - serwer
-ciągnie anonimowo, zero PAT-ów.
+odwoływalny w `authorized_keys`). Pakiet na ghcr jest **prywatny**: każdy deploy
+loguje dockerem serwer krótkożywym `GITHUB_TOKEN` joba (ważnym ~1 h) tuż przed
+`compose pull`, więc na serwerze nie ma żadnego trwałego tokenu rejestru.
+Ręczny restart/pull na serwerze bez CI wymaga własnego `docker login ghcr.io`.
 
 **Ręczny fallback:** `./build-docker.sh --deploy` (lokalny build + push + scp
 decków + restart compose). `--sync-decks` sam wysyła decki bez przebudowy obrazu.

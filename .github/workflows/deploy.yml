@@ -71,6 +71,12 @@ jobs:
       - name: Sync decks
         run: rsync -az --delete decks/ deck-server:apps/deck-creator/decks/
 
+      # Pakiet prywatny: logujemy serwer tokenem tego joba (wazny ~1 h)
+      # tuż przed pullem - na serwerze nie zostaje trwaly token rejestru.
+      - name: Log server in to GHCR
+        run: |
+          printf '%s' "${{ secrets.GITHUB_TOKEN }}" | ssh deck-server 'docker login ghcr.io -u ${{ github.repository_owner }} --password-stdin >/dev/null'
+
       - name: Pull image and restart container
         run: |
           ssh deck-server 'cd apps && docker compose pull deck-creator && docker compose rm -sf deck-creator && docker compose up -d deck-creator'
