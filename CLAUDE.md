@@ -115,11 +115,21 @@ Historia gita waży ~125 MB przez duże PNG/GIF z wcześniejszych decków
 
 ## Deploy
 
-`./build-docker.sh --deploy` - buduje obraz `ghcr.io/zboinek/deck-creator`,
-pushuje, synchronizuje `decks/` na serwer przez scp i restartuje compose.
-`--sync-decks` sam wysyła decki bez przebudowy obrazu.
+**CI/CD (podstawowa ścieżka):** push na `main` odpala `.github/workflows/deploy.yml`.
+Build obrazu i push do `ghcr.io/zboinek/deck-creator` robi Actions tokenem
+`GITHUB_TOKEN` (tagi `latest` + SHA), potem rsync `decks/` na serwer **z `--delete`**
+(serwer = lustrzane odbicie repo w `decks/`; lokalne surowce i artefakty
+z serwera znikają) i `docker compose pull && up -d` przez SSH.
+Endpoint serwera siedzi w sekretach `SSH_HOST/SSH_PORT/SSH_USER/
+SSH_PRIVATE_KEY/SSH_KNOWN_HOSTS` (klucz dedykowany, `deck-creator-ci-deploy`,
+odwoływalny w `authorized_keys`). Pakiet na ghcr jest **publiczny** - serwer
+ciągnie anonimowo, zero PAT-ów.
 
-Kontener montuje `decks/` read-only, więc treść aktualizuje się bez rebuildu.
+**Ręczny fallback:** `./build-docker.sh --deploy` (lokalny build + push + scp
+decków + restart compose). `--sync-decks` sam wysyła decki bez przebudowy obrazu.
+
+Kontener montuje `decks/` read-only, więc sama treść aktualizuje się
+przez rsync bez rebuildu obrazu.
 
 ## Skille
 

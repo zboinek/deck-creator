@@ -85,10 +85,10 @@ notatek. Poprawki treści robisz w `deck.md` i przebudowujesz.
 
 ## Deploy
 
-```bash
-./build-docker.sh --deploy      # build + push + sync decków + restart
-./build-docker.sh --sync-decks  # sama aktualizacja treści
-```
+Push na `main` odpala GitHub Actions (`.github/workflows/deploy.yml`):
+build obrazu + push do ghcr, rsync `decks/` na serwer, restart compose,
+weryfikacja HTTP. Ręczny fallback: `./build-docker.sh --deploy` (build lokalny).
+Sekrety CI: `SSH_HOST`, `SSH_PORT`, `SSH_USER`, `SSH_PRIVATE_KEY`, `SSH_KNOWN_HOSTS`.
 
 ## Dalej
 
