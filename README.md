@@ -86,8 +86,9 @@ notatek. Poprawki treści robisz w `deck.md` i przebudowujesz.
 ## Deploy
 
 Push na `main` odpala GitHub Actions (`.github/workflows/deploy.yml`):
-build obrazu + push do ghcr, rsync `decks/` na serwer, restart compose,
-weryfikacja HTTP. Ręczny fallback: `./build-docker.sh --deploy` (build lokalny).
+`npm audit` → build obrazu + push do ghcr → skan obrazu Trivy (HIGH/CRITICAL
+blokują deploy) → rsync `decks/` na serwer → restart compose → weryfikacja HTTP.
+Ręczny fallback: `./build-docker.sh --deploy` (build lokalny).
 Sekrety CI: `SSH_HOST`, `SSH_PORT`, `SSH_USER`, `SSH_PRIVATE_KEY`, `SSH_KNOWN_HOSTS`.
 
 ## Dalej

@@ -133,6 +133,12 @@ decków + restart compose). `--sync-decks` sam wysyła decki bez przebudowy obra
 Kontener montuje `decks/` read-only, więc sama treść aktualizuje się
 przez rsync bez rebuildu obrazu.
 
+**Gate bezpieczeństwa w CI:** przed buildem leci `npm audit --audit-level=high`
+(podatności zależności JS z lockfile'a), po pushu Trivy skanuje obraz
+(`severity: HIGH,CRITICAL`, `ignore-unfixed: true`). FAIL któregokolwiek
+blokuje deploy - stary obraz dalej działa na serwerze. Odpalamy na
+Node 24 LTS (aktualne LTS w Dockerfile i `@types/node`).
+
 ## Skille
 
 - `create-deck-markdown` - format `deck.md`, layouty, notatki prowadzącego

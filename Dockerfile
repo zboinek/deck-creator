@@ -1,4 +1,4 @@
-FROM node:22-alpine AS base
+FROM node:24-alpine AS base
 
 # --- Dependencies ---
 FROM base AS deps
@@ -25,7 +25,12 @@ ENV HOSTNAME=0.0.0.0
 ENV PORT=3000
 
 RUN addgroup --system --gid 1001 nodejs && \
-    adduser --system --uid 1001 nextjs
+    adduser --system --uid 1001 nextjs && \
+    # npm bundle'owany w obrazie node ma wlasne, starzejace sie zaleznosci -
+    # Trivy flaguje je przy kazdym bumpie bazowego obrazu. Runtime (standalone
+    # `node server.js`) nie uzywa npm/corepack, wiec wycinamy je z obrazu.
+    rm -rf /usr/local/lib/node_modules/npm /usr/local/lib/node_modules/corepack && \
+    rm -f /usr/local/bin/npm /usr/local/bin/npx /usr/local/bin/corepack
 
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static

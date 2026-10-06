@@ -1,4 +1,4 @@
-import matter from "gray-matter";
+import { load as loadYaml } from "js-yaml";
 
 export interface DeckMeta {
   title: string;
@@ -172,8 +172,29 @@ function extractTitle(rawContent: string): string {
   return "Untitled Deck";
 }
 
+// Frontmatter: "---\n<yaml>\n---\n" na samym początku pliku.
+// Nieudane parsowanie YAML rzuca - deck ze zepsutym frontmatterem ma być
+// widocznie zepsuty, a nie po cichu pozbawiony metadanych.
+const FRONTMATTER_PATTERN = /^---\r?\n([\s\S]*?)\r?\n---(?:\r?\n|$)/;
+
+function extractFrontmatter(raw: string): {
+  data: Record<string, unknown>;
+  content: string;
+} {
+  const src = raw.replace(/^\uFEFF/, "");
+  const match = src.match(FRONTMATTER_PATTERN);
+  if (!match) {
+    return { data: {}, content: src };
+  }
+  const parsed = loadYaml(match[1]) as Record<string, unknown> | null;
+  return {
+    data: parsed && typeof parsed === "object" ? parsed : {},
+    content: src.slice(match[0].length),
+  };
+}
+
 export function parseDeck(raw: string): ParsedDeck {
-  const { data: frontmatter, content } = matter(raw);
+  const { data: frontmatter, content } = extractFrontmatter(raw);
 
   const slideChunks = content
     .split(/\n---\n/)
