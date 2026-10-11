@@ -340,6 +340,8 @@ export function DeckPresentation({ meta, slides, slug }: DeckPresentationProps) 
     function onKeyDown(e: KeyboardEvent) {
       const tag = (e.target as HTMLElement)?.tagName;
       if (tag === "INPUT" || tag === "TEXTAREA") return;
+      // A focused slide video keeps Space for play/pause; arrows still change slides.
+      if (tag === "VIDEO" && e.key === " ") return;
 
       switch (e.key) {
         case "ArrowRight":

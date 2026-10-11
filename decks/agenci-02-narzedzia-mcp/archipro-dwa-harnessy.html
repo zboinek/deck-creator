@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8" />
+<title>Archipro: dwa harnessy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg: #0a0a0a; --text: #fafafa; --muted: #a1a1aa; --dim: #71717a;
+    --line: #27272a; --line-strong: #3f3f46; --cg: #d6f540;
+    --soft: #141414; --code: #18181b;
+    --label-w: 210px;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    width: 1600px; height: 900px; background: var(--bg); color: var(--text);
+    font-family: Inter, system-ui, sans-serif; padding: 50px 64px 40px;
+    display: flex; flex-direction: column;
+  }
+  .head { display: flex; align-items: center; gap: 20px; margin-bottom: 12px; }
+  .cap { font-family: 'JetBrains Mono', monospace; font-size: 15px; font-weight: 700;
+         letter-spacing: .2em; text-transform: uppercase; color: var(--cg); white-space: nowrap; }
+  .rule { flex: 1; height: 1px; background: var(--line); }
+  h1 { font-size: 48px; font-weight: 800; letter-spacing: -.024em; line-height: 1.05; }
+  .sub { font-size: 20px; color: var(--muted); margin-top: 10px; }
+  .sub b { color: var(--text); font-weight: 600; }
+
+  .grid { margin-top: 28px; display: grid; grid-template-columns: var(--label-w) 1fr 1fr;
+          column-gap: 16px; row-gap: 8px; }
+  .colhead { padding: 0 0 8px 18px; }
+  .colhead .n { font-size: 25px; font-weight: 700; letter-spacing: -.01em; }
+  .colhead .d { font-size: 15.5px; color: var(--dim); margin-top: 3px; }
+  .lbl { text-align: right; padding-right: 8px; align-self: center;
+         font-family: 'JetBrains Mono', monospace; font-size: 14px; font-weight: 700;
+         letter-spacing: .1em; text-transform: uppercase; color: var(--dim); }
+  .cell { height: 56px; display: flex; align-items: center; padding: 0 18px; border-radius: 8px;
+          background: var(--soft); border: 1px solid var(--line-strong); font-size: 18px; color: var(--text); }
+  .cell code { font-family: 'JetBrains Mono', monospace; font-size: 16px; }
+  .cell .q { color: var(--muted); margin-left: 8px; font-size: 16px; }
+  /* poza moją kontrolą: kreskowane tło, przygaszony tekst */
+  .cell.foreign { background: repeating-linear-gradient(-45deg, #0a0a0a 0 7px, #141414 7px 14px);
+                  border: 1px dashed var(--line-strong); color: var(--muted); }
+
+  .arrows { display: grid; grid-template-columns: var(--label-w) 1fr 1fr; column-gap: 16px; height: 44px; }
+  .arrows div { position: relative; }
+  .arrows div:not(:first-child)::after { content: ""; position: absolute; left: 50%; top: 4px; bottom: 0;
+          width: 2px; background: var(--cg); }
+
+  .core { margin-left: calc(var(--label-w) + 16px); border: 2px solid var(--cg); border-radius: 10px;
+          background: rgba(214, 245, 64, 0.12); padding: 16px 24px; display: flex; align-items: center; gap: 26px; }
+  .core .k { font-family: 'JetBrains Mono', monospace; font-size: 20px; font-weight: 700; color: var(--cg); white-space: nowrap; }
+  .core .t { font-size: 18px; color: var(--text); line-height: 1.4; }
+
+  .foot { margin-top: auto; padding-top: 18px; border-top: 1px solid var(--line);
+          display: flex; align-items: center; gap: 34px; font-size: 16px; color: var(--muted); }
+  .lg { display: flex; align-items: center; gap: 10px; }
+  .sw { width: 34px; height: 18px; border-radius: 4px; }
+  .sw.mine { background: var(--soft); border: 1px solid var(--line-strong); }
+  .sw.foreign { background: repeating-linear-gradient(-45deg, #0a0a0a 0 4px, #1c1c1f 4px 8px); border: 1px dashed var(--line-strong); }
+  .sw.sw-core { background: rgba(214, 245, 64, 0.12); border: 2px solid var(--cg); }
+  .rot { margin-left: auto; font-family: 'JetBrains Mono', monospace; font-size: 16px; font-weight: 700; color: var(--cg); }
+</style>
+</head>
+<body>
+  <div class="head"><span class="cap">Archipro · jeden rdzeń</span><span class="rule"></span></div>
+  <h1>Te same operacje, dwa różne harnessy</h1>
+  <p class="sub">W czacie kontroluję cały harness. <b>Przez MCP kontroluję tylko to, co wystawiam, i to, co sprawdzam przy wykonaniu.</b></p>
+
+  <div class="grid">
+    <div></div>
+    <div class="colhead"><div class="n">Czat w aplikacji</div><div class="d">Cmd+L, mój harness</div></div>
+    <div class="colhead"><div class="n">Serwer MCP</div><div class="d">/api/mcp, harnessem jest ChatGPT albo Claude</div></div>
+
+    <div class="lbl">model</div>
+    <div class="cell">mój, prywatny endpoint wybierany w panelu admina</div>
+    <div class="cell foreign">cudzy</div>
+
+    <div class="lbl">pętla</div>
+    <div class="cell"><code>runtime.ts</code><span class="q">najwyżej 25 iteracji</span></div>
+    <div class="cell foreign">cudza</div>
+
+    <div class="lbl">pamięć</div>
+    <div class="cell"><code>AiEvent, AiRun</code><span class="q">wznawianie tury</span></div>
+    <div class="cell foreign">cudza, Archipro nic nie zapisuje</div>
+
+    <div class="lbl">narzędzia</div>
+    <div class="cell">46, ładowane grupami na żądanie</div>
+    <div class="cell">14 do odczytu, 31 po zgodzie na zapis</div>
+
+    <div class="lbl">zgoda</div>
+    <div class="cell">przycisk w interfejsie Archipro</div>
+    <div class="cell foreign"><code>confirmed: true</code>&nbsp;wpisuje model</div>
+
+    <div class="lbl">sieć</div>
+    <div class="cell"><code>fetch_product_page</code><span class="q">dowolny publiczny adres</span></div>
+    <div class="cell">brak pobierania adresów</div>
+  </div>
+
+  <div class="arrows"><div></div><div></div><div></div></div>
+
+  <div class="core">
+    <span class="k">lib/capabilities</span>
+    <span class="t">wspólne operacje na projektach · <b>uprawnienia, limity i audyt sprawdzane przy każdym wywołaniu</b></span>
+  </div>
+
+  <div class="foot">
+    <span class="lg"><span class="sw mine"></span>pod moją kontrolą</span>
+    <span class="lg"><span class="sw foreign"></span>poza moją kontrolą</span>
+    <span class="lg"><span class="sw sw-core"></span>wspólny rdzeń</span>
+    <span class="rot">wynik = model + harness, nawet przy tym samym rdzeniu</span>
+  </div>
+</body>
+</html>

@@ -18,6 +18,37 @@ function rewriteImageSrc(src: string, slug: string): string {
   return `/api/decks/${slug}/attachments/${src}`;
 }
 
+const VIDEO_PATTERN = /\.(mp4|webm)([?#].*)?$/i;
+
+/**
+ * `![alt](plik.mp4)` renders as a muted, looping video that starts on its own, so the
+ * audience display (which syncs only the slide index) plays it too. Everything else is an image.
+ */
+function SlideMedia({ src, alt, className, style }: {
+  src: string;
+  alt: string;
+  className?: string;
+  style?: React.CSSProperties;
+}) {
+  if (VIDEO_PATTERN.test(src)) {
+    return (
+      <video
+        src={src}
+        aria-label={alt}
+        className={className}
+        style={style}
+        controls
+        autoPlay
+        loop
+        muted
+        playsInline
+        preload="metadata"
+      />
+    );
+  }
+  return <img src={src} alt={alt} className={className} style={style} loading="lazy" />;
+}
+
 function makeComponents(slug: string, theme: SlideTheme = "dark"): Components {
   return {
     h1: () => null,
@@ -269,12 +300,11 @@ function makeComponents(slug: string, theme: SlideTheme = "dark"): Components {
       }
 
       return (
-        <img
+        <SlideMedia
           src={resolved}
           alt={alt}
           className="max-w-full max-h-full object-contain"
           style={{ borderRadius: "var(--radius-md)", width }}
-          loading="lazy"
         />
       );
     },
@@ -314,12 +344,11 @@ function FullImageSlide({ images, textContent, slug, theme = "dark" }: {
         </div>
       )}
       <div className="flex-1 min-h-0 w-full flex items-center justify-center">
-        <img
+        <SlideMedia
           src={resolvedSrc}
           alt={image.alt}
           className="max-w-full max-h-full object-contain"
           style={{ borderRadius: "var(--radius-md)", width: image.width }}
-          loading="lazy"
         />
       </div>
     </div>
@@ -351,12 +380,11 @@ function TwoColumnSlide({ textContent, images, slug, theme = "dark" }: {
           const resolvedSrc = rewriteImageSrc(img.src, slug);
           return (
             <div key={i} className="flex-1 min-h-0 flex items-center justify-center w-full">
-              <img
+              <SlideMedia
                 src={resolvedSrc}
                 alt={img.alt}
                 className="max-w-full max-h-full object-contain"
                 style={{ borderRadius: "var(--radius-md)", width: img.width, flex: img.width ? "none" : undefined }}
-                loading="lazy"
               />
             </div>
           );
