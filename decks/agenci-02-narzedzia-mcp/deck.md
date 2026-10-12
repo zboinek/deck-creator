@@ -61,6 +61,12 @@ _Invariant Labs (2025), GitHub MCP Exploited: Accessing private repositories via
 
 ---
 
+## Prosty chat czy harness?
+
+![Czat z botem ELLIE w grze mobilnej: bot wita się, mówi, że ma dostęp do systemów i baz danych mo.co, i dodaje, że można na nim polegać, „Probably. Hopefully. Statistically speaking.”](attachments/bot-w-grze.jpeg)
+
+---
+
 ## Plan
 
 ### Rozkład jazdy
