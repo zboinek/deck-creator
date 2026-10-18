@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SOTA AI – lato 2026 · wersja interaktywna</title>
+<style>
+  * { box-sizing: border-box; }
+  :root {
+    --blue: #2a7de1; --ink: #111; --text: #1a1a1a; --muted: #666; --muted2: #888;
+    --border: #dde2e8; --zebra: #f7f9fc; --verdict-bg: #f0f5ff;
+    --warn-bg: #fff8ec; --warn-border: #f0d98a; --green: #1a8a3b; --red: #c0392b;
+  }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    margin: 0; padding: 0; background: #e9ecf1; color: var(--text); line-height: 1.5;
+  }
+  .hint {
+    max-width: 1280px; margin: 18px auto 0; padding: 12px 18px; background: #fdf6e3;
+    border: 1px solid #f0d98a; border-radius: 8px; font-size: 13px; color: #6b5a1e;
+  }
+  .hint b { color: #4d420f; }
+  .slide {
+    width: 1280px; height: 720px; margin: 22px auto; background: #fff;
+    box-shadow: 0 2px 14px rgba(0,0,0,0.13); border-radius: 10px;
+    padding: 30px 46px 22px; position: relative; overflow: hidden;
+    display: flex; flex-direction: column;
+  }
+  .s-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
+  .s-badge {
+    background: var(--blue); color: #fff; font-size: 11px; font-weight: 600;
+    letter-spacing: 0.08em; padding: 4px 12px; border-radius: 20px;
+  }
+  .s-badge.part2 { background: #1a8a3b; }
+  .s-badge.red { background: var(--red); }
+  .s-time { font-size: 12px; color: var(--muted2); font-weight: 600; }
+  .s-title { font-size: 27px; color: var(--ink); margin: 6px 0 14px; line-height: 1.25; }
+  .s-title .en { color: var(--muted); font-size: 17px; font-weight: 400; }
+  .s-body { flex: 1; overflow: hidden; font-size: 15px; display: flex; flex-direction: column; }
+  .s-foot {
+    display: flex; justify-content: space-between; align-items: center;
+    border-top: 1px solid #eef0f3; padding-top: 8px; margin-top: 10px;
+    font-size: 11.5px; color: var(--muted2);
+  }
+  ul { margin: 4px 0 10px; padding-left: 22px; }
+  li { margin-bottom: 6px; }
+  li b, p b { color: var(--ink); }
+  .en-term { color: var(--blue); font-weight: 600; }
+  table { border-collapse: collapse; width: 100%; font-size: 13.5px; margin: 4px 0 10px; background: #fff; }
+  th { background: var(--blue); color: #fff; font-weight: 600; text-align: left; padding: 8px 10px; border: 1px solid var(--blue); }
+  td { padding: 7px 10px; border: 1px solid var(--border); vertical-align: middle; }
+  tbody tr:nth-child(even) { background: var(--zebra); }
+  .teza {
+    background: var(--verdict-bg); border-left: 4px solid var(--blue); border-radius: 0 6px 6px 0;
+    padding: 12px 16px; font-size: 14px; color: #333; margin: 10px 0;
+  }
+  .teza b { color: var(--ink); }
+  .teza .lab { color: var(--blue); font-weight: 700; letter-spacing: 0.04em; }
+  .teza.about { border-left-color: #7a4fd8; background: #f6f3fd; }
+  .teza.about .lab { color: #7a4fd8; }
+  .warnbox {
+    background: var(--warn-bg); border: 1px solid var(--warn-border); border-radius: 8px;
+    padding: 10px 16px; font-size: 13.5px; margin: 8px 0;
+  }
+  .warnbox.red { background: #fdf0ee; border-color: #e8b7ae; }
+  .cols2 { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
+  .cols2.wide-left { grid-template-columns: 1.25fr 1fr; }
+  .panel { border: 1px solid var(--border); border-radius: 8px; padding: 12px 16px; background: #fcfdfe; }
+  .panel h4 { margin: 2px 0 8px; font-size: 14.5px; color: var(--ink); }
+  .panel.know h4 { color: var(--green); }
+  .panel.gap h4 { color: var(--red); }
+  .num { display: inline-block; background: var(--zebra); border: 1px solid var(--border); color: var(--blue);
+    font-weight: 700; font-size: 12px; border-radius: 50%; width: 20px; height: 20px; line-height: 18px;
+    text-align: center; margin-right: 7px; }
+  .big { font-size: 17px; }
+  .kpi { font-weight: 700; color: var(--blue); }
+  .kpi.red { color: var(--red); }
+  .src { font-size: 12px; color: var(--muted); margin-top: auto; padding-top: 6px; }
+  .src b { color: #444; }
+  .figcap { font-size: 11.5px; color: var(--muted2); text-align: center; margin-top: 4px; }
+  svg { display: block; margin: 0 auto; }
+  svg text { font-family: -apple-system, "Segoe UI", Roboto, Arial, sans-serif; }
+  .title-slide { justify-content: center; text-align: center; }
+  .title-slide h1 { font-size: 40px; color: var(--ink); margin: 10px 0 14px; line-height: 1.2; }
+  .title-slide .sub { font-size: 20px; color: var(--muted); margin-bottom: 26px; }
+  .title-slide .who { font-size: 16px; color: #333; }
+  .title-rule { width: 90px; height: 4px; background: var(--blue); margin: 0 auto 22px; border-radius: 2px; }
+  .counter {
+    position: fixed; right: 18px; bottom: 14px; background: rgba(17,17,17,0.75); color: #fff;
+    font-size: 12px; padding: 6px 12px; border-radius: 20px; z-index: 99;
+  }
+  * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+
+  html, body { height: 100%; }
+  body {
+    background: #23272f; color: var(--text);
+    overflow: hidden; height: 100vh;
+    display: flex; align-items: center; justify-content: center;
+    margin: 0; padding: 0;
+  }
+  .hint { display: none; }
+  .slide {
+    margin: 0; box-shadow: 0 8px 44px rgba(0,0,0,0.5);
+    display: none; flex-direction: column; flex: 0 0 auto;
+    transform-origin: center center;
+  }
+  .slide.active { display: flex; }
+  .nav {
+    position: fixed; left: 50%; transform: translateX(-50%); bottom: 18px;
+    display: flex; align-items: center; gap: 10px;
+    background: rgba(17,17,17,0.85); padding: 8px 14px; border-radius: 28px;
+    z-index: 100; box-shadow: 0 4px 18px rgba(0,0,0,0.45);
+  }
+  .nav button {
+    background: #fff; color: #111; border: none; border-radius: 18px;
+    font-family: inherit; font-size: 13.5px; font-weight: 600; padding: 8px 20px; cursor: pointer;
+  }
+  .nav button:hover:not(:disabled) { background: var(--blue); color: #fff; }
+  .nav button:disabled { opacity: 0.35; cursor: default; }
+  .nav .nav-count { color: #fff; font-size: 13px; font-weight: 600; min-width: 60px; text-align: center; }
+  .nav .nav-help { color: #9aa3b2; font-size: 11.5px; padding: 0 4px; user-select: none; }
+  .nav #fsBtn { padding: 8px 12px; }
+
+  @media print {
+    body { background: #fff; overflow: visible; display: block; height: auto; }
+    .hint, .nav { display: none !important; }
+    .slide { display: flex !important; transform: none !important; margin: 0 auto 22px; box-shadow: none; }
+    .counter { display: none; }
+    .slide {
+      width: 338.67mm; height: 190.5mm; margin: 0; box-shadow: none; border-radius: 0;
+      page-break-after: always; break-after: page;
+    }
+    @page { size: 338.67mm 190.5mm; margin: 0; }
+  }
+</style>
+</head>
+<body>
+
+<div class="hint">
+  <b>Widok:</b> strzałki ← / → (lub spacja) nawigują między slajdami &nbsp;·&nbsp;
+  <b>Eksport do PDF:</b> Ctrl+P → Zapisz jako PDF → <b>Pozioma (landscape)</b> · Marginesy: <b>Brak</b> · kolory tła wymuszone w CSS
+  &nbsp;·&nbsp; Każdy slajd = jedna strona 16:9.
+</div>
+
+<!-- ============ SLAJD 1 ============ -->
+<section class="slide title-slide" id="s1">
+  <div class="s-head">
+    <span class="s-badge">AI · CZĘŚĆ 3 · WYKŁAD</span>
+  </div>
+  <div style="flex:1; display:flex; flex-direction:column; justify-content:center;">
+    <h1>SOTA AI: lato 2026</h1>
+    <div class="title-rule"></div>
+    <div class="sub">Trzy miesiące, które przerysowały krajobraz sztucznej inteligencji<br>czerwiec – wrzesień 2026</div>
+    <div class="sub" style="font-size:16px; color:#888;">Modele · ceny · agenci · afera Navier–Stokes · regulacje · sprzęt</div>
+    <div class="who">Rafał Masłyk · PJATK · zajęcia z AI, część 3</div>
+  </div>
+  <footer class="s-foot"><span>AI część 3 · Rafał Masłyk · PJATK</span><span>1 / 17</span></footer>
+</section>
+
+<!-- ============ SLAJD 2 ============ -->
+<section class="slide" id="s2">
+  <div class="s-head"><span class="s-badge">PLAN WYKŁADU</span><span class="s-time">~45 min</span></div>
+  <h2 class="s-title">Plan wykładu</h2>
+  <div class="s-body">
+    <div class="cols2">
+      <div>
+        <h4 style="margin:0 0 8px; font-size:15px;"><span style="background:var(--blue); color:#fff; padding:2px 10px; border-radius:14px; font-size:11px; font-weight:600;">BLOK 1 · MODELE I RYNEK</span></h4>
+        <table style="font-size:12.5px;">
+          <tr><td style="width:80%"><b>Kalendarium:</b> linia czasu czerwca–września</td><td style="text-align:right; color:#888;">s. 3</td></tr>
+          <tr><td><b>Wyścig flagowców:</b> GPT-6 Astra · Claude · Gemini</td><td style="text-align:right; color:#888;">s. 4</td></tr>
+          <tr><td><b>Wojna cenowa:</b> tokeny tanieją o 80%</td><td style="text-align:right; color:#888;">s. 5</td></tr>
+          <tr><td><b>Open-source dogania chmurę:</b> Kimi K3 i spółka</td><td style="text-align:right; color:#888;">s. 6</td></tr>
+          <tr><td><b>Malejący gap frontier vs open:</b> 15 pkt &rarr; 3 pkt</td><td style="text-align:right; color:#888;">s. 7</td></tr>
+          <tr><td><b>Kontekst miliona tokenów:</b> nowa normalność</td><td style="text-align:right; color:#888;">s. 8</td></tr>
+        </table>
+        <h4 style="margin:10px 0 8px; font-size:15px;"><span style="background:var(--blue); color:#fff; padding:2px 10px; border-radius:14px; font-size:11px; font-weight:600;">BLOK 2 · AGENCI I WTOPA</span></h4>
+        <table style="font-size:12.5px;">
+          <tr><td style="width:80%"><b>2026 = rok agentów:</b> model, który obsługuje komputer</td><td style="text-align:right; color:#888;">s. 9</td></tr>
+          <tr><td><b>Mega-run:</b> 10 000 agentów kontra problem milenijny</td><td style="text-align:right; color:#888;">s. 10</td></tr>
+          <tr><td><b>Afera:</b> zarzut kradzieży pracy matematyków</td><td style="text-align:right; color:#888;">s. 11</td></tr>
+          <tr><td><b>Konsekwencje dla własności intelektualnej</b></td><td style="text-align:right; color:#888;">s. 12</td></tr>
+        </table>
+      </div>
+      <div>
+        <h4 style="margin:0 0 8px; font-size:15px;"><span style="background:var(--blue); color:#fff; padding:2px 10px; border-radius:14px; font-size:11px; font-weight:600;">BLOK 3 · RESZTA ŚWIATA</span></h4>
+        <table style="font-size:12.5px;">
+          <tr><td style="width:80%"><b>Wideo:</b> konsolidacja rynku, Sora znika</td><td style="text-align:right; color:#888;">s. 13</td></tr>
+          <tr><td><b>Sprzęt:</b> Vera Rubin i drogie pamięci</td><td style="text-align:right; color:#888;">s. 14</td></tr>
+          <tr><td><b>Regulacje:</b> AI Act przechodzi do egzekucji</td><td style="text-align:right; color:#888;">s. 15</td></tr>
+          <tr><td><b>Bezpieczeństwo i co dalej:</b> giganci w jednym szeregu</td><td style="text-align:right; color:#888;">s. 16</td></tr>
+          <tr><td><b>Wnioski dla Was:</b> cztery rzeczy do zapamiętania</td><td style="text-align:right; color:#888;">s. 17</td></tr>
+        </table>
+        <div class="teza about" style="margin-top:14px;">
+          <span class="lab">O CZYM JEST TEN WYKŁAD:</span> nie o „czy AI jest fajne" – o tym, <b>co konkretnie zmieniło się od czerwca</b> i dlaczego te trzy miesiące będą w podręcznikach. Zakończymy sprawą, która łączy AI z prawem autorskim – czyli dokładnie z tematem, nad którym pracujemy na tej uczelni.
+        </div>
+      </div>
+    </div>
+  </div>
+  <footer class="s-foot"><span>AI część 3 · Rafał Masłyk · PJATK</span><span>2 / 17</span></footer>
+</section>
+
+<!-- ============ SLAJD 3 ============ -->
+<section class="slide" id="s3">
+  <div class="s-head"><span class="s-badge">BLOK 1 · KALENDARIUM</span><span class="s-time">0:30–4:00</span></div>
+  <h2 class="s-title">Trzy miesiące w dziesięciu datach</h2>
+  <div class="s-body">
+    <table style="font-size:13px;">
+      <tr><th style="width:110px;">Data</th><th style="width:270px;">Wydarzenie</th><th>Dlaczego ważne</th></tr>
+      <tr><td><b>30.06</b></td><td>Claude Sonnet 5 (Anthropic)</td><td>Wynik 63,2% na benchmarku programistycznym SWE-bench Pro – czołówka staje się dostępna w niższej półce cenowej</td></tr>
+      <tr><td><b>27.07</b></td><td>Kimi K3 (Moonshot) – otwarte wagi</td><td>Chiński model klasy flagowej do pobrania – zaczyna się realny nacisk cenowy na zachodnie laboratoria</td></tr>
+      <tr><td><b>2.08</b></td><td>AI Act: art. 50 w egzekucji</td><td>Unijne Biuro AI zaczyna egzekwować obowiązki przejrzystości – regulacje przestają być teorią</td></tr>
+      <tr><td><b>1.09</b></td><td>Claude Fable 5.1 · start mega-runu OpenAI</td><td>Ceny odczytu z cache −75%; OpenAI rusza z agentowym oblężeniem problemów milenijnych</td></tr>
+      <tr><td><b>2–3.09</b></td><td>Gemini 3.8 Flash · <b>GPT-6 Astra</b></td><td>Nowy flagowiec OpenAI: 1,05 mln tokenów kontekstu, sterowanie komputerem, certyfikat „krytycznego ryzyka cyber" – o tym za chwilę</td></tr>
+      <tr><td><b>8–9.09</b></td><td><b>OpenAI ogłasza dowód Navier–Stokes</b></td><td>Pół doby wcześniej matematyk Tristan Buckmaster oskarża firmę o wykorzystanie jego nieopublikowanej pracy – początek afery</td></tr>
+      <tr><td><b>11.09</b></td><td>Deklaracja 25 medalistów Fieldsa</td><td>Elita matematyki oskarża laboratoria AI o „poważne niezgranie celów" (severe misalignment) – pełny slajd 12</td></tr>
+      <tr><td><b>15.09</b></td><td>OpenAI + Anthropic + Google: wspólny standard bezpieczeństwa</td><td>Dawny rywal zaczyna współpracować nad normami – wspólny front bezpieczeństwa zamiast wojny</td></tr>
+      <tr><td><b>24.09</b></td><td>Wyłączenie API Sory (OpenAI)</td><td>OpenAI wycofuje się z wideo jako usługi – rynek konsoliduje się wokół Veo i Klinga</td></tr>
+      <tr><td><b>1.09</b></td><td>UE: pierwsze żądania informacji do 30+ firm AI · Claude Fable 5.1</td><td>Pierwsza fala kontroli AI Act w praktyce; Anthropic tnie ceny cache o 75%</td></tr>
+    </table>
+    <div class="src"><b>Źródła:</b> komunikaty firm (OpenAI, Anthropic, Google AI release notes), Reuters 15.09.2026, dokumentacja OpenAI API (sunset Sory), mathandai.org – kompilacja SUZY, 27.09.2026.</div>
+  </div>
+  <footer class="s-foot"><span>AI część 3 · Rafał Masłyk · PJATK</span><span>3 / 17</span></footer>
+</section>
+
+<!-- ============ SLAJD 4 ============ -->
+<section class="slide" id="s4">
+  <div class="s-head"><span class="s-badge">BLOK 1 · FLAGOWCE</span><span class="s-time">4:00–8:00</span></div>
+  <h2 class="s-title">Wyścig flagowców: trzy premiery w trzy dni</h2>
+  <div class="s-body">
+    <table style="font-size:13px;">
+      <tr><th style="width:150px;">Model</th><th style="width:95px;">Premiera</th><th style="width:280px;">Co nowego</th><th>Co to oznacza dla Was</th></tr>
+      <tr>
+        <td><b>GPT-6 Astra</b> (OpenAI)</td><td><b>3.09</b></td>
+        <td>1,05 mln tokenów kontekstu · sterowanie komputerem (computer use) · pierwszy model z certyfikatem <span class="en-term">„Critical cyber"</span> w ramach Preparedness Framework · 10 / 50 USD za mln tokenów (wejście / wyjście)</td>
+        <td>Model pozycjonowany nie jako „lepszy czat", tylko jako <b>pracownik biurowy</b> – klika, pisze kod, działa godzinami. Najwyższy poziom ryzyka cybernetycznego oznacza: moc, którą trzeba świadomie kontrolować</td>
+      </tr>
+      <tr>
+        <td><b>Claude Sonnet 5</b> → <b>Fable 5.1</b> (Anthropic)</td><td>30.06 → 1.09</td>
+        <td>Sonnet 5: 63,2% SWE-bench Pro (programowanie z prawdziwych zgłoszeń) · Fable 5.1: ceny odczytu z pamięci podręcznej <b>−75%</b>, celowo pod długie, wieloetapowe pracy agentowe</td>
+        <td>Anthropic celuje w <b>programistów i agentów</b>, nie w konwersacyjny ranking – i agresywnie tną koszt pracy agentów, które czytają ten sam kontekst wielokrotnie</td>
+      </tr>
+      <tr>
+        <td><b>Gemini 3.8 Flash</b> (Google)</td><td><b>2.09</b></td>
+        <td>GA (dostępność ogólna) · deklaracja: „najinteliglejszy model Flash", projektowany pod inżynierię o długim horyzoncie i agentów autonomicznych</td>
+        <td>Google wypuszcza trzeci model Flash w sześć tygodni – <b>tempo iteracji</b> samo w sobie jest wiadomością: połowa semestru i model, na którym uczyliście się w marcu, już nie istnieje w ofercie</td>
+      </tr>
+    </table>
+    <div class="teza">
+      <span class="lab">OBSERWACJA:</span> żaden z tych flagowców nie reklamuje się „rozmową". Wszyscy trzy mówią jednym językiem: <b>agenci, długi horyzont pracy, sterowanie narzędziami</b>. Rynek czatu jest zalany – następna wojna jest o pracę wykonywaną samodzielnie.
+    </div>
+    <div class="src"><b>Źródła:</b> OpenAI – nota wydawnicza GPT-6 Astra 3.09.2026; Anthropic – cennik Fable 5.1 (cache-read −75%); Google – Gemini API Release Notes, 2.09.2026.</div>
+  </div>
+  <footer class="s-foot"><span>AI część 3 · Rafał Masłyk · PJATK</span><span>4 / 17</span></footer>
+</section>
+
+<!-- ============ SLAJD 5 ============ -->
+<section class="slide" id="s5">
+  <div class="s-head"><span class="s-badge">BLOK 1 · WOJNA CENOWA</span><span class="s-time">8:00–11:00</span></div>
+  <h2 class="s-title">Wojna cenowa: inteligencja staje się tanie</h2>
+  <div class="s-body">
+    <div class="cols2">
+      <div>
+        <ul>
+          <li><b>Tokeny potaniały o ~80%</b> – OpenAI i Anthropic tną ceny, żeby odeprzeć tańszą konkurencję z Chin (DeepSeek, Kimi, Qwen)</li>
+          <li><b>Nowa podłoga cenowa:</b> ok. <span class="kpi">0,20 USD za milion tokenów wejściowych</span> (GPT-5.6 Luna) – rok temu to była cena za tysiąc razy mniej</li>
+          <li><b>Pamięć podręczna (cache) staje się bronią:</b> Fable 5.1 tnie odczyt z cache o 75% – bo agent, który w kółko czyta ten sam dokument, nie może płacić pełnej stawki</li>
+          <li>Struktura cen coraz bardziej złożona: wejście / wyjście / cache-write / cache-read – <b>architektura aplikacji zaczyna wpływać na rachunek</b> bardziej niż wybór modelu</li>
+        </ul>
+      </div>
+      <div>
+        <div class="warnbox">
+          <b>Skąd presja?</b> Chińskie modele otwartych wag (open-weight) serwują jakość bliską czołówce za ułamek ceny – zachodnie laboratoria muszą odpowiadać ceną, bo nie mogą odpowiadać wyłącznością.
+        </div>
+        <div class="teza">
+          <span class="lab">WNIOSEK:</span> bariera wejścia do budowania z SOTA modelami <b>przepaliła się do zera</b>. W chwili, gdy czytacie zadanie na laboratorium, koszt eksperymentu z modelem czołówki jest niższy niż kawa z automatu. Przestało być uzasadnieniem „za drogo" – zostało „nie umiem".
+        </div>
+      </div>
+    </div>
+    <div class="src"><b>Źródła:</b> porównania cen API (stan 20.08.2026): podłoga ~0,20 USD/M input; noty cenowe Anthropic (Fable 5.1, 1.09.2026); raporty o wojnie cenowej OpenAI/Anthropic kontra chińscy dostawcy, wrzesień 2026.</div>
+  </div>
+  <footer class="s-foot"><span>AI część 3 · Rafał Masłyk · PJATK</span><span>5 / 17</span></footer>
+</section>
+
+<!-- ============ SLAJD 6 ============ -->
+<section class="slide" id="s6">
+  <div class="s-head"><span class="s-badge">BLOK 1 · OPEN-SOURCE</span><span class="s-time">11:00–14:00</span></div>
+  <h2 class="s-title">Open-source dogania chmurę – i to już nie slogan</h2>
+  <div class="s-body">
+    <table style="font-size:13px;">
+      <tr><th style="width:190px;">Model</th><th style="width:110px;">Kiedy</th><th style="width:320px;">Co oferuje</th><th>Dlaczego to moment zwrotny</th></tr>
+      <tr>
+        <td><b>Kimi K3</b> (Moonshot AI, Chiny)</td><td><b>27.07</b> – otwarte wagi</td>
+        <td>Model klasy flagowej do ściągnięcia; od <b>18.09</b> dostępny też przez Amazon Bedrock</td>
+        <td>Chińska jakość wchodzi do zachodniej dystrybucji korporacyjnej – nie trzeba już „wierzyć na słowo", dostajecie go w tej samej konsoli co AWS-owe usługi</td>
+      </tr>
+      <tr>
+        <td><b>DeepSeek V4</b> (kontekst: wiosna)</td><td>kwiecień–lato</td>
+        <td>Milion tokenów kontekstu w cenie „dla każdego"; architektura MoE: ok. 1,6 bln parametrów łącznie, z czego ~49 mld aktywnych</td>
+        <td>Pokazał, że miliony tokenów kontekstu nie muszą być premium – wymusił obniżki u zachodnich graczy (slajd 5)</td>
+      </tr>
+      <tr>
+        <td><b>GLM-5.x</b> (Zhipu/Z.ai)</td><td>lato</td>
+        <td>Seria konkurencyjnych modeli otwartych; w praktyce serwowanych także przez polskie centra obliczeniowe</td>
+        <td>Dowód lokalny: <b>polskie instytucje serwują modele klasy SOTA</b> z polskich serwerów – zgodnie z unijnymi regułami danych, bez transferu do USA</td>
+      </tr>
+      <tr>
+        <td><b>Qwen3-Coder-Next</b> (Alibaba)</td><td>lato</td>
+        <td>Linia pod programistykę agentowe</td>
+        <td>W rankingu otwartych modeli 2026 czołówka jest niemal w całości azjatycka – Stany i Europa grają w chmurze, Azja rozdaje wagi</td>
+      </tr>
+    </table>
+    <div class="teza">
+      <span class="lab">WNIOSEK:</span> w 2024 pytanie brzmiało „czy open-source kiedyś dogoni?". W wrześniu 2026 brzmi ono: <b>„po co płacić chmurze za warstwę inteligencji, skoro wagi są darmowe?"</b> – płacimy już tylko za prąd i dyscyplinę inżynierską.
+    </div>
+    <div class="src"><b>Źródła:</b> nota wydawnicza Kimi K3 (27.07, aktualizacja 25.09.2026); AWS News 18.09.2026 (Bedrock); ranking otwartych modeli 2026 (85 modeli); karta DeepSeek-V4 (kwiecień 2026).</div>
+  </div>
+  <footer class="s-foot"><span>AI część 3 · Rafał Masłyk · PJATK</span><span>6 / 17</span></footer>
+</section>
+
+<!-- ============ SLAJD 7 ============ -->
+<section class="slide" id="s7">
+  <div class="s-head"><span class="s-badge">BLOK 1 · MALEJĄCY GAP</span><span class="s-time">14:00–17:00</span></div>
+  <h2 class="s-title">Gap frontier vs open-source: 15 punkt&oacute;w &rarr; 3</h2>
+  <div class="s-body">
+    <div class="cols2">
+      <div>
+        <table style="font-size:12.5px;">
+          <tr><th style="width:150px;">#1 chmura vs #1 open</th><th style="width:95px;">Wyniki</th><th>Gap</th></tr>
+          <tr><td><b>Wrzesień 2025</b></td><td>~63 vs ~48 pkt</td><td><b>15&ndash;20 pkt</b></td></tr>
+          <tr><td><b>Wrzesień 2026</b></td><td>63 vs 60 pkt</td><td><b>3 punkty</b></td></tr>
+        </table>
+        <ul style="font-size:13.5px;">
+          <li><b>Epoch AI:</b> otwarte wagi odstają od frontier &#347;rednio o <b>4 miesi&#261;ce</b></li>
+          <li><b>Mozilla:</b> 4,4 miesi&#261;ca dystansu closed (USA) vs open-weights (Chiny)</li>
+          <li><b>Cena r&oacute;&#380;nicy:</b> flagowce ~25&ndash;50 USD/M wyj&#347;ciowych, open self-host ~0,28 USD &mdash; <b>do 89&times; taniej</b>; &bdquo;4-miesi&#281;czny handicap za 5&times; cen&#281;&rdquo; (Ars Technica)</li>
+        </ul>
+        <div class="teza">
+          <span class="lab">WNIOSEK:</span> dop&#322;acanie za frontier to nie zakup &bdquo;lepszego modelu&rdquo; &mdash; to <b>zap&#322;ata za 3&ndash;4 miesi&#261;ce wcze&#347;niejszego dost&#281;pu do tej samej klasy inteligencji</b>.
+        </div>
+      </div>
+      <div>
+        <img src="assets/aa_intelligence_index_v42.png" alt="Artificial Analysis Intelligence Index v4.2 — ranking modeli" style="width:100%; border:1px solid var(--border); border-radius:8px;">
+        <div class="figcap">Artificial Analysis Intelligence Index v4.2 (23 z 643 modeli): <b>Fable 5.1 &mdash; 57</b>, GPT-6 Astra &mdash; 55, a open-source w czo&#322;&oacute;wce: Kimi K3 &mdash; 50, GLM-5.3 &mdash; 49, DeepSeek V4 Pro &mdash; 42. Skala i wyniki: <a href="https://artificialanalysis.ai" target="_blank" style="color:var(--blue); font-weight:600;">artificialanalysis.ai</a></div>
+      </div>
+    </div>
+    <div class="src"><b>Źródła:</b> Artificial Analysis Intelligence Index <a href="https://artificialanalysis.ai" target="_blank" style="color:var(--blue);">artificialanalysis.ai</a> (v4.1.1, 01.09.2026 &mdash; gap 3 pkt; v4.2 &mdash; widoczny wykres) &middot; Epoch AI (ECI, 2026) &middot; Mozilla (2026) &middot; Ars Technica (2026) &middot; raport wewn. &bdquo;Open-Source LLM Wave&rdquo; (wrzesień 2026).</div>
+  </div>
+  <footer class="s-foot"><span>AI cz&#281;&#347;&#263; 3 &middot; Rafa&#322; Mas&#322;yk &middot; PJATK</span><span>7 / 17</span></footer>
+</section>
+
+<!-- ============ SLAJD 8 ============ -->
+<section class="slide" id="s8">
+  <div class="s-head"><span class="s-badge">BLOK 1 · KONTEKST</span><span class="s-time">14:00–17:00</span></div>
+  <h2 class="s-title">Milion tokenów kontekstu – nowa normalność</h2>
+  <div class="s-body">
+    <div class="cols2">
+      <div>
+        <p><b>Kontekst</b> (context window) to „pamięć krótkotrwała" modelu: wszystko, co mieści się w jednym zapytaniu. Jeszcze w zeszłym roku milion tokenów był demonstracją; dziś to parametr <b>użytkowy</b>:</p>
+        <ul>
+          <li><b>GPT-6 Astra: 1,05 mln tokenów</b> – całe duże repozytorium kodu naraz, albo projekt dyplomowy ze wszystkimi źródłami</li>
+          <li><b>DeepSeek V4</b> – milion tokenów „w cenie dla każdego" – pokazał, że długi kontekst nie musi być produktem premium</li>
+          <li>Dłuższy kontekst = <b>mniej gimnastyki z bazy danych i „kompresowaniem"</b> – proste architektury wracają do łask</li>
+        </ul>
+      </div>
+      <div>
+        <div class="warnbox">
+          <b>Co to zmienia dla agentów?</b> Agent z małym kontekstem musi ciągle notować i zapominać – jak stażysta z karteczkami. Agent z milionem tokenów <b>trzyma cały projekt w głowie</b>: czyta całe archiwum, całą historię konwersacji, wszystkie pliki. To zmienia architekturę systemów agentowych prościej, niż to opisują publikacje.
+        </div>
+        <div class="teza">
+          <span class="lab">DLA WAS:</span> projekt zaliczeniowy, w którym „model nie pamięta wcześniejszych plików", to od czerwca <b>problem projektowy, nie technologiczny</b> – projektujecie pod kontekst, który już jest w standardzie.
+        </div>
+      </div>
+    </div>
+    <div class="src"><b>Źródła:</b> specyfikacja GPT-6 Astra (nota wydawnicza 3.09.2026); DeepSeek-V4 – „Era przystępnego kontekstu miliona tokenów" (nota, kwiecień 2026).</div>
+  </div>
+  <footer class="s-foot"><span>AI część 3 · Rafał Masłyk · PJATK</span><span>8 / 17</span></footer>
+</section>
+
+<!-- ============ SLAJD 9 ============ -->
+<section class="slide" id="s9">
+  <div class="s-head"><span class="s-badge red">BLOK 2 · AGENCI</span><span class="s-time">17:00–21:00</span></div>
+  <h2 class="s-title">2026 = rok agentów: model, który obsługuje komputer</h2>
+  <div class="s-body">
+    <div class="cols2">
+      <div>
+        <ul>
+          <li><b>Agent</b> to model, który nie tylko odpowiada – on <b>działa</b>: klika, pisze kod, uruchamia testy, iteruje godzinami bez człowieka</li>
+          <li><b>GPT-6 Astra</b> pozycjonowany jako flagowiec <span class="en-term">computer-use</span> – dosłownie: model operujący interfejsem komputera jak człowiek za klawiaturą</li>
+          <li><b>Fable 5.1</b> – zoptymalizowany pod „długie, wieloetapowe prace agentowe"; <b>Gemini 3.8 Flash</b> – „pod agentów autonomicznych": wszyscy flagowcy mówią językiem agentów</li>
+          <li><b>Badania idą w stronę samodoskonalenia:</b> AREX – agent do głębokiego researchu, który <b>rekurencyjnie sam się ulepsza</b>; LeAct – model uczy się rozumować na podstawie działań ekspertów (nie ich słów)</li>
+        </ul>
+      </div>
+      <div>
+        <div class="teza about">
+          <span class="lab">PRZEŁOM:</span> jeszcze rok temu „agent" był demonstracją z ryzykiem, że zapętli się po dwóch krokach. Dziś agent to <b>produkt z cennikiem, gwarancją poziomu usług (SLA) i rynkiem pracy</b> – termin „autonomiczny" przestał być marketingiem.
+        </div>
+        <div class="warnbox">
+          <b>I teraz uwaga:</b> właśnie dlatego następne trzy slajdy opowiadają o tym, co się dzieje, gdy taką armię agentów puści się na najtrudniejszy problem świata. Bo w wrześniu ktoś to zrobił dosłownie – i wyszło z tego największe osiągnięcie <i>oraz</i> największa afera branży w jednym miesiącu.
+        </div>
+      </div>
+    </div>
+    <div class="src"><b>Źródła:</b> nota GPT-6 Astra (computer-use, 3.09.2026); arXiv: AREX – recursively self-improving agent (2026); LeAct: Learning to Reason from Expert Actions (2026).</div>
+  </div>
+  <footer class="s-foot"><span>AI część 3 · Rafał Masłyk · PJATK</span><span>9 / 17</span></footer>
+</section>
+
+<!-- ============ SLAJD 10 ============ -->
+<section class="slide" id="s10">
+  <div class="s-head"><span class="s-badge red">BLOK 2 · MEGA-RUN</span><span class="s-time">21:00–25:00</span></div>
+  <h2 class="s-title">10 000 agentów kontra problem milenijny</h2>
+  <div class="s-body">
+    <div class="cols2 wide-left">
+      <div>
+        <p style="margin:0 0 8px;"><b>Równania Naviera–Stokesa</b> (płynięcie cieczy – od prądu rzeki po przepływ krwi) to jeden z siedmiu <b>Problemów Milenijnych</b> Instytutu Claya, z nagrodą <b>1 mln USD</b>, nierozwiązany od ponad 90 lat.</p>
+        <p style="margin:0 0 8px;"><b>1 września 2026</b> OpenAI rusza z agentowym oblężeniem wszystkich sześciu otwartych problemów – <b>88 godzin</b> pracy systemu multi-agentowego:</p>
+        <ul style="margin-top:2px;">
+          <li><b>10 000+ agentów</b> koordynujących się między sobą</li>
+          <li><b>2,7 mln wiadomości</b> wysłanych między agentami</li>
+          <li><b>130 miliardów tokenów</b> wyjściowych (dla skali: to mniej więcej tyle, co sto takich wykładów – każdy znak – powtórzony miliony razy)</li>
+          <li>sam <b>koszt energii elektrycznej: rzędu milionów dolarów</b> (potwierdzone przez badacza OpenAI Noama Browna)</li>
+        </ul>
+        <p style="margin:4px 0 0;">Wynik ogłoszony <b>8 września w południe</b>: praca na <b>166 stron</b> + formalizacja w <span class="en-term">Lean</span> (interaktywne narzędzie do dowodzenia – „kalkulator", który mechanicznie sprawdza każdy krok dowodu), twierdząca rozwiązanie części problemu. Model: wewnętrzny, opisywany jako <b>„znacznie bardziej zdolny niż GPT-6 Astra"</b>, trenowany od… <b>28 sierpnia</b>. Zapamiętajcie tę datę.</p>
+      </div>
+      <div>
+        <div class="teza about" style="margin-top:0;">
+          <span class="lab">SKALA:</span> największa demonstracja mocy agentowych w historii dziedziny – pierwszy raz system AI zaatakował szczyt matematyki i coś z tego wyniosł.
+        </div>
+        <div class="warnbox">
+          <b>Motywacja też mówi sama za siebie:</b> OpenAI przyznało, że run ruszył po tym, jak „wiralne tweety" zasugerowały, że konkurencyjne Anthropic rozwiązało już <b>dwa</b> problemy milenijne. Efekt: wyścig prestiżowy na najwyższym poziomie, oglądany przez cały świat nauki.
+        </div>
+        <div class="teza">
+          <span class="lab">ALE…</span> pół doby <b>przed</b> ogłoszeniem OpenAI, tuż przed północą 7 września, matematyk <b>Tristan Buckmaster</b> (Courant Institute, Nowy Jork) opublikował własne wyniki – i ostrzeżenie, że jego praca <b>„przeciekła do OpenAI"</b>. I zaczyna się afera.
+        </div>
+      </div>
+    </div>
+    <div class="src"><b>Źródła:</b> „On the Navier–Stokes Millennium Prize Problem" (OpenAI, 8.09.2026) + repozytorium Lean; Wikipedia: Navier–Stokes priority controversy (stan 27.09.2026); wypowiedzi Noama Browna (koszt energii); komunikaty Sébastiena Bubecka (motywacje runu).</div>
+  </div>
+  <footer class="s-foot"><span>AI część 3 · Rafał Masłyk · PJATK</span><span>10 / 17</span></footer>
+</section>
+
+<!-- ============ SLAJD 11 ============ -->
+<section class="slide" id="s11">
+  <div class="s-head"><span class="s-badge red">BLOK 2 · AFERA</span><span class="s-time">25:00–30:00</span></div>
+  <h2 class="s-title">Zarzut: „użyli naszej nieopublikowanej pracy"</h2>
+  <div class="s-body">
+    <div class="cols2 wide-left">
+      <div>
+        <p style="margin:0 0 8px;"><b>Tristan Buckmaster</b> i <b>Levent Alpöge</b> (pracownik… Anthropic – konkurencyjnej firmy) pracowali nad pokrewnym problemem <b>rok, w tajemnicy</b>. Ich wyniki (przełom dla szczególnego przypadku – równań Eulera): uzyskane <b>15 sierpnia</b>, zweryfikowane w Lean tydzień później. Planowali ogłosić później – chcieli napisać <b>ludzki, czytelny artykuł</b>, będący efektem własnego zrozumienia dowodu.</p>
+        <p style="margin:0 0 8px;">Używali w pracy narzędzi obu firm – w tym <b>Codexa, agenta OpenAI</b>.</p>
+        <ul style="margin-top:2px;">
+          <li><b>Analitycy ostrzegli ich</b>: wasz postęp „został przekazany do OpenAI"</li>
+          <li><b>OpenAI przyznało</b>, że wkład Buckmastera i Alpögego <b>przez ich użycie Codexa „mógł poprawić" model</b> użyty w runie – trening tego modelu ruszył <b>28 sierpnia</b>, czyli <b>po</b> ich sierpniowych wynikach</li>
+          <li>OpenAI <b>zaprzecza</b> bezpośredniemu użyciu ich pracy: metody „istotnie różne" w dowodzie; Altman zapewniał o działaniu „w dobrej wierze"; Buckmaster opisywał kontakty jako <b>„możliwe do odczytania jako wrogie"</b></li>
+        </ul>
+      </div>
+      <div>
+        <div class="warnbox red" style="margin-top:0;">
+          <b>Rdzeń zarzutu:</b> czy prywatne czaty i materiały wkładane do cudzego narzędzia (Codex) mogą trafić – bezpośrednio lub jako dane treningowe – do modelu, który potem „samodzielnie" rozwiązuje problem, nad którym ta osoba pracowała? Pytanie dotyczy <b>każdego, kto pracuje w narzędziach AI</b> – także Was.
+        </div>
+        <div class="teza">
+          <span class="lab">ZASADNICZE PYTANIE IP:</span> niepublikowana praca twórcza (koncepcja, draft, wynik w toku) w polu prawa autorskiego bywa <b>słabo chroniona</b> – a teraz pierwszy raz w historii siedzi <b>po obu stronach sporu o milion dolarów i medal</b>. Instytut Claya: status problemu zmieniony na „aktywny", weryfikacja „celowo powolna", wymaga publikacji recenzowanych.
+        </div>
+      </div>
+    </div>
+    <div class="src"><b>Źródła:</b> oświadczenie T. Buckmastera (7.09.2026, przed północą) i tweet L. Alpöge (9.09); Wikipedia: Navier–Stokes priority controversy; stanowiska OpenAI (S. Bubeck, S. Altman, X, 8–9.09.2026); komunikat Instytutu Claya (11.09.2026).</div>
+  </div>
+  <footer class="s-foot"><span>AI część 3 · Rafał Masłyk · PJATK</span><span>11 / 17</span></footer>
+</section>
+
+<!-- ============ SLAJD 12 ============ -->
+<section class="slide" id="s12">
+  <div class="s-head"><span class="s-badge red">BLOK 2 · KONSEKWENCJE IP</span><span class="s-time">30:00–35:00</span></div>
+  <h2 class="s-title">Konsekwencje: matematyka dzisiaj, Wasza branża jutro</h2>
+  <div class="s-body">
+    <div class="cols2 wide-left">
+      <div>
+        <p style="margin:0 0 8px;"><b>11 września – trzy dni po aferze:</b> <b>25 medalistów Fieldsa</b> (matematyczny odpowiednik Nobla; wśród sygnatariuszy m.in. Terence Tao, Peter Scholze, Cédric Villani, Simon Donaldson) podpisuje publiczną deklarację <b>„A Severe Misalignment of AI in Mathematics"</b> (mathandai.org):</p>
+        <ul style="margin-top:2px;">
+          <li>laboratoria AI, które „ścigają się" na słynnych problemach, <b>szkodzą samej nauce</b> – cele firm i celu matematyków są „poważnie niezgrane"</li>
+          <li>ogłoszenia w pośpiechu = <b>brak czasu na cytowania</b> → „poważne pytania o atrybucję i plagiat"</li>
+          <li>„masowa produkcja twierdzeń prawda/fałsz w coraz szybszym tempie <b>może zniszczyć żyzny grunt</b> zamiast ożywić nowe idee"</li>
+        </ul>
+        <p style="margin:6px 0 0;"><b>Równolegle, w USA:</b> koncerny medialne (New York Times i inni) wnioskują o <b>sankcje przeciw OpenAI</b> w procesie o prawa autorskie – zarzut: firma rzekomo <b>kłamała sądowi</b> co do możliwości przeszukiwania własnych logów czatów i zbiorów treningowych. Ta sama oś sporu: <i>czyje dane, czyje cytaty, czyja atrybucja.</i></p>
+      </div>
+      <div>
+        <div class="teza about" style="margin-top:0;">
+          <span class="lab">DLACZEGO TO WAS DOTYCZY:</span> wymieńcie w tej historii „dowód matematyczny" na <b>projekt dyplomowy, utwór, kod, koncepcję graficzną</b>. Mechanizm identyczny: niepublikowana praca twórcza wkładana do cudzego narzędzia AI może zostać wchłonięta przez model – a ochrona koncepcji przed publikacją jest najsłabsza właśnie wtedy, gdy praca jest „w trakcie".
+        </div>
+        <div class="teza">
+          <span class="lab">PRZEPISY, KTÓRYMI ŻYJEMY:</span> w polskim prawie autorskim (ustawa o prawie autorskim, art. 1 i 4) ochrona przysługuje <b>niezależnie od publikacji</b> – od chwili ustalenia utworu – ale <b>autorstwo</b> jest dużo trudniejsze do wykazania, gdy jedynym śladem jest… cudzy model. Stąd reakcja matematyków: <b>higiena tego, co wkładacie do narzędzi AI, staje się częścią fachu</b>.
+        </div>
+      </div>
+    </div>
+    <div class="src"><b>Źródła:</b> mathandai.org – „A Severe Misalignment of AI in Mathematics", pełna lista sygnatariuszy (11.09.2026); Reuters 9.07.2026 (wniosek o sankcje NYT i in.); Wikipedia: Navier–Stokes priority controversy (kontekst); ustawa o prawie autorskim i prawach pokrewnych (art. 1, art. 4).</div>
+  </div>
+  <footer class="s-foot"><span>AI część 3 · Rafał Masłyk · PJATK</span><span>12 / 17</span></footer>
+</section>
+
+<!-- ============ SLAJD 13 ============ -->
+<section class="slide" id="s13">
+  <div class="s-head"><span class="s-badge">BLOK 3 · WIDEO</span><span class="s-time">35:00–38:00</span></div>
+  <h2 class="s-title">Wideo: koniec złotej gorączki, początek konsolidacji</h2>
+  <div class="s-body">
+    <div class="cols2">
+      <div>
+        <ul>
+          <li><b>Sora znika jako usługa API:</b> OpenAI wyłączyło endpoint <b>24 września</b> – oficjalny komunikat w dokumentacji. Pierwszy taki przypadek: model pokoleniowy, o którym wszyscy słyszeli, przechodzi w stan „sunset" jako produkt</li>
+          <li><b>Veo 3.1 (Google):</b> wygrywa realizm – w rozdzielczości i fizyce sceny to obecnie punkt odniesienia</li>
+          <li><b>Kling 3.0:</b> wygrywa wolumenem i ceną – chińska produkcja treści na masową skalę</li>
+          <li>Rynek wideo przeszedł fazę „czy to w ogóle działa?" (2024) → „działa wszystko" (2025) → <b>„zostają ci, którzy mają najtańszą klatkę filmową"</b> (2026)</li>
+        </ul>
+      </div>
+      <div>
+        <div class="teza about">
+          <span class="lab">WZÓR DO ZAPAMIĘTANIA:</span> ten sam cykl czeka każdą modę generatywną: obrazy (2022–24), wideo (2024–26), następnie 3D i światy. Gdy zacznie się „konsolidacja", warsztat i styl znikają jako przewaga – zostaje <b>koszt, dystrybucja i prawa</b>.
+        </div>
+        <div class="warnbox">
+          <b>Kontekst prawny:</b> unijne obowiązki transparentności (art. 50 AI Act, w tym oznaczanie treści generowanych) obowiązują egzekwowane od 2 sierpnia – treść wideo z AI musi być oznaczana jako generowana. Widz ma prawo wiedzieć, że patrzy na syntetyk.
+        </div>
+      </div>
+    </div>
+    <div class="src"><b>Źródła:</b> OpenAI API Reference (Sora API: „permanently shut down on September 24, 2026"); porównania Veo 3.1 / Kling 3.0 (przeglądy, wrzesień 2026); AI Act art. 50 (egzekwowanie od 2.08.2026).</div>
+  </div>
+  <footer class="s-foot"><span>AI część 3 · Rafał Masłyk · PJATK</span><span>13 / 17</span></footer>
+</section>
+
+<!-- ============ SLAJD 14 ============ -->
+<section class="slide" id="s14">
+  <div class="s-head"><span class="s-badge">BLOK 3 · SPRZĘT</span><span class="s-time">38:00–41:00</span></div>
+  <h2 class="s-title">Sprzęt: wyścig kontynuowany i drogie pamięci</h2>
+  <div class="s-body">
+    <div class="cols2">
+      <div>
+        <ul>
+          <li><b>Platforma Vera Rubin (NVIDIA):</b> zapowiedziana na GTC w marcu, przez lato wchodzi w produkcję – siedem chipów jednej architektury naraz; GPU <b>R100: 336 mld tranzystorów, 288 GB pamięci HBM4</b>, deklarowane ~5× przewagi inferencyjnej nad generacją Blackwell</li>
+          <li>Roadmapa idzie dalej: <b>Rubin Ultra → Feynman</b> – cykl modernizacji skrócony, „roczna kadencja" stała się normą</li>
+          <li>Bieżąca produkcja (Blackwell Ultra B300) też rośnie – <b>popyt przewyższa podaż</b></li>
+        </ul>
+      </div>
+      <div>
+        <div class="warnbox red">
+          <b>A poza centrami danych?</b> Zobaczyliśmy to dziś na własnej skórze, wyceniając komputery: popyt AI zjada globalową produkcję pamięci. Kit RAM w sklepach <b>podrożał ~4× w rok</b> – ceny DRAM i SSD idą w górę, odkąd modele pożerają te same fabryki pamięci, co Wasze komputery.
+        </div>
+        <div class="teza">
+          <span class="lab">WNIOSEK:</span> „AI jest w chmurze" to opis topologiczny, nie ekonomiczny. Chmura stoi na krzemie – a o ten sam krzem konkurują z Wami centra danych AI: Wasz RAM i ich akceleratory biorą pamięć <b>z tych samych fabryk</b>.
+        </div>
+      </div>
+    </div>
+    <div class="src"><b>Źródła:</b> NVIDIA GTC 2026 (platforma Vera Rubin, specyfikacja R100); roadmapa NVIDIA 2026–2030; monitoringi cen DRAM/NAND (wrzesień 2026, stan Morele/x-kom/Komputronik – własna wycena SUZY z 27.09).</div>
+  </div>
+  <footer class="s-foot"><span>AI część 3 · Rafał Masłyk · PJATK</span><span>14 / 17</span></footer>
+</section>
+
+<!-- ============ SLAJD 15 ============ -->
+<section class="slide" id="s15">
+  <div class="s-head"><span class="s-badge">BLOK 3 · REGULACJE</span><span class="s-time">41:00–44:00</span></div>
+  <h2 class="s-title">AI Act: regulacje przechodzą z papieru do egzekucji</h2>
+  <div class="s-body">
+    <table style="font-size:12.5px;">
+      <tr><th style="width:150px;">Data</th><th style="width:300px;">Co się stało</th><th>Co to oznacza dla Was</th></tr>
+      <tr>
+        <td><b>2 sierpnia</b></td>
+        <td>Obowiązki przejrzystości (art. 50) obowiązują wprost; unijne Biuro AI i organy krajowe <b>zaczęły egzekwować</b> (m.in. oznaczanie treści generowanych)</td>
+        <td>Produkt z AI na zaliczenie musi <b>informować, że treść jest generowana</b></td>
+      </tr>
+      <tr>
+        <td><b>1 września</b></td>
+        <td><b>Pierwsza fala żądań informacji</b> – Komisja Europejska rozesłała zapytania do ponad <b>30 firm AI</b> na świecie</td>
+        <td>To nie teoria: pierwsza realna akcja kontrolna AI Act</td>
+      </tr>
+      <tr>
+        <td><b>Pakiet „AI Omnibus”</b></td>
+        <td>Unijny pakiet naprawczy (nowelizacja AI Act) przesunął część najcięższych obowiązków – m.in. dla modeli ogólnego przeznaczenia (GPAI) – na późniejsze terminy</td>
+        <td>Kalendarz się zmienia – śledźcie <b>terminy</b>, nie nagłówki z 2024 r.</td>
+      </tr>
+      <tr>
+        <td><b>Cały okres</b></td>
+        <td>Rosnący <b>rozjazd USA–UE</b>: Waszyngton odciąga się od regulacji „specyficznych dla technologii", Bruksela idzie w egzekwowanie; w Polsce trwają prace nad <b>krajową ustawą o systemach AI</b></td>
+        <td>Produkt AI sprzedawany globalnie = <b>dwie rzeczywistości prawne naraz</b></td>
+      </tr>
+    </table>
+    <div class="teza">
+      <span class="lab">OBSERWACJA:</span> jesień 2026 to moment, w którym AI Act przestał być „przyszłym obowiązkiem", a stał się <b>bieżącą administracją</b>. Wy, którzy zaczynacie karierę dziś, wchodzicie w branżę, w której <b>prawo jest częścią stacku</b>.
+    </div>
+    <div class="src"><b>Źródła:</b> Komisja Europejska (art. 50 – od 2.08.2026; żądania do 30+ podmiotów, 1.09.2026); pakiet „AI Omnibus"; stan prac nad polską ustawą o systemach AI (2026).</div>
+  </div>
+  <footer class="s-foot"><span>AI część 3 · Rafał Masłyk · PJATK</span><span>15 / 17</span></footer>
+</section>
+
+<!-- ============ SLAJD 16 ============ -->
+<section class="slide" id="s16">
+  <div class="s-head"><span class="s-badge">BLOK 3 · BEZPIECZEŃSTWO I Q4</span><span class="s-time">44:00–46:00</span></div>
+  <h2 class="s-title">Giganci w jednym szeregu – i co dalej w Q4</h2>
+  <div class="s-body">
+    <div class="cols2">
+      <div>
+        <div class="teza about" style="margin-top:0;">
+          <span class="lab">15 WRZEŚNIA:</span> OpenAI, Anthropic i Google DeepMind <b>oficjalnie pracują nad wspólnym standardem bezpieczeństwa AI</b> (Reuters/Bloomberg). Konkurenci, którzy miesiąc wcześniej ścigali się o problemy milenijne, uznali, że bezpieczeństwa nie da się budować osobno.
+        </div>
+        <ul>
+          <li>Symboliczna zmiana klimatu: rok temu „safety" był marketingiem; dziś jest <b>obszarem współpracy konkurentów</b> – bo żaden gracz nie chce być tym, który spowoduje incydent systemowy</li>
+          <li>Pamiętajcie jednak: standard piszą ci sami, których produkty standaryzuje – <b>relacja regulacja vs. samoregulacja</b> to będzie napięcie w Q4 i 2027</li>
+        </ul>
+      </div>
+      <div>
+        <h4 style="margin:0 0 8px; font-size:15px;">Co obserwować w Q4 2026:</h4>
+        <table style="font-size:12.5px;">
+          <tr><td style="width:55%"><b>AI Act:</b> kolejne fale obowiązków i kontrole</td></tr>
+          <tr><td><b>Navier–Stokes:</b> werdykt Instytutu Claya (proces „celowo powolny") i recenzje dowodu OpenAI</td></tr>
+          <tr><td><b>Premiery:</b> zapowiedziane kolejne flagowce i iteracje Flash</td></tr>
+          <tr><td><b>Afera IP:</b> czy dojdzie do procesu o prawa do „pracy w toku"?</td></tr>
+          <tr><td><b>Sprzęt:</b> rampa produkcyjna Veri Rubin i ceny pamięci</td></tr>
+        </table>
+        <div class="warnbox">
+          <b>Koniec semestru:</b> sprawdzimy w styczniu, ile z tego wystartowało – a wy wtedy ocenicie, czy ten wykład trzymał się faktów. Tak wygląda praca z dziedziną, która zmienia się szybciej niż syllabus.
+        </div>
+      </div>
+    </div>
+    <div class="src"><b>Źródła:</b> Reuters 15.09.2026 (współpraca OpenAI–Anthropic–Google nad standardem bezpieczeństwa); zapowiedzi publikacyjne firm, wrzesień 2026.</div>
+  </div>
+  <footer class="s-foot"><span>AI część 3 · Rafał Masłyk · PJATK</span><span>16 / 17</span></footer>
+</section>
+
+<!-- ============ SLAJD 17 ============ -->
+<section class="slide" id="s17">
+  <div class="s-head"><span class="s-badge">WNIOSKI</span><span class="s-time">46:00–48:00</span></div>
+  <h2 class="s-title">Cztery rzeczy, które warto wynieść z tego wykładu</h2>
+  <div class="s-body">
+    <div class="cols2">
+      <div>
+        <p><span class="num">1</span><b>Inteligencja potaniała o rząd wielkości – budujcie, nie czekajcie.</b> Eksperyment z modelem czołówki kosztuje mniej niż kawa. Wszystko, co odkładaliście „na później, gdy będzie taniej", właśnie stało się projektem na ten semestr.</p>
+        <p><span class="num">2</span><b>Wagi otwarte = możecie mieć SOTA u siebie.</b> Modele klasy flagowej są do pobrania; lokalne centra (w tym polskie) serwują je zgodnie z unijnymi regułami. Pytanie „chmura czy lokalnie" to już pytanie biznesowe, nie techniczne.</p>
+      </div>
+      <div>
+        <p><span class="num">3</span><b>Agenci i długi kontekst zmieniają sposób programowania.</b> Model, który pamięta milion tokenów i klika w interfejs, to nie „lepszy czat" – to nowy typ wykonawcy. Architektury, które uczyliście się w zeszłym roku, właśnie się prostują.</p>
+        <p><span class="num">4</span><b>Wasza niepublikowana praca w cudzych narzędziach to ryzyko.</b> Afera Navier–Stokes pokazała cały łańuch: szkic w narzędziu → wyciek/przetrenowanie → „samodzielny" wynik AI → spór o autorstwo, o milion dolarów. Prawo autorskie chroni od ustalenia utworu, ale <b>dowód autorstwa w świecie logów cudzej firmy</b> – to nowy problem waszego pokolenia. Higiena informacji staje się kompetencją zawodową.</p>
+      </div>
+    </div>
+    <div class="teza">
+      <span class="lab">NA KONIEC:</span> temat „AI a autorstwo i własność intelektualna" nie jest już przyszłością ani teorią – <b>wrzesień 2026 zrobił z niego bieżącą sprawę wydziałową, sądową i światową jednocześnie</b>. I to jest dokładnie ta przestrzeń, w której pracujemy na tej uczelni.
+    </div>
+    <p style="text-align:center; font-size:16px; margin-top:10px;"><b>Dziękuję za uwagę – zapraszam do pytań</b></p>
+  </div>
+  <footer class="s-foot"><span>AI część 3 · Rafał Masłyk · PJATK</span><span>17 / 17</span></footer>
+</section>
+
+<div class="nav" id="nav">
+  <button id="prevBtn" title="Poprzedni slajd (← / PageUp)">‹&nbsp;Wstecz</button>
+  <span class="nav-count" id="counter">1 / 17</span>
+  <button id="nextBtn" title="Następny slajd (→ / spacja / PageDown)">Dalej&nbsp;›</button>
+  <button id="fsBtn" title="Pełny ekran (F)">⛶</button>
+  <span class="nav-help" title="Skróty">← → · spacja · Home/End · F</span>
+</div>
+
+<script>
+  const slides = [...document.querySelectorAll('.slide')];
+  const counter = document.getElementById('counter');
+  const prevBtn = document.getElementById('prevBtn');
+  const nextBtn = document.getElementById('nextBtn');
+  const fsBtn = document.getElementById('fsBtn');
+  let cur = 0;
+  function fit() {
+    const availW = window.innerWidth - 40;
+    const availH = window.innerHeight - 90;
+    const s = Math.min(availW / 1280, availH / 720);
+    const active = document.querySelector('.slide.active');
+    if (active) active.style.transform = 'scale(' + s + ')';
+  }
+  function render() {
+    slides.forEach((s, i) => s.classList.toggle('active', i === cur));
+    counter.textContent = (cur + 1) + ' / ' + slides.length;
+    prevBtn.disabled = (cur === 0);
+    nextBtn.disabled = (cur === slides.length - 1);
+    fit();
+  }
+  function go(n) { cur = Math.max(0, Math.min(slides.length - 1, n)); render(); }
+  function toggleFS() {
+    if (!document.fullscreenElement) { document.documentElement.requestFullscreen().catch(() => {}); }
+    else { document.exitFullscreen(); }
+  }
+  window.addEventListener('resize', fit);
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' || e.key === 'PageDown' || e.key === ' ') { e.preventDefault(); go(cur + 1); }
+    if (e.key === 'ArrowLeft'  || e.key === 'PageUp') { e.preventDefault(); go(cur - 1); }
+    if (e.key === 'Home') { e.preventDefault(); go(0); }
+    if (e.key === 'End')  { e.preventDefault(); go(slides.length - 1); }
+    if (e.key === 'f' || e.key === 'F') { toggleFS(); }
+  });
+  prevBtn.addEventListener('click', () => go(cur - 1));
+  nextBtn.addEventListener('click', () => go(cur + 1));
+  fsBtn.addEventListener('click', toggleFS);
+  let tx = null;
+  document.addEventListener('touchstart', e => { tx = e.touches[0].clientX; }, { passive: true });
+  document.addEventListener('touchend', e => {
+    if (tx === null) return;
+    const dx = e.changedTouches[0].clientX - tx;
+    if (Math.abs(dx) > 50) go(cur + (dx < 0 ? 1 : -1));
+    tx = null;
+  }, { passive: true });
+  render();
+</script>
+</body>
+</html>

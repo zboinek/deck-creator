@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8" />
+<title>Kontekst na starcie sesji</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+<style>
+  /* skala: 1 token = 0.14566 px  →  7 895 tokenów = 1150 px */
+  :root {
+    --bg: #0a0a0a; --text: #fafafa; --muted: #a1a1aa; --dim: #71717a;
+    --line: #27272a; --line-strong: #3f3f46; --cg: #d6f540; --soft: #141414;
+    --bar-w: 1150px;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    width: 1600px; height: 900px; background: var(--bg); color: var(--text);
+    font-family: Inter, system-ui, sans-serif; padding: 54px 64px 40px;
+    display: flex; flex-direction: column;
+  }
+  .head { display: flex; align-items: center; gap: 20px; margin-bottom: 14px; }
+  .cap { font-family: 'JetBrains Mono', monospace; font-size: 15px; font-weight: 700;
+         letter-spacing: .2em; text-transform: uppercase; color: var(--cg); white-space: nowrap; }
+  .rule { flex: 1; height: 1px; background: var(--line); }
+  h1 { font-size: 50px; font-weight: 800; letter-spacing: -.024em; line-height: 1.05; }
+  .sub { font-size: 21px; color: var(--muted); margin-top: 10px; }
+  .sub b { color: var(--text); font-weight: 600; }
+
+  .chart { margin: 60px 0 0; width: var(--bar-w); position: relative; }
+  .scale { position: relative; height: 24px; }
+  .tick { position: absolute; top: 0; transform: translateX(-50%);
+          font-family: 'JetBrains Mono', monospace; font-size: 13.5px; color: var(--dim); white-space: nowrap; }
+  .tick:first-child { transform: none; }
+  .tick:last-child { transform: translateX(-100%); }
+
+  .track { display: flex; height: 120px; }
+  .seg { height: 100%; border-right: 2px solid var(--bg); display: flex; align-items: center;
+         justify-content: center; font-family: 'JetBrains Mono', monospace; font-size: 15px; font-weight: 700; }
+  .seg.h { background: repeating-linear-gradient(-45deg, #0a0a0a 0 7px, #1c1c1f 7px 14px);
+           border-top: 1px solid var(--line-strong); border-bottom: 1px solid var(--line-strong); color: var(--muted); }
+  .seg.h:first-child { border-left: 1px solid var(--line-strong); border-radius: 5px 0 0 5px; }
+  .seg.m { background: var(--cg); color: #0a0a0a; }
+  .seg.p { background: var(--text); border-radius: 0 3px 3px 0; border-right: none; }
+
+  /* klamry pod paskiem: ta sama skala */
+  .braces { position: relative; height: 160px; }
+  .brace { position: absolute; top: 14px; border-top: 2px solid var(--line-strong); padding-top: 14px; }
+  .brace::before, .brace::after { content: ""; position: absolute; top: -2px; width: 2px; height: 12px; background: var(--line-strong); }
+  .brace::before { left: 0; } .brace::after { right: 0; }
+  .brace.m { border-color: var(--cg); }
+  .brace.m::before, .brace.m::after { background: var(--cg); }
+  .brace .t { font-size: 25px; font-weight: 700; letter-spacing: -.01em; }
+  .brace.m .t { color: var(--cg); }
+  .brace .d { font-size: 16px; color: var(--muted); margin-top: 6px; line-height: 1.45; }
+  .brace .d code { font-family: 'JetBrains Mono', monospace; font-size: 14.5px; color: var(--text); }
+
+  .prompt { position: absolute; left: calc(var(--bar-w) + 34px); top: 24px; height: 120px; white-space: nowrap;
+           display: flex; flex-direction: column; justify-content: center; }
+  .prompt .t { font-size: 22px; font-weight: 700; }
+  .prompt .d { font-size: 15.5px; color: var(--muted); margin-top: 3px; }
+  .prompt::before { content: ""; position: absolute; left: -30px; top: 59px; width: 22px; height: 2px; background: var(--text); }
+
+  .callout { margin-top: 40px; border-left: 3px solid var(--cg); padding: 4px 0 4px 22px; max-width: 1300px; }
+  .callout p { font-size: 22px; line-height: 1.5; color: var(--muted); }
+  .callout p b { color: var(--text); font-weight: 700; }
+
+  .foot { flex-shrink: 0; margin-top: auto; padding-top: 20px; border-top: 1px solid var(--line);
+          display: flex; align-items: flex-end; justify-content: space-between; gap: 40px; }
+  .legend { display: flex; gap: 30px; }
+  .li { display: flex; align-items: center; gap: 11px; font-size: 16px; color: var(--muted); }
+  .sw { width: 28px; height: 15px; border-radius: 3px; }
+  .sw.m { background: var(--cg); }
+  .sw.h { background: repeating-linear-gradient(-45deg, #0a0a0a 0 4px, #1c1c1f 4px 8px); border: 1px solid var(--line-strong); }
+  .sw.p { background: var(--text); }
+  .src { font-size: 14px; color: var(--dim); margin-top: 8px; }
+  .rule2 { text-align: right; font-size: 17px; color: var(--muted); line-height: 1.5; white-space: nowrap; }
+  .rule2 b { color: var(--cg); font-family: 'JetBrains Mono', monospace; font-weight: 700; }
+</style>
+</head>
+<body>
+  <div class="head"><span class="cap">C · kontekst na starcie</span><span class="rule"></span></div>
+  <h1>Co agent ma w głowie, zanim przeczyta Twoje polecenie</h1>
+  <p class="sub">Przykładowa sesja Claude Code: ~7,9 tys. tokenów na starcie. <b>Twoje polecenie to 45 z nich.</b></p>
+
+  <div class="chart">
+    <div class="scale">
+      <span class="tick" style="left:0px">0</span>
+      <span class="tick" style="left:291px">2 000</span>   <!-- 2000 × 0.14566 -->
+      <span class="tick" style="left:583px">4 000</span>
+      <span class="tick" style="left:874px">6 000</span>
+      <span class="tick" style="left:1150px">7 895</span>
+    </div>
+    <div class="track">
+      <div class="seg h" style="width:612px">prompt systemowy 4 200</div>  <!-- 4200 -->
+      <div class="seg h" style="width:41px"></div>                       <!-- 280 środowisko -->
+      <div class="seg h" style="width:17px"></div>                       <!-- 120 nazwy narzędzi MCP -->
+      <div class="seg m" style="width:66px">450</div>                    <!-- 450 opisy skilli -->
+      <div class="seg m" style="width:47px">320</div>                    <!-- 320 ~/.claude/CLAUDE.md -->
+      <div class="seg m" style="width:261px">CLAUDE.md 1 800</div>       <!-- 1800 projektowy -->
+      <div class="seg m" style="width:99px">680</div>                   <!-- 680 MEMORY.md -->
+      <div class="seg p" style="width:7px"></div>                        <!-- 45 polecenie -->
+    </div>
+    <div class="braces">
+      <!-- harness: 0 .. 670 px (4 600 tok.) -->
+      <div class="brace" style="left:0; width:666px">
+        <div class="t">Harness · 4 600 (58%)</div>
+        <div class="d">prompt systemowy, środowisko i <code>git status</code>,<br>same nazwy narzędzi MCP (schematy na żądanie)</div>
+      </div>
+      <!-- pamięć: 670 .. 1143 px (3 250 tok.) -->
+      <div class="brace m" style="left:674px; width:469px">
+        <div class="t">Pamięć · 3 250 (41%)</div>
+        <div class="d">opisy skilli, globalny i projektowy <code>CLAUDE.md</code>,<br><code>MEMORY.md</code>: pierwsze 200 linii</div>
+      </div>
+    </div>
+    <div class="prompt"><div class="t">Twoje polecenie · 45</div><div class="d">0,6% kontekstu</div></div>
+  </div>
+
+  <div class="callout">
+    <p><b>Model nie zaczyna od zera, tylko od tego, co ktoś zapisał wcześniej:</b> Ty w <code>CLAUDE.md</code>, agent w <code>MEMORY.md</code>, autor skilla w jego opisie. Te pliki mogą przenosić ustalenia między sesjami.</p>
+  </div>
+
+  <div class="foot">
+    <div>
+      <div class="legend">
+        <div class="li"><span class="sw m"></span>Pamięć: pliki z dysku</div>
+        <div class="li"><span class="sw h"></span>Harness: instrukcje i środowisko</div>
+        <div class="li"><span class="sw p"></span>Twoje polecenie</div>
+      </div>
+      <div class="src">Liczby z symulacji w dokumentacji Claude Code, „Explore the context window”. Twoje własne pokaże <code>/context</code>.</div>
+    </div>
+    <div class="rule2">Reguła kciuka:<br><b>zapis ≠ odczyt ≠ zastosowanie</b></div>
+  </div>
+</body>
+</html>

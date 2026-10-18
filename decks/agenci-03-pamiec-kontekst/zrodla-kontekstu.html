@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8" />
+<title>Źródła kontekstu agenta</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+<style>
+  /* schemat, nie dane: kolumny 650 + 56 + 300 + 56 + 410 = 1472 px */
+  :root {
+    --bg: #0a0a0a; --text: #fafafa; --muted: #a1a1aa; --dim: #71717a;
+    --line: #27272a; --line-strong: #3f3f46; --cg: #d6f540; --soft: #141414; --code: #18181b;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    width: 1600px; height: 900px; background: var(--bg); color: var(--text);
+    font-family: Inter, system-ui, sans-serif; padding: 50px 64px 40px;
+    display: flex; flex-direction: column;
+  }
+  .head { display: flex; align-items: center; gap: 20px; margin-bottom: 12px; }
+  .cap { font-family: 'JetBrains Mono', monospace; font-size: 15px; font-weight: 700;
+         letter-spacing: .2em; text-transform: uppercase; color: var(--cg); white-space: nowrap; }
+  .rule { flex: 1; height: 1px; background: var(--line); }
+  h1 { font-size: 48px; font-weight: 800; letter-spacing: -.024em; line-height: 1.05; }
+  .sub { font-size: 20px; color: var(--muted); margin-top: 10px; }
+  .sub b { color: var(--text); font-weight: 600; }
+
+  .stage { display: flex; align-items: stretch; margin-top: 34px; }
+  .box { border-radius: 12px; padding: 22px 24px; display: flex; flex-direction: column; }
+  .box h2 { font-size: 27px; font-weight: 800; letter-spacing: -.012em; }
+  .box .who { font-size: 15.5px; color: var(--muted); margin-top: 4px; }
+  .box .who b { color: var(--text); font-weight: 600; }
+
+  /* baza RAG: jedyny element w akcencie */
+  .rag { width: 650px; border: 2px solid var(--cg); background: rgba(214, 245, 64, 0.06); }
+  .rag h2 { color: var(--cg); }
+  .q { margin-top: 18px; align-self: center; font-family: 'JetBrains Mono', monospace; font-size: 15px;
+       padding: 8px 16px; border: 1px solid var(--line-strong); border-radius: 999px; background: var(--code); }
+  .split { display: flex; justify-content: space-around; height: 22px; }
+  .split span { width: 2px; background: var(--cg); }
+  .lanes { display: flex; gap: 16px; }
+  .lane { flex: 1; background: var(--soft); border: 1px solid var(--line-strong); border-radius: 10px; padding: 14px 16px; }
+  .lane .n { font-size: 19px; font-weight: 700; }
+  .lane .steps { margin-top: 8px; font-family: 'JetBrains Mono', monospace; font-size: 13.5px; color: var(--muted); line-height: 1.75; }
+  .lane .steps b { color: var(--text); font-weight: 700; }
+  .lane .good { margin-top: 10px; font-size: 14.5px; color: var(--muted); line-height: 1.4; }
+  .lane .good b { color: var(--cg); font-weight: 700; }
+  .fuse { margin-top: 0; text-align: center; }
+  .fuse .chip { display: inline-block; margin-top: 0; background: var(--cg); color: #0a0a0a; border-radius: 8px;
+                padding: 9px 18px; font-size: 16px; font-weight: 700; }
+  .fuse .chip small { font-family: 'JetBrains Mono', monospace; font-weight: 700; font-size: 13px; margin-left: 6px; }
+
+  .arrow { width: 56px; display: flex; align-items: center; justify-content: center; position: relative; }
+  .arrow::before { content: ""; position: absolute; left: 6px; right: 14px; top: 50%; height: 2px; background: var(--muted); }
+  .arrow::after { content: ""; position: absolute; right: 6px; top: calc(50% - 7px);
+                  border-left: 11px solid var(--muted); border-top: 8px solid transparent; border-bottom: 8px solid transparent; }
+  .arrow.l::before { left: 14px; right: 6px; }
+  .arrow.l::after { right: auto; left: 6px; border-left: none; border-right: 11px solid var(--muted); }
+  .arrow.rag-a::before { background: var(--cg); }
+  .arrow.rag-a::after { border-left-color: var(--cg); }
+
+  /* okno kontekstu */
+  .ctx { width: 300px; border: 1px solid var(--line-strong); background: var(--soft); align-items: stretch; }
+  .ctx h2 { font-size: 23px; }
+  .stack { margin-top: 16px; display: flex; flex-direction: column; gap: 7px; flex: 1; }
+  .blk { border-radius: 6px; padding: 8px 12px; font-family: 'JetBrains Mono', monospace; font-size: 13.5px; font-weight: 700; }
+  .blk.g { background: var(--code); border: 1px solid var(--line-strong); color: var(--muted); }
+  .blk.c { background: var(--cg); color: #0a0a0a; }
+  .blk.f { background: repeating-linear-gradient(-45deg, #0a0a0a 0 6px, #1c1c1f 6px 12px); border: 1px dashed var(--line-strong); color: var(--text); }
+  .blk.u { background: var(--text); color: #0a0a0a; }
+  .ctx .note { font-size: 14px; color: var(--dim); margin-top: 12px; line-height: 1.4; }
+
+  /* pliki na dysku */
+  .disk { width: 410px; border: 1px dashed var(--line-strong);
+          background: repeating-linear-gradient(-45deg, #0a0a0a 0 9px, #111113 9px 18px); }
+  .drow { margin-top: 18px; background: var(--soft); border: 1px solid var(--line-strong); border-radius: 10px; padding: 14px 16px; }
+  .drow .n { font-size: 19px; font-weight: 700; }
+  .drow .d { font-size: 14.5px; color: var(--muted); margin-top: 6px; line-height: 1.45; }
+  .drow code { font-family: 'JetBrains Mono', monospace; font-size: 13.5px; color: var(--text); }
+  .drow .loop { margin-top: 8px; font-family: 'JetBrains Mono', monospace; font-size: 14px; line-height: 1.8; color: var(--muted); }
+  .drow .loop b { color: var(--text); }
+
+  .idx { margin-top: auto; padding-top: 14px; border-top: 1px dashed rgba(214, 245, 64, 0.35);
+         font-size: 14.5px; color: var(--muted); line-height: 1.45; }
+  .idx b { color: var(--text); font-weight: 600; }
+  .callout { margin-top: 26px; border-left: 3px solid var(--cg); padding: 2px 0 2px 20px; }
+  .callout p { font-size: 19px; line-height: 1.45; color: var(--muted); }
+  .callout p b { color: var(--text); font-weight: 700; }
+  .foot { margin-top: auto; padding-top: 18px; border-top: 1px solid var(--line);
+          display: flex; align-items: flex-end; justify-content: space-between; gap: 40px; }
+  .legend { display: flex; gap: 26px; }
+  .li { display: flex; align-items: center; gap: 10px; font-size: 15.5px; color: var(--muted); }
+  .sw { width: 28px; height: 15px; border-radius: 3px; }
+  .sw.c { background: var(--cg); }
+  .sw.f { background: repeating-linear-gradient(-45deg, #0a0a0a 0 4px, #1c1c1f 4px 8px); border: 1px dashed var(--line-strong); }
+  .sw.g { background: var(--code); border: 1px solid var(--line-strong); }
+  .sw.u { background: var(--text); }
+  .rule2 { text-align: right; font-size: 16.5px; color: var(--muted); line-height: 1.5; white-space: nowrap; }
+  .rule2 b { color: var(--cg); font-family: 'JetBrains Mono', monospace; font-weight: 700; }
+</style>
+</head>
+<body>
+  <div class="head"><span class="cap">C · skąd bierze się kontekst</span><span class="rule"></span></div>
+  <h1>Dwie drogi do okna kontekstu</h1>
+  <p class="sub">Baza RAG <b>szuka za model</b> i oddaje gotowe fragmenty. Po plikach na dysku <b>model szuka sam</b>, narzędziami, krok po kroku.</p>
+
+  <div class="stage">
+    <div class="box rag">
+      <h2>Baza RAG</h2>
+      <div class="who">szuka: <b>harness albo narzędzie wyszukiwania</b> · indeks budowany wcześniej</div>
+      <div class="q">„jak podłączyć oświetlenie TS-999?”</div>
+      <div class="split"><span></span><span></span></div>
+      <div class="lanes">
+        <div class="lane">
+          <div class="n">Wyszukiwanie wektorowe</div>
+          <div class="steps">tekst → <b>embedding</b><br>→ najbliżsi sąsiedzi<br>→ podobieństwo cosinusowe</div>
+          <div class="good">łapie <b>znaczenie</b>: „oświetlenie” ≈ „lampa”</div>
+        </div>
+        <div class="lane">
+          <div class="n">Full text search</div>
+          <div class="steps">słowa → <b>indeks odwrócony</b><br>→ ranking BM25<br>→ dokładne dopasowanie</div>
+          <div class="good">łapie <b>dokładne słowa</b>: „TS-999”</div>
+        </div>
+      </div>
+      <div class="split"><span></span><span></span></div>
+      <div class="fuse"><span class="chip">połączenie rankingów → top-k fragmentów<small>np. 20</small></span></div>
+      <div class="idx"><b>Wcześniej, raz:</b> dokumenty pocięte na fragmenty, każdy zapisany jako wektor i jako lista słów w indeksie</div>
+    </div>
+
+    <div class="arrow rag-a"></div>
+
+    <div class="box ctx">
+      <h2>Okno kontekstu</h2>
+      <div class="stack">
+        <div class="blk g">prompt systemowy</div>
+        <div class="blk f">CLAUDE.md · MEMORY.md</div>
+        <div class="blk c">fragment #1 z bazy</div>
+        <div class="blk c">fragment #2 z bazy</div>
+        <div class="blk g">historia rozmowy</div>
+        <div class="blk f">grep: 3 trafienia</div>
+        <div class="blk f">plik.ts, linie 40–80</div>
+        <div class="blk u">pytanie użytkownika</div>
+      </div>
+      <div class="note">Wszystko trafia tu jako zwykły tekst. Model nie wie, skąd przyszedł.</div>
+    </div>
+
+    <div class="arrow l"></div>
+
+    <div class="box disk">
+      <h2>Pliki na dysku</h2>
+      <div class="who">szuka: <b>model, narzędziami</b> · bez indeksu, zawsze aktualne</div>
+      <div class="drow">
+        <div class="n">Zawsze, na starcie</div>
+        <div class="d"><code>CLAUDE.md</code>, <code>MEMORY.md</code>: harness wkleja je bez pytania</div>
+      </div>
+      <div class="drow">
+        <div class="n">Na żądanie, w pętli</div>
+        <div class="loop"><b>glob</b>  po nazwie pliku<br><b>grep</b>  po treści<br><b>read</b>  tylko potrzebne linie</div>
+        <div class="d">model sam wymyśla kolejne zapytanie po każdym wyniku</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout"><p><b>W oknie fragment z bazy i wynik grepa wyglądają tak samo: to tekst.</b> Różnica jest w tym, kto zdecydował, że tam trafią: harness przed wywołaniem czy model w trakcie pracy.</p></div>
+
+  <div class="foot">
+    <div class="legend">
+      <div class="li"><span class="sw c"></span>Z bazy RAG</div>
+      <div class="li"><span class="sw f"></span>Z plików na dysku</div>
+      <div class="li"><span class="sw g"></span>Harness i historia</div>
+      <div class="li"><span class="sw u"></span>Użytkownik</div>
+    </div>
+    <div class="rule2">Reguła kciuka:<br><b>baza: znaczenie i skala · dysk: dokładne słowa i świeżość</b></div>
+  </div>
+</body>
+</html>

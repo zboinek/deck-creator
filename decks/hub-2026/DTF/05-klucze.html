@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8" />
+<title>Fabryka Tokenów: krok 5, klucze</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="dtf.css" />
+</head>
+<body>
+
+  <div class="top">
+    <span class="brand">Fabryka <i>Tokenów</i></span>
+    <span class="manual">Instrukcja montażu</span>
+    <span class="rule"></span>
+    <div class="pips"><span class="done">1</span><span class="done">2</span><span class="done">3</span><span class="done">4</span><span class="now">5</span></div>
+  </div>
+
+  <div class="left">
+    <div class="step"><div class="no">5</div><div class="of">krok 5 z 5<br>samoobsługa</div></div>
+    <h1>Oddaj ludziom klucze.</h1>
+    <p class="sub">Zespoły same tworzą klucze i limity. <b>Admin idzie na kawę.</b></p>
+    <div class="proof">
+      <div class="v">0 ticketów</div>
+      <div class="l">o nowy klucz API. Każdy wydaje go sobie sam, <b>w swoim limicie</b>.</div>
+    </div>
+  </div>
+
+  <svg class="art" viewBox="0 0 640 620">
+    <defs>
+      <g id="man" fill="#fff" stroke="#0a0a0a" stroke-width="5" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="0" cy="0" r="24"/>
+        <path d="M-34 112 V64 Q-34 38 0 38 Q34 38 34 64 V112 Z"/>
+        <path d="M-16 112 V190 M16 112 V190" fill="none"/>
+      </g>
+      <g id="key" fill="#fff" stroke="#0a0a0a" stroke-width="5" stroke-linecap="round">
+        <circle cx="0" cy="18" r="16"/>
+        <path d="M0 34 V104 M0 82 H16 M0 98 H12" fill="none"/>
+      </g>
+    </defs>
+
+    <!-- tablica z kluczami -->
+    <rect class="kw" x="20" y="40" width="360" height="330" rx="10"/>
+    <text class="lab dim" x="44" y="80">KLUCZE API</text>
+    <g class="kf">
+      <circle cx="100" cy="112" r="6"/><circle cx="200" cy="112" r="6"/><circle cx="300" cy="112" r="6"/>
+      <circle cx="100" cy="242" r="6"/><circle cx="200" cy="242" r="6"/><circle cx="300" cy="242" r="6"/>
+    </g>
+    <use href="#key" x="100" y="102"/>
+    <use href="#key" x="300" y="102"/>
+    <use href="#key" x="100" y="232"/>
+    <use href="#key" x="200" y="232"/>
+    <!-- haczyk 200/112 pusty: ten klucz ktoś właśnie wziął -->
+
+    <!-- ludzik z kluczem -->
+    <use href="#man" x="490" y="110"/>
+    <path class="k" d="M456 170 L410 140"/>
+    <path class="k" d="M524 170 L550 240"/>
+    <g transform="translate(386 96) rotate(-30)">
+      <circle cx="0" cy="18" r="16" fill="#fff" stroke="rgb(235,123,22)" stroke-width="6"/>
+      <path d="M0 34 V104 M0 82 H16 M0 98 H12" fill="none" stroke="rgb(235,123,22)" stroke-width="6" stroke-linecap="round"/>
+    </g>
+
+    <!-- admin: kubek z kawą -->
+    <path class="kw" d="M120 460 H240 V560 Q240 590 210 590 H150 Q120 590 120 560 Z"/>
+    <path class="k" d="M240 480 Q282 480 282 516 Q282 552 240 552"/>
+    <path class="g" d="M152 444 Q142 428 152 412 Q162 396 152 390 M182 444 Q172 428 182 412 Q192 396 182 390 M212 444 Q202 428 212 412 Q222 396 212 390"/>
+    <text class="lab dim" x="310" y="530">admin</text>
+    <text class="lab dim" x="310" y="560">na kawie</text>
+  </svg>
+
+  <div class="foot">
+    <div class="who"><img src="favicon.png" alt="" /><b>Comtegra GPU Cloud</b> · Pomożemy złożyć Twoją.</div>
+    <div class="cta">Zapytaj na stoisku <i>→</i></div>
+  </div>
+
+</body>
+</html>

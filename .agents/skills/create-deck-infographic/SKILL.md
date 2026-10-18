@@ -34,29 +34,32 @@ Use Mermaid instead when the visual is a plain flow/sequence/graph, since it is 
 
 ## Design language
 
-Decks in this repo are **light**: white background, dark text, one accent colour.
+Two palettes, one rule each: match the deck, never a house style.
 
-> Note: `DeckPresentation.tsx` initialises `theme` to `"dark"` and only flips to light when the OS reports a light colour scheme (`T` toggles it). Design for **light** regardless: every existing deck graphic is white-background, and a dark PNG will stand out as a mistake.
-
-Pull colours straight from `src/app/globals.css` (the `[data-theme="light"]` block) so graphics sit flush with the slide:
+**Student and lecture decks (the default): app-native dark + lime.** `DeckPresentation.tsx` starts every deck in the dark theme and the PDF export prints on `var(--surface-inverse)`, so a graphic must sit on `#0a0a0a` to be flush with the slide. Pull straight from `src/app/globals.css` (`:root` + the `[data-slide-theme="dark"]` block):
 
 | Token | Value | Use |
 |---|---|---|
-| Background | `#ffffff` | canvas |
-| Text | `#0a0a0a` | title, labels, data values |
-| Text secondary | `#52525b` | subtitle, legend, body copy |
-| Text muted | `#8b8b93` | axis ticks, footnotes |
-| Border | `#e4e4e7` | hairlines, rules |
-| Border strong | `#d4d4d8` | shape outlines that must read |
-| **Accent** | `rgb(235, 123, 22)` | **Comtegra orange, the one colour** |
+| Background | `#0a0a0a` | canvas, flush with the slide |
+| Panels | `#141414` / `#18181b` | cards, insets |
+| Text | `#fafafa` | title, labels, data values |
+| Text secondary | `#a1a1aa` | subtitle, legend, body copy |
+| Text muted | `#71717a` | axis ticks, footnotes |
+| Border | `#27272a` | hairlines, rules, shape outlines |
+| **Accent** | `#d6f540` | **the app accent, the one colour** |
+| On accent | `#0a0a0a` | text on lime chips and bars |
+
+Inline-code look for a highlighted token: `rgba(214, 245, 64, 0.12)` background, `#d6f540` text.
+
+**Comtegra-branded decks only (corporate presentations): light + orange.** White canvas, dark text (`#0a0a0a`), secondary `#52525b`, muted `#8b8b93`, borders `#e4e4e7`/`#d4d4d8`, single accent `rgb(235, 123, 22)`. The Comtegra brand colour never appears on student or lecture slides.
 
 **Never use an em dash (—) in any text that ends up on a slide.** Rewrite with a comma, a colon, or a connective ("tylko", "czyli", "bo"). Ranges keep the en dash (2–4 karty). The author reads that character as a sign the text was machine-written, which is fatal for material presented as his own. Check with `grep -c '—\|&mdash;'` before rendering.
 
 Rules that keep it coherent:
 
-- **One colour.** Orange marks the thing the slide is about. Everything else is greyscale. If two things are orange, the slide has two messages, so split it.
-- **Greys carry structure**, orange carries meaning. Hatched light grey (`repeating-linear-gradient(-45deg, #ffffff 0 7px, #ededf0 7px 14px)`) reads as "space/remainder" without competing.
-- **Text on orange is white** with `text-shadow: 0 1px 1px rgba(0,0,0,.22)`, matching the Artificial Analysis charts already in the deck. Everywhere else, dark on white.
+- **One colour.** The accent marks the thing the slide is about. Everything else is greyscale. If two things are accented, the slide has two messages, so split it.
+- **Greys carry structure**, the accent carries meaning. Hatched grey reads as "space/remainder" without competing: light canvas `repeating-linear-gradient(-45deg, #ffffff 0 7px, #ededf0 7px 14px)`, dark canvas `repeating-linear-gradient(-45deg, #0a0a0a 0 7px, #141414 7px 14px)`.
+- **Text on accent:** `#0a0a0a` on lime, no shadow. White with `text-shadow: 0 1px 1px rgba(0,0,0,.22)` only on Comtegra orange. Everywhere else, the palette's text colour on its background.
 - Fonts: `Inter` for prose, `JetBrains Mono` for numbers, axis ticks and rules of thumb. Loaded from Google Fonts, so **the render machine needs network access**.
 
 ---
