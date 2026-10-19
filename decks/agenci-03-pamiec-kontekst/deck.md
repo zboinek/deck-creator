@@ -20,6 +20,14 @@ Kognitywistyka PJWSTK · rok 2 · semestr zimowy 2026/27
 
 ---
 
+## Efekt Krugera Dunninga - memizowane
+
+![Krzywa pewności siebie względem kompetencji: od „nic nie wiem” pewność szybko rośnie do szczytu głupoty, potem spada w dolinę rozpaczy, a wraz z kompetencjami powoli wspina się przez etap oświecenia na płaskowyż kompetencji, aż do poziomu guru](attachments/krzywa-zdobywania-wiedzy.jpg)
+
+> _Notatka prowadzącego:_ To popularna wersja z internetu, nie wykres z badania. Kruger i Dunning (1999) nie rysowali krzywej ze szczytem głupoty i doliną rozpaczy. Pokazali, że osoby z najsłabszego kwartyla wyników mocno przeceniały swój wynik, a najlepsze lekko go nie doceniały. Część tego efektu da się wyjaśnić regresją do średniej i ogólną skłonnością do oceniania się powyżej przeciętnej. Mem dobrze opisuje odczucie przy nauce, ale nie jest wynikiem pomiaru.
+
+---
+
 ## Zagadka
 
 ### Agent miał czekać na zgodę. Wyczyścił skrzynkę.
@@ -340,7 +348,7 @@ _Modarressi i in. (2025), NoLiMa: Long-Context Evaluation Beyond Literal Matchin
 
 ## Context rot
 
-### Trafnie wybrane fragmenty pomagają — w tym teście
+### Trafnie wybrane fragmenty pomagają, ale tylko w tym teście
 
 | | Pełny kontekst | Skupiony kontekst |
 |---|---|---|
@@ -352,7 +360,7 @@ _Modarressi i in. (2025), NoLiMa: Long-Context Evaluation Beyond Literal Matchin
 
 _Hong, Troynikov, Huber (2025), Context Rot, Chroma Technical Report (test LongMemEval)_
 
-> _Notatka prowadzącego:_ Chroma porównuje pełne rozmowy z trafnie wybranymi fragmentami na oczyszczonym podzbiorze LongMemEval. Selekcja korzystała z oznaczeń zbioru i ręcznych korekt, więc to nie pomiar kompletnego systemu wyszukiwania. Krótki wariant ma przewagę: ktoś już wskazał potrzebne fragmenty. Nie wynika stąd, że każde skrócenie kontekstu pomaga — usunięcie potrzebnego faktu szkodzi. Nowsze badania pokazują poprawę w części modeli i zadań, ale odporność na długi kontekst nie jest uniwersalna; kolejny slajd zbiera te wyniki. Osobne eksperymenty raportu dotyczą dystraktorów i przetasowania tekstu; nie mieszaj ich z wynikiem LongMemEval. Źródło: https://www.trychroma.com/research/context-rot .
+> _Notatka prowadzącego:_ Chroma porównuje pełne rozmowy z trafnie wybranymi fragmentami na oczyszczonym podzbiorze LongMemEval. Selekcja korzystała z oznaczeń zbioru i ręcznych korekt, więc to nie pomiar kompletnego systemu wyszukiwania. Krótki wariant ma przewagę: ktoś już wskazał potrzebne fragmenty. Nie wynika stąd, że każde skrócenie kontekstu pomaga: usunięcie potrzebnego faktu szkodzi. Nowsze badania pokazują poprawę w części modeli i zadań, ale odporność na długi kontekst nie jest uniwersalna; kolejny slajd zbiera te wyniki. Osobne eksperymenty raportu dotyczą dystraktorów i przetasowania tekstu; nie mieszaj ich z wynikiem LongMemEval. Źródło: https://www.trychroma.com/research/context-rot .
 
 ---
 
@@ -362,8 +370,8 @@ _Hong, Troynikov, Huber (2025), Context Rot, Chroma Technical Report (test LongM
 
 - **HELMET · ICLR 2025:** świetny wynik w teście „igły w stogu siana” słabo przewiduje rozumowanie na całym kontekście; różne zadania dają różne wyniki. [Badanie](https://proceedings.iclr.cc/paper_files/paper/2025/hash/f5332c8273d02729730a9c24dec2135e-Abstract-Conference.html)
 - **Findings of EMNLP 2025:** rozumowanie pogarszało się wraz z długością wejścia, nawet gdy model poprawnie odtwarzał potrzebne fakty; Llama 3.1 8B straciła 24,2 pp przy 30K tokenów. [Badanie](https://aclanthology.org/2025.findings-emnlp.1264/)
-- **Badanie pozycyjne · 2026:** modele wciąż mogą tracić trafność, gdy potrzebna informacja znajduje się w środku długiego kontekstu. Nowsze wydania wypadają lepiej: przy 64K trzy z czterech nowych modeli utrzymały wynik dla informacji w środku w granicach ±6 punktów procentowych od wyniku dla informacji na końcu — w jednym wariancie testu. W innym wariancie spadki nadal występowały. To pokazuje jednocześnie postęp modeli i utrzymywanie się problemu. [CRE, arXiv 2026](https://arxiv.org/abs/2605.23170)
-- **BEAM · ICLR 2026:** benchmark obejmuje długie, spójne rozmowy i pytania badające różne zdolności pamięciowe. Autorzy raportują, że nawet modele z oknem kontekstu 1 mln tokenów mają trudności wraz z wydłużaniem rozmów — także z retrieval augmentation. Zaproponowany system pamięci LIGHT, łączący pamięć epizodyczną, roboczą i scratchpad, poprawił wyniki średnio o 3,5–12,69% względem najsilniejszych baseline’ów, zależnie od modelu. [BEAM, ICLR 2026](https://proceedings.iclr.cc/paper_files/paper/2026/hash/d7f0cfa0fe759b033d5262e1bb7d4065-Abstract-Conference.html)
+- **Badanie pozycyjne · 2026:** modele wciąż mogą tracić trafność, gdy potrzebna informacja znajduje się w środku długiego kontekstu. Nowsze wydania wypadają lepiej: przy 64K trzy z czterech nowych modeli utrzymały wynik dla informacji w środku w granicach ±6 punktów procentowych od wyniku dla informacji na końcu, ale tylko w jednym wariancie testu. W innym wariancie spadki nadal występowały. To pokazuje jednocześnie postęp modeli i utrzymywanie się problemu. [CRE, arXiv 2026](https://arxiv.org/abs/2605.23170)
+- **BEAM · ICLR 2026:** benchmark obejmuje długie, spójne rozmowy i pytania badające różne zdolności pamięciowe. Autorzy raportują, że nawet modele z oknem kontekstu 1 mln tokenów mają trudności wraz z wydłużaniem rozmów, także z retrieval augmentation. Zaproponowany system pamięci LIGHT, łączący pamięć epizodyczną, roboczą i scratchpad, poprawił wyniki średnio o 3,5–12,69% względem najsilniejszych baseline’ów, zależnie od modelu. [BEAM, ICLR 2026](https://proceedings.iclr.cc/paper_files/paper/2026/hash/d7f0cfa0fe759b033d5262e1bb7d4065-Abstract-Conference.html)
 
 > _Notatka prowadzącego:_ HELMET badał 59 modeli i pokazał, że wyniki w różnych kategoriach zadań słabo się pokrywają; niemal idealny NIAH nie wystarcza do oceny rozumowania. W badaniu Findings of EMNLP 2025 spadek 24,2 pp dotyczył Llama 3.1 8B w konkretnym zadaniu, nie wszystkich modeli. CRE mierzyło wpływ położenia zadania, treści wypełniającej i długości wejścia; wyniki zależą od wariantu testu, a podane ±6 pp dotyczy trzech z czterech nowych modeli przy 64K w jednym wariancie. BEAM to benchmark przyjęty na ICLR 2026: 100 rozmów i 2000 zweryfikowanych pytań. Autorzy stwierdzili, że modele z oknem 1M tokenów nadal mają trudności wraz z długością dialogu, również z retrieval augmentation. LIGHT poprawiał wynik średnio o 3,5–12,69% zależnie od modelu. Wniosek: modele robią postępy, ale wynik zależy od zadania i od tego, jak system zarządza kontekstem.
 
@@ -637,6 +645,10 @@ _Chen, Chen, Jiang, Shen (2026), Knowing the User Is Not Knowing What We Establi
 _Zakupy i wysyłki symulowane. Modele: DeepSeek, GPT, Gemini, Qwen_
 
 > _Notatka prowadzącego:_ Trzeci wiersz jest najważniejszy: tu nie zawiodła pamięć, bo agent miał pełną historię i odmowa była w oknie. W pełnej historii 71% błędów pojawia się przy wyborze działania, mimo dostępnych dowodów. Wróć do mapy „zapisane, odnalezione, wczytane, zastosowane”: wiersz pierwszy to błąd zapisu, trzeci to błąd zastosowania. Drugi wiersz pokazuje, że samo dopisanie treści propozycji do pamięci zmienia zachowanie z „pytam” na „robię”. Uczciwie: to kontrolowane, syntetyczne scenariusze i tańsze lub otwarte modele, nie komercyjne czaty.
+
+---
+
+![Schemat z badania: ten sam wpis w pamięci, dwie różne rozmowy. Po lewej użytkownik prosi o pomoc z niechcianymi ofertami sprzedażowymi; w przypadku A sam mówi „odrzucaj je od teraz”, w przypadku B to agent to proponuje, a użytkownik pyta o pogodę. W środku mechanizm pamięci w czterech krokach: wyciągnij informację z rozmowy, pobierz podobne wspomnienia, uzgodnij (dodaj, zaktualizuj, usuń, pomiń), zapisz. W obu przypadkach zapisuje się to samo: „odrzucaj oferty bez sprawdzania”. Po prawej przychodzi nowa oferta i agent w obu przypadkach odmawia: w A poprawnie, bo wykonuje wyraźne polecenie, w B błędnie, bo działa bez zgody i powinien był zapytać](attachments/milczaca-zgoda-schemat.png)
 
 ---
 
