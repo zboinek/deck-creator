@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8" />
+<title>Krytycy równolegle do głównej pętli</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+<style>
+  /* Oś pozioma to czas, ale bez skali: długości pasków krytyków pokazują tylko,
+     że kończą w różnym momencie. Scena 1472 x 470 px, wszystko pozycjonowane absolutnie. */
+  :root {
+    --bg: #0a0a0a; --text: #fafafa; --muted: #a1a1aa; --dim: #71717a;
+    --line: #27272a; --line-strong: #3f3f46; --cg: #d6f540; --soft: #141414;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    width: 1600px; height: 900px; background: var(--bg); color: var(--text);
+    font-family: Inter, system-ui, sans-serif; padding: 50px 64px 36px;
+    display: flex; flex-direction: column;
+  }
+  .head { display: flex; align-items: center; gap: 20px; margin-bottom: 14px; }
+  .cap { font-family: 'JetBrains Mono', monospace; font-size: 15px; font-weight: 700;
+         letter-spacing: .2em; text-transform: uppercase; color: var(--cg); white-space: nowrap; }
+  .rule { flex: 1; height: 1px; background: var(--line); }
+  h1 { font-size: 48px; font-weight: 800; letter-spacing: -.024em; line-height: 1.05; }
+  .sub { font-size: 21px; color: var(--muted); margin-top: 10px; }
+  .sub b { color: var(--text); font-weight: 600; }
+
+  .stage { position: relative; width: 1472px; height: 470px; margin-top: 30px; }
+  .abs { position: absolute; }
+  .lane { font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 700;
+          letter-spacing: .16em; text-transform: uppercase; color: var(--dim); }
+
+  .box { border-radius: 8px; display: flex; flex-direction: column; justify-content: center;
+         padding: 0 14px; height: 80px; }
+  .box .t { font-size: 17px; font-weight: 700; line-height: 1.2; }
+  .box .d { font-size: 13.5px; color: var(--muted); margin-top: 3px; line-height: 1.3; }
+  .solid { background: #2e2e33; }
+  .outline { border: 1.5px solid var(--line-strong); background: var(--soft); }
+  .final { background: var(--cg); color: #0a0a0a; }
+  .final .d { color: #0a0a0a; opacity: .75; }
+
+  .file { width: 110px; height: 80px; background: #e4e4e7; color: #0a0a0a; border-radius: 4px;
+          clip-path: polygon(0 0, 82% 0, 100% 22%, 100% 100%, 0 100%);
+          display: flex; flex-direction: column; justify-content: center; padding-left: 12px; }
+  .file .t { font-family: 'JetBrains Mono', monospace; font-size: 15px; font-weight: 700; }
+  .file .d { font-size: 13px; color: #3f3f46; margin-top: 2px; }
+
+  .track { height: 80px; border-radius: 8px;
+           background: repeating-linear-gradient(-45deg, #0a0a0a 0 7px, #18181b 7px 14px);
+           border: 1px solid var(--line-strong); }
+  .track .t { position: absolute; left: 14px; top: 12px; font-size: 14px; color: var(--muted); width: 220px; line-height: 1.35; }
+
+  .mark { height: 80px; width: 100px; border-radius: 8px; background: #2e2e33; border: 1.5px solid #71717a;
+          display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
+  .mark .t { font-family: 'JetBrains Mono', monospace; font-size: 18px; font-weight: 700; }
+  .mark .d { font-size: 12.5px; color: var(--muted); margin-top: 2px; }
+
+  .critic { height: 64px; border-radius: 8px; background: #222226; border: 1px solid var(--line-strong);
+            display: flex; align-items: center; justify-content: space-between; padding: 0 14px; }
+  .critic .t { font-size: 16.5px; font-weight: 700; }
+  .critic .d { font-family: 'JetBrains Mono', monospace; font-size: 12.5px; color: var(--dim); }
+
+  .hl { background: var(--muted); }
+  .vl { width: 2px; background: #52525b; }
+  .vl.up::before { content: ''; position: absolute; top: -2px; left: 50%; transform: translateX(-50%);
+                   border-left: 7px solid transparent; border-right: 7px solid transparent; border-bottom: 11px solid #71717a; }
+  .hline { height: 2px; background: #52525b; }
+  .hline.arr::after { content: ''; position: absolute; right: -2px; top: 50%; transform: translateY(-50%);
+                      border-top: 7px solid transparent; border-bottom: 7px solid transparent; border-left: 11px solid #71717a; }
+  .gate { font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 700; color: var(--cg);
+          letter-spacing: .08em; text-align: center; }
+
+  .callout { margin-top: 6px; border-left: 4px solid var(--cg); padding: 4px 0 4px 18px;
+             font-size: 18px; color: var(--muted); line-height: 1.45; max-width: 1180px; }
+  .callout b { color: var(--text); }
+
+  .foot { flex-shrink: 0; margin-top: auto; padding-top: 16px; border-top: 1px solid var(--line);
+          display: flex; align-items: flex-end; justify-content: space-between; gap: 40px; }
+  .src { font-size: 14px; color: var(--dim); line-height: 1.5; }
+  .rule2 { text-align: right; font-size: 17px; color: var(--muted); line-height: 1.5; white-space: nowrap; }
+  .rule2 b { color: var(--cg); font-family: 'JetBrains Mono', monospace; font-weight: 700; }
+</style>
+</head>
+<body>
+  <div class="head"><span class="cap">Krytycy równolegle</span><span class="rule"></span></div>
+  <h1>Pętla nie czeka na krytyków</h1>
+  <p class="sub">Coder pracuje dalej i dostraja plan po każdej odpowiedzi. <b>Plan ostateczny powstaje dopiero z kompletu uwag.</b></p>
+
+  <div class="stage">
+    <div class="abs lane" style="left:0; top:6px">Główny agent: coder</div>
+    <div class="abs lane" style="left:380px; top:176px">Krytycy: osobne okna</div>
+
+    <!-- główna pętla, y 32-112 -->
+    <div class="abs box solid" style="left:0; top:32px; width:190px"><div class="t">Pisze plan</div><div class="d">cel, kroki, kryteria</div></div>
+    <div class="abs hline arr" style="left:192px; top:71px; width:24px"></div>
+    <div class="abs file" style="left:222px; top:32px"><div class="t">plan.md</div><div class="d">wersja v1</div></div>
+    <div class="abs hline arr" style="left:334px; top:71px; width:12px"></div>
+    <div class="abs track" style="left:350px; top:32px; width:790px"><div class="t">pętla trwa:<br>kod, testy, kolejne kroki</div></div>
+
+    <div class="abs mark" style="left:600px; top:32px"><div class="t">v2</div><div class="d">uwagi 1/3</div></div>
+    <div class="abs mark" style="left:840px; top:32px"><div class="t">v3</div><div class="d">uwagi 2/3</div></div>
+    <div class="abs mark" style="left:1020px; top:32px"><div class="t">v4</div><div class="d">uwagi 3/3</div></div>
+
+    <div class="abs hline arr" style="left:1142px; top:71px; width:20px"></div>
+    <div class="abs box outline" style="left:1168px; top:32px; width:150px"><div class="t">Scala</div><div class="d">każdą uwagę z&nbsp;aktualną wersją</div></div>
+    <div class="abs gate" style="left:1168px; top:4px; width:150px">czeka na 3/3</div>
+    <div class="abs hline arr" style="left:1320px; top:71px; width:16px"></div>
+    <div class="abs box final" style="left:1342px; top:32px; width:130px"><div class="t">Plan ostateczny</div></div>
+
+    <!-- rozgałęzienie z plan.md do krytyków -->
+    <div class="abs vl" style="left:276px; top:112px; height:322px"></div>
+    <div class="abs hline arr" style="left:276px; top:241px; width:100px"></div>
+    <div class="abs hline arr" style="left:276px; top:327px; width:100px"></div>
+    <div class="abs hline arr" style="left:276px; top:413px; width:100px"></div>
+
+    <!-- krytycy, y 210 / 296 / 382; prawa krawędź = środek znacznika wersji -->
+    <div class="abs critic" style="left:380px; top:210px; width:270px"><span class="t">Krytyk 1: bezpieczeństwo</span></div>
+    <div class="abs critic" style="left:380px; top:296px; width:510px"><span class="t">Krytyk 2: architektura</span><span class="d">czyta plan.md v1</span></div>
+    <div class="abs critic" style="left:380px; top:382px; width:690px"><span class="t">Krytyk 3: testowalność</span><span class="d">czyta plan.md v1</span></div>
+
+    <!-- odpowiedzi w górę do znaczników -->
+    <div class="abs vl up" style="left:649px; top:114px; height:96px"></div>
+    <div class="abs vl up" style="left:889px; top:114px; height:182px"></div>
+    <div class="abs vl up" style="left:1069px; top:114px; height:268px"></div>
+  </div>
+
+  <div class="callout">Krytycy czytają <b>v1</b>, a coder idzie dalej. Późna uwaga może dotyczyć kroku, którego już nie ma, <b>dlatego scalenie sprawdza każdą uwagę z aktualną wersją planu.</b></div>
+
+  <div class="foot">
+    <div class="src">Schemat ilustracyjny. Długości pasków pokazują kolejność odpowiedzi, nie zmierzony czas.</div>
+    <div class="rule2">Krytycy nie blokują pętli,<br><b>scalenie czeka na komplet</b></div>
+  </div>
+</body>
+</html>

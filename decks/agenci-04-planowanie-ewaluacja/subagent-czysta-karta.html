@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8" />
+<title>Subagent zaczyna od czystej karty</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+<style>
+  /* Przykład ilustracyjny, bez danych: wysokości bloków oddają tylko proporcje
+     "dużo / mało" w oknie kontekstu, nie zmierzone liczby tokenów. */
+  :root {
+    --bg: #0a0a0a; --text: #fafafa; --muted: #a1a1aa; --dim: #71717a;
+    --line: #27272a; --line-strong: #3f3f46; --cg: #d6f540; --soft: #141414;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    width: 1600px; height: 900px; background: var(--bg); color: var(--text);
+    font-family: Inter, system-ui, sans-serif; padding: 50px 64px 36px;
+    display: flex; flex-direction: column;
+  }
+  .head { display: flex; align-items: center; gap: 20px; margin-bottom: 14px; }
+  .cap { font-family: 'JetBrains Mono', monospace; font-size: 15px; font-weight: 700;
+         letter-spacing: .2em; text-transform: uppercase; color: var(--cg); white-space: nowrap; }
+  .rule { flex: 1; height: 1px; background: var(--line); }
+  h1 { font-size: 48px; font-weight: 800; letter-spacing: -.024em; line-height: 1.05; }
+  .sub { font-size: 21px; color: var(--muted); margin-top: 10px; }
+  .sub b { color: var(--text); font-weight: 600; }
+
+  .main { display: grid; grid-template-columns: 640px 1fr 560px; margin-top: 30px; flex: 1; min-height: 0; }
+
+  .win { border: 1.5px solid var(--line-strong); border-radius: 12px; padding: 16px 18px;
+         display: flex; flex-direction: column; gap: 7px; background: var(--soft); }
+  .wtitle { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 4px; }
+  .wtitle .n { font-size: 22px; font-weight: 800; letter-spacing: -.01em; }
+  .wtitle .m { font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--dim); }
+
+  .blk { border-radius: 6px; padding: 9px 13px; display: flex; justify-content: space-between;
+         align-items: center; gap: 14px; }
+  .blk .t { font-size: 16.5px; font-weight: 600; }
+  .blk .d { font-size: 14px; color: var(--muted); margin-top: 2px; line-height: 1.35; }
+  .blk .tag { font-family: 'JetBrains Mono', monospace; font-size: 12.5px; color: var(--dim);
+              white-space: nowrap; letter-spacing: .04em; }
+  .base { background: #2e2e33; }
+  .grey { background: #222226; }
+  .hatch { background: repeating-linear-gradient(-45deg, #18181b 0 7px, #26262a 7px 14px);
+           border: 1px solid var(--line-strong); }
+  .sent { box-shadow: inset 4px 0 0 var(--cg); }
+  .sent .tag { color: var(--cg); }
+  .tall1 { min-height: 112px; }
+  .tall2 { min-height: 128px; }
+
+  .brief { background: var(--cg); color: #0a0a0a; }
+  .brief .t { font-weight: 800; }
+  .brief .d { color: #0a0a0a; opacity: .78; }
+  .brief code { font-family: 'JetBrains Mono', monospace; font-size: 13.5px; font-weight: 700; }
+
+  .empty { flex: 1; border: 1.5px dashed var(--line-strong); border-radius: 6px; padding: 12px 14px;
+           display: flex; flex-direction: column; gap: 7px; }
+  .empty .h { font-size: 16.5px; font-weight: 600; color: var(--muted); }
+  .empty code { font-family: 'JetBrains Mono', monospace; font-size: 14px; color: var(--dim); }
+  .empty .miss { margin-top: auto; font-size: 15px; color: var(--muted); line-height: 1.4; }
+  .empty .miss b { color: var(--text); }
+
+  .mid { display: flex; flex-direction: column; justify-content: center; gap: 70px; padding: 0 18px; }
+  .arrow { position: relative; text-align: center; }
+  .arrow .lbl { font-family: 'JetBrains Mono', monospace; font-size: 14px; font-weight: 700;
+                letter-spacing: .12em; text-transform: uppercase; }
+  .arrow .sm { font-size: 14px; color: var(--muted); margin-top: 4px; line-height: 1.35; }
+  .line { height: 3px; margin: 10px 0 0; position: relative; }
+  .line::after { content: ''; position: absolute; top: 50%; width: 0; height: 0;
+                 border-top: 9px solid transparent; border-bottom: 9px solid transparent; transform: translateY(-50%); }
+  .fwd .lbl { color: var(--cg); }
+  .fwd .line { background: var(--cg); }
+  .fwd .line::after { right: -2px; border-left: 14px solid var(--cg); }
+  .back .lbl { color: var(--muted); }
+  .back .line { background: #52525b; }
+  .back .line::after { left: -2px; border-right: 14px solid #52525b; }
+
+  .foot { flex-shrink: 0; margin-top: 22px; padding-top: 16px; border-top: 1px solid var(--line);
+          display: flex; align-items: flex-end; justify-content: space-between; gap: 40px; }
+  .src { font-size: 14px; color: var(--dim); line-height: 1.5; }
+  .rule2 { text-align: right; font-size: 17px; color: var(--muted); line-height: 1.5; white-space: nowrap; }
+  .rule2 b { color: var(--cg); font-family: 'JetBrains Mono', monospace; font-weight: 700; }
+</style>
+</head>
+<body>
+  <div class="head"><span class="cap">Orkiestrator i subagent</span><span class="rule"></span></div>
+  <h1>Subagent zaczyna od czystej karty</h1>
+  <p class="sub">Dostaje tylko polecenie. <b>Rozumowanie, ustalenia i przeczytane pliki zostają u orkiestratora.</b></p>
+
+  <div class="main">
+    <div class="win">
+      <div class="wtitle"><span class="n">Orkiestrator</span><span class="m">okno po 40 krokach</span></div>
+      <div class="blk base"><div><div class="t">Prompt systemowy i narzędzia</div></div><span class="tag">zostaje</span></div>
+      <div class="blk grey sent"><div><div class="t">Cel od użytkownika</div><div class="d">migracja płatności na API v2, bez przestojów</div></div><span class="tag">→ część</span></div>
+      <div class="blk grey"><div><div class="t">Ustalenia z rozmowy</div><div class="d">modułu <b style="color:var(--text)">refunds</b> nie ruszamy, należy do innego zespołu</div></div><span class="tag">zostaje</span></div>
+      <div class="blk hatch tall1"><div><div class="t">Rozumowanie z minionych kroków</div><div class="d">dlaczego v2, które moduły są ryzykowne,<br>co już nie zadziałało</div></div><span class="tag">zostaje</span></div>
+      <div class="blk grey tall2"><div><div class="t">Wyniki narzędzi</div><div class="d">30 przeczytanych plików, logi testów,<br>wyniki <span style="font-family:'JetBrains Mono',monospace">grep</span></div></div><span class="tag">zostaje</span></div>
+      <div class="blk grey sent"><div><div class="t">Plan</div><div class="d">6 kroków, w toku krok 3: znaleźć wywołania starego API</div></div><span class="tag">→ część</span></div>
+    </div>
+
+    <div class="mid">
+      <div class="arrow fwd">
+        <div class="lbl">Polecenie</div>
+        <div class="sm">kilka zdań</div>
+        <div class="line"></div>
+      </div>
+      <div class="arrow back">
+        <div class="line"></div>
+        <div class="lbl" style="margin-top:12px">Wynik</div>
+        <div class="sm">samo streszczenie,<br>bez śladu pracy</div>
+      </div>
+    </div>
+
+    <div class="win">
+      <div class="wtitle"><span class="n">Subagent</span><span class="m">nowe okno</span></div>
+      <div class="blk base"><div><div class="t">Prompt systemowy i narzędzia</div></div><span class="tag">własne</span></div>
+      <div class="blk brief"><div><div class="t">Polecenie</div><div class="d">Znajdź wywołania <code>PaymentClient.charge()</code> w&nbsp;<code>src/</code>. Zwróć listę plik:linia.</div></div></div>
+      <div class="empty">
+        <div class="h">Reszta pusta: bada problem od zera</div>
+        <code>$ grep -rn "charge(" src/</code>
+        <code>$ cat src/billing/client.py</code>
+        <code>$ cat src/refunds/worker.py</code>
+        <code>…</code>
+        <div class="miss">Nie wie, że <b>refunds</b> jest wyłączony z migracji, więc zwróci też te miejsca. Nie wie, co orkiestrator już sprawdził.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="foot">
+    <div class="src">Przykład ilustracyjny. Wysokości bloków pokazują proporcje, nie zmierzone tokeny.</div>
+    <div class="rule2">Czego nie ma w poleceniu,<br><b>tego subagent nie wie</b></div>
+  </div>
+</body>
+</html>

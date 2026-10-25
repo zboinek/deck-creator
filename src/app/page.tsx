@@ -159,7 +159,7 @@ export default async function HomePage() {
                       <div className="card">
                         <div className="flex items-center gap-3 mb-1">
                           <span className="accent-badge">
-                            {String(index + 1).padStart(2, "0")}
+                            {String(section.decks.length - index).padStart(2, "0")}
                           </span>
                           <h2
                             style={{
