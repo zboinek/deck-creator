@@ -1,0 +1,30 @@
+{
+  "filters": "highpass=f=65,acompressor=threshold=0.025:ratio=1.6:attack=10:release=180:knee=2.828:makeup=1",
+  "target": "loudnorm=I=-18:TP=-2:LRA=7",
+  "first_pass": {
+    "input_i": "-35.51",
+    "input_tp": "-14.86",
+    "input_lra": "4.00",
+    "input_thresh": "-45.83",
+    "output_i": "-18.09",
+    "output_tp": "-2.00",
+    "output_lra": "3.90",
+    "output_thresh": "-28.44",
+    "normalization_type": "dynamic",
+    "target_offset": "0.09"
+  },
+  "decoded_opus": {
+    "input_i": "-18.01",
+    "input_tp": "-1.41",
+    "input_lra": "3.80",
+    "input_thresh": "-28.35",
+    "output_i": "-18.01",
+    "output_tp": "-2.00",
+    "output_lra": "3.80",
+    "output_thresh": "-28.36",
+    "normalization_type": "dynamic",
+    "target_offset": "0.01"
+  },
+  "source_bytes": 47179857,
+  "output_bytes": 17946014
+}

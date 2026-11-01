@@ -12,6 +12,45 @@ npm run dev          # http://localhost:3000
 
 Strona główna listuje wszystkie decki z `decks/`. Pojedynczy deck: `/deck/<slug>`.
 
+## Artykuły do podcastów
+
+`podcasts/<slug>/article.md` renderuje się pod `/podcast/<slug>` jako osobny artykuł:
+typografia do czytania, spis treści, postęp czytania i ilustracje. Artykuły nie są
+listowane na stronie głównej. Przykład: `/podcast/jak-zbudowac-dobry-harness`.
+
+```markdown
+---
+title: "Tytuł artykułu"
+eyebrow: "Nadtytuł"
+description: "Krótkie wprowadzenie"
+author: "Jakub Zboina"
+date: "2026-11-01"
+duration: "30 min"
+series: "Agenci AI"
+unlisted: true
+---
+
+## 00:00 | Pierwszy rozdział
+
+Tekst narracji. Czas w nagłówku jest opcjonalny i orientacyjny.
+
+![Opis ilustracji](attachments/schemat.png "Podpis pod ilustracją")
+
+## Kolejny rozdział
+
+Dalsza treść.
+```
+
+Wspierane są tabele GFM, cytaty i schematy w blokach `mermaid`. Grafiki z wykładów
+można osadzać bez kopiowania: `/api/decks/<slug>/attachments/<plik>`.
+Lokalne grafiki trafiają do `podcasts/<slug>/attachments/`. `podcast.txt` pozostaje
+osobnym tekstem dla lektora. `unlisted: true` dodaje `noindex`; adres nadal jest
+publicznie dostępny, nie jest to kontrola dostępu.
+
+Treść jest czytana przy żądaniu. Compose montuje `podcasts/` tylko do odczytu,
+a CI synchronizuje ten folder obok `decks/`. Obraz zawiera także kopię podcastów
+na potrzeby instalacji bez tego montowania (wtedy zmiana treści wymaga nowego obrazu).
+
 ## Nowy deck
 
 ```bash

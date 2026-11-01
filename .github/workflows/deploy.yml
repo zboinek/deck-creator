@@ -59,7 +59,7 @@ jobs:
           format: table
 
   deploy:
-    name: Sync decks & restart
+    name: Sync content & restart
     needs: build
     runs-on: ubuntu-latest
     environment: production
@@ -85,6 +85,9 @@ jobs:
       # Mirror repo decks/ onto the server (removes stale files and raw materials).
       - name: Sync decks
         run: rsync -az --delete decks/ deck-server:apps/deck-creator/decks/
+
+      - name: Sync podcasts
+        run: rsync -az --delete podcasts/ deck-server:apps/deck-creator/podcasts/
 
       # Pakiet prywatny: logujemy serwer tokenem tego joba (wazny ~1 h)
       # tuż przed pullem - na serwerze nie zostaje trwaly token rejestru.

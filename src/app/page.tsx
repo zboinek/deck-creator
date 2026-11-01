@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { listDecks, type DeckSummary } from "@/lib/deck-loader";
+import { listPodcasts } from "@/lib/article-loader";
 
 const KICKER_STYLE = {
   fontFamily: "var(--font-mono)",
@@ -26,7 +27,7 @@ function Kicker({
 }
 
 export default async function HomePage() {
-  const decks = await listDecks();
+  const [decks, podcasts] = await Promise.all([listDecks(), listPodcasts()]);
 
   const sections: { category: string | null; decks: DeckSummary[] }[] = [];
   for (const deck of decks) {
@@ -150,6 +151,33 @@ export default async function HomePage() {
               <section key={section.category ?? "uncategorized"}>
                 {section.category && <Kicker>{section.category}</Kicker>}
                 <div className="mt-3 space-y-3">
+                  {section.category === "AI3" && (
+                    <>
+                      {podcasts.map(({ slug, meta }) => (
+                        <Link key={slug} href={`/podcast/${slug}`} className="block group">
+                          <div className="card podcast-card">
+                            <div className="flex items-center gap-3 mb-1">
+                              <span className="accent-badge podcast-card-icon" aria-hidden="true">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                  <path d="M3 14v-3a9 9 0 0 1 18 0v3" />
+                                  <rect x="3" y="12" width="4" height="8" rx="2" />
+                                  <rect x="17" y="12" width="4" height="8" rx="2" />
+                                </svg>
+                              </span>
+                              <h2 className="podcast-card-title">{meta.title}</h2>
+                            </div>
+                            <p className="podcast-card-description line-clamp-2">
+                              <strong>PODCAST · Podsumowanie cyklu AI3</strong> — {meta.description || "Posłuchaj nagrania i przeczytaj artykuł."}
+                            </p>
+                            <div className="podcast-card-meta flex flex-wrap items-center gap-2">
+                              <span className="pill pill--podcast">Podcast · audio + artykuł</span>
+                              {meta.date && <time dateTime={meta.date}>{meta.date}</time>}
+                            </div>
+                          </div>
+                        </Link>
+                      ))}
+                    </>
+                  )}
                   {section.decks.map((deck, index) => (
                     <Link
                       key={deck.slug}

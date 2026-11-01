@@ -4,9 +4,14 @@ node_modules
 .gitignore
 *.md
 !decks/**/*.md
+!podcasts/**/*.md
 .env*
 .vscode
 .cursor
 .DS_Store
 Dockerfile
 .dockerignore
+podcasts/jak-zbudowac-dobry-harness/jak-zbudowac-dobry-harness.mp3
+podcasts/*/audio-parts
+podcasts/*/samples
+podcasts/*/*.partial.opus

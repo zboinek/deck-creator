@@ -7,3 +7,4 @@ services:
       - "3000:3000"
     volumes:
       - ./deck-creator/decks:/app/decks:ro
+      - ./deck-creator/podcasts:/app/podcasts:ro

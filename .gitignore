@@ -26,3 +26,11 @@ decks/*/deck-print.html
 decks/*/*.pdf
 decks/*/*.pptx
 decks/*/preview/
+# Local secrets written by `elevenlabs onboard`
+/.env.local
+
+# Local podcast source and listening samples; publish the mastered Opus.
+*.mp3
+samples/
+/podcasts/*/audio-parts/
+/podcasts/*/*.partial.opus

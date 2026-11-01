@@ -427,6 +427,20 @@ body {
   background: #1f1f23;
 }
 
+.pill--podcast, .pill--podcast:hover {
+  color: #5b21b6;
+  background: #f3e8ff;
+  border-color: #d8b4fe;
+  padding: 4px 12px;
+  font-size: var(--text-xs);
+}
+.podcast-card-icon { color: #5b21b6; background: #f3e8ff; padding: 4px 9px; }
+.podcast-card-title { font-size: var(--text-lg); font-weight: 600; color: var(--text-primary); letter-spacing: var(--tracking-tight); }
+.podcast-card-description { margin-left: 46px; margin-top: var(--space-1); font-size: var(--text-sm); color: var(--text-secondary); line-height: var(--leading-relaxed); }
+.podcast-card-description strong { font-weight: 600; }
+.podcast-card-meta { margin-left: 46px; margin-top: var(--space-3); font-size: var(--text-xs); color: var(--text-muted); }
+.podcast-card-meta time { font-family: var(--font-mono); letter-spacing: var(--tracking-wide); }
+
 /* ─── Card component ─── */
 .card {
   background: var(--surface-card);
