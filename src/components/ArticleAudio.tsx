@@ -3,10 +3,33 @@
 import { useEffect, useRef, useState } from "react";
 
 export function ArticleAudio({ slug, title, author, series, version }: { slug: string; title: string; author?: string; series?: string; version?: string }) {
+  const anchor = useRef<HTMLDivElement>(null);
+  const panel = useRef<HTMLElement>(null);
+  const [docked, setDocked] = useState(false);
+  const [height, setHeight] = useState<number>();
   const audio = useRef<HTMLAudioElement>(null);
   const [speed, setSpeed] = useState(1);
   const [failed, setFailed] = useState(false);
   const src = `/api/podcasts/${slug}/audio${version ? `?v=${encodeURIComponent(version)}` : ""}`;
+
+  useEffect(() => {
+    const target = anchor.current;
+    const player = panel.current;
+    if (!target || !player) return;
+    const measure = () => {
+      if (!player.classList.contains("article-audio--docked")) {
+        setHeight(player.getBoundingClientRect().height);
+      }
+    };
+    measure();
+    const resize = new ResizeObserver(measure);
+    resize.observe(player);
+    const observer = new IntersectionObserver(([entry]) => {
+      setDocked(!entry.isIntersecting && entry.boundingClientRect.bottom < 0);
+    });
+    observer.observe(target);
+    return () => { resize.disconnect(); observer.disconnect(); };
+  }, []);
 
   useEffect(() => {
     if (!("mediaSession" in navigator) || typeof MediaMetadata === "undefined") return;
@@ -18,7 +41,8 @@ export function ArticleAudio({ slug, title, author, series, version }: { slug: s
   }, [title, author, series]);
 
   return (
-    <section className="article-audio" aria-label="Odtwarzacz podcastu">
+    <div ref={anchor} className="article-audio-anchor" style={{ minHeight: height }}>
+    <section ref={panel} className={`article-audio${docked ? " article-audio--docked" : ""}`} aria-label="Odtwarzacz podcastu">
       <div className="article-audio-heading">
         <div>
           <h2>Posłuchaj podcastu</h2>
@@ -40,5 +64,6 @@ export function ArticleAudio({ slug, title, author, series, version }: { slug: s
       }} />
       {failed && <p role="alert">Nie udało się odtworzyć podcastu. <a href={src}>Otwórz plik audio</a>.</p>}
     </section>
+    </div>
   );
 }
