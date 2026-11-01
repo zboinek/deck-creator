@@ -9,8 +9,17 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://decks.zboina.pl"),
   title: "Deck Creator",
-  description: "Markdown-powered slide deck presentations",
+  description: "Prezentacje, podcasty i artykuły o sztucznej inteligencji — od podstaw po budowanie agentów.",
+  openGraph: {
+    type: "website",
+    siteName: "Deck Creator",
+    locale: "pl_PL",
+    title: "Deck Creator",
+    description: "Prezentacje, podcasty i artykuły o sztucznej inteligencji — od podstaw po budowanie agentów.",
+  },
+  twitter: { card: "summary_large_image" },
 };
 
 export default function RootLayout({

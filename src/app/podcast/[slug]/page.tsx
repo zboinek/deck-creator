@@ -14,11 +14,14 @@ interface Props { params: Promise<{ slug: string }> }
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const article = await loadArticle((await params).slug);
   if (!article) return { title: "Nie znaleziono artykułu" };
+  const url = `/podcast/${(await params).slug}`;
   return {
+    alternates: { canonical: url },
+    twitter: { card: "summary_large_image", title: article.meta.title, description: article.meta.description },
     title: `${article.meta.title} · ${article.meta.author || "Deck Creator"}`,
     description: article.meta.description,
     ...(article.meta.unlisted ? { robots: { index: false, follow: true } } : {}),
-    openGraph: { type: "article", title: article.meta.title, description: article.meta.description, locale: "pl_PL" },
+    openGraph: { url, siteName: "Deck Creator", ...(article.meta.author ? { authors: [article.meta.author] } : {}), ...(article.meta.date ? { publishedTime: article.meta.date } : {}), type: "article", title: article.meta.title, description: article.meta.description, locale: "pl_PL" },
   };
 }
 

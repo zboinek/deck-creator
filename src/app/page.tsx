@@ -1,7 +1,10 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { listDecks, type DeckSummary } from "@/lib/deck-loader";
 import { listPodcasts } from "@/lib/article-loader";
+
+export const metadata: Metadata = { alternates: { canonical: "/" } };
 
 const KICKER_STYLE = {
   fontFamily: "var(--font-mono)",
