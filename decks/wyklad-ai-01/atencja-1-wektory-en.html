@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Tokeny jako wektory</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="atencja-base.css" />
+<style>
+  .main { flex-direction: column; justify-content: center; gap: 40px; }
+  .tokens { display: grid; grid-template-columns: repeat(6, 1fr); gap: 22px; }
+  .tok { display: flex; flex-direction: column; align-items: center; }
+  .vec { width: 100%; padding: 26px 0 22px; display: flex; flex-direction: column; align-items: center; gap: 10px;
+         font-family: 'JetBrains Mono', monospace; font-size: 26px; font-weight: 500; color: var(--muted); }
+  .vec .dots { color: var(--dim); line-height: .9; }
+  .tok.hi .vec { color: var(--cg); }
+  .word { margin-top: 20px; font-size: 32px; font-weight: 700; }
+  .tok.hi .word { color: var(--cg); }
+  .idx { margin-top: 6px; font-family: 'JetBrains Mono', monospace; font-size: 18px; color: var(--dim); }
+</style>
+<style>
+  /* jasne wydanie: akcent = gradient z paska postępu apki (--gradient-bar w globals.css) */
+  :root { --grad-bar: linear-gradient(in oklab 90deg, #6366f1 0%, #d6f540 50%, #c084fc 80%, #fde68a 100%);
+          --grad-bar-v: linear-gradient(in oklab 180deg, #6366f1 0%, #d6f540 50%, #c084fc 80%, #fde68a 100%);
+          --grad-text: linear-gradient(90deg, #6366f1 0%, #a855f7 100%); }
+  .gt, .footer .rule, .card.hi .verdict .big, .mid .score, .fact .n.acc, .tokname.acc, .tok.hi .word, .axis .end {
+    background: var(--grad-text); -webkit-background-clip: text; background-clip: text; color: transparent; width: fit-content; }
+  .tok.hi .word { margin-left: auto; margin-right: auto; }
+  .eyebrow::after, .rule-line { height: 2px; background: var(--grad-bar); }
+  .card.hi { border: 2px solid transparent;
+             background: linear-gradient(var(--soft), var(--soft)) padding-box, var(--grad-bar) border-box; }
+  .callout { border-left: 0; position: relative; padding-left: 26px; }
+  .callout::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; border-radius: 2px; background: var(--grad-bar-v); }
+  .row.top .bar { background: var(--grad-bar); background-size: 400px 100%; }
+  .stage.hi .chip { border: 2px solid transparent; color: #4f46e5;
+                    background: linear-gradient(#fff, #fff) padding-box, var(--grad-bar) border-box; }
+  .role.on { border: 2px solid transparent; background: linear-gradient(var(--panel), var(--panel)) padding-box, var(--grad-bar) border-box; }
+  .axis .bar { background: var(--grad-bar); }
+  .axis .bar::after { border-left-color: #c084fc; }
+</style>
+</head>
+<body>
+  <div class="eyebrow">How an LLM sees text</div>
+  <h1>Every token is a vector of numbers</h1>
+  <div class="thesis">The model does not see letters. <b>It sees a list of numbers that encodes the meaning of the token.</b></div>
+
+  <div class="main">
+    <div class="tokens" id="t"></div>
+    <div class="callout"><b>“bat”</b> can be an animal or a baseball bat. At the start its vector is the same in every sentence: both meanings live in it at once.
+      <b>The next slides show how attention settles it.</b></div>
+  </div>
+
+  <div class="footer">
+    <div class="note">Simplification: word ≈ token. In a real model the vector has several thousand numbers, not five.</div>
+    <div class="rule">1 token = 1 vector</div>
+  </div>
+<script>
+  const data = [
+    ['Have', [0.54, 0.04, -0.21, 0.97]], ['you', [0.16, -0.28, -0.93, 0.64]],
+    ['seen', [0.11, -0.47, -0.34, 0.15]], ['my', [-0.05, 0.62, 0.23, -0.82]],
+    ['bat', [0.72, -0.19, -0.71, 0.17], 1], ['?', [0.03, 0.88, -0.12, -0.40]],
+  ];
+  const f = v => (v < 0 ? '−' : ' ') + Math.abs(v).toFixed(2);
+  document.getElementById('t').innerHTML = data.map(([w, v, hi], i) => `
+    <div class="tok${hi ? ' hi' : ''}">
+      <div class="vec card${hi ? ' hi' : ''}">
+        <div>${f(v[0])}</div><div>${f(v[1])}</div><div>${f(v[2])}</div><div class="dots">⋮</div><div>${f(v[3])}</div>
+      </div>
+      <div class="word">${w}</div>
+      <div class="idx">x<sub>${i + 1}</sub></div>
+    </div>`).join('');
+</script>
+</body>
+</html>

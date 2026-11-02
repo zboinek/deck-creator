@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Bat: meaning from context</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="atencja-base.css" />
+<style>
+  /* EN zamiennik slajdu 44 (wykres z muchą): to samo słowo, dwa konteksty, dwa miejsca w przestrzeni znaczeń */
+  :root { --grad-bar: linear-gradient(in oklab 90deg, #6366f1 0%, #d6f540 50%, #c084fc 80%, #fde68a 100%);
+          --grad-bar-v: linear-gradient(in oklab 180deg, #6366f1 0%, #d6f540 50%, #c084fc 80%, #fde68a 100%);
+          --grad-text: linear-gradient(90deg, #6366f1 0%, #a855f7 100%); }
+  .eyebrow::after { height: 2px; background: var(--grad-bar); }
+  .footer .rule { background: var(--grad-text); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .callout { border-left: 0; position: relative; padding-left: 26px; }
+  .callout::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; border-radius: 2px; background: var(--grad-bar-v); }
+  .main { gap: 48px; align-items: stretch; }
+  .plot { width: 860px; padding: 10px; display: flex; align-items: center; justify-content: center; }
+  .side { flex: 1; display: flex; flex-direction: column; justify-content: center; gap: 22px; }
+  .sent { padding: 22px 26px; }
+  .sent .k { font-family: 'JetBrains Mono', monospace; font-size: 15px; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; color: var(--dim); }
+  .sent .t { margin-top: 8px; font-size: 25px; line-height: 1.4; font-weight: 500; }
+  .sent .t b { font-weight: 800; }
+  .sent .to { margin-top: 10px; font-size: 18px; color: var(--muted); }
+  .sent.hi { border: 2px solid transparent; background: linear-gradient(var(--soft), var(--soft)) padding-box, var(--grad-bar) border-box; }
+  .sent.hi .k { color: var(--cg); }
+</style>
+</head>
+<body>
+  <div class="eyebrow">Same word, two meanings</div>
+  <h1>Where does “bat” belong?</h1>
+  <div class="thesis">The vector of “bat” gets pulled <b>towards whatever the rest of the sentence is about.</b></div>
+
+  <div class="main">
+    <div class="card plot">
+      <!-- poglądowa projekcja 2D; początek układu w (70, 520), punkt startowy "bat" w (400, 330) -->
+      <svg width="830" height="560" viewBox="0 0 830 560">
+        <defs>
+          <marker id="ag" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#8b8b93" /></marker>
+          <marker id="aa" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#52525b" /></marker>
+          <marker id="as" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#a855f7" /></marker>
+          <linearGradient id="gs" gradientUnits="userSpaceOnUse" x1="400" y1="330" x2="640" y2="170">
+            <stop offset="0" stop-color="#6366f1" /><stop offset="1" stop-color="#a855f7" /></linearGradient>
+        </defs>
+        <g stroke="#ececef" stroke-width="1"><line x1="70" y1="40" x2="70" y2="520" /><line x1="70" y1="520" x2="800" y2="520" /></g>
+
+        <!-- animals -->
+        <text x="185" y="62" fill="#52525b" font-size="22" font-weight="700" text-anchor="middle">animals</text>
+        <g fill="#d4d4d8"><circle cx="130" cy="110" r="9" /><circle cx="230" cy="100" r="9" /><circle cx="270" cy="160" r="9" /><circle cx="120" cy="190" r="9" /><circle cx="200" cy="225" r="9" /></g>
+        <g fill="#8b8b93" font-size="15" font-weight="500">
+          <text x="145" y="115">mouse</text><text x="245" y="105">owl</text><text x="285" y="165">fox</text><text x="135" y="195">cat</text><text x="215" y="230">wolf</text>
+        </g>
+
+        <!-- sports -->
+        <text x="660" y="62" fill="#52525b" font-size="22" font-weight="700" text-anchor="middle">sports</text>
+        <g fill="#d4d4d8"><circle cx="560" cy="105" r="9" /><circle cx="690" cy="100" r="9" /><circle cx="730" cy="170" r="9" /><circle cx="610" cy="280" r="9" /><circle cx="690" cy="240" r="9" /></g>
+        <g fill="#8b8b93" font-size="15" font-weight="500">
+          <text x="575" y="110">ball</text><text x="705" y="105">glove</text><text x="745" y="175">racket</text><text x="625" y="285">helmet</text><text x="705" y="245">pitch</text>
+        </g>
+
+        <!-- bez kontekstu -->
+        <line x1="70" y1="520" x2="394" y2="334" stroke="#8b8b93" stroke-width="4" stroke-dasharray="10 8" marker-end="url(#ag)" />
+        <!-- kontekst A: zwierzę -->
+        <line x1="392" y1="322" x2="204" y2="168" stroke="#52525b" stroke-width="4" marker-end="url(#aa)" />
+        <circle cx="196" cy="162" r="12" fill="#52525b" stroke="#fff" stroke-width="3" />
+        <text x="300" y="268" fill="#52525b" font-size="20" font-weight="700" text-anchor="end">A</text>
+        <!-- kontekst B: baseball -->
+        <line x1="408" y1="322" x2="632" y2="176" stroke="url(#gs)" stroke-width="5" marker-end="url(#as)" />
+        <circle cx="640" cy="170" r="13" fill="#a855f7" stroke="#fff" stroke-width="3" />
+        <text x="530" y="276" fill="#6366f1" font-size="20" font-weight="700">B</text>
+
+        <circle cx="400" cy="330" r="12" fill="#ffffff" stroke="#52525b" stroke-width="3" />
+        <text x="420" y="372" fill="#52525b" font-size="20" font-weight="700">bat, no context</text>
+      </svg>
+    </div>
+    <div class="side">
+      <div class="card sent">
+        <div class="k">Sentence A</div>
+        <div class="t">A <b>bat</b> is a mammal. It sleeps hanging upside down.</div>
+        <div class="to">→ moves towards <b>animals</b></div>
+      </div>
+      <div class="card sent hi">
+        <div class="k">Sentence B</div>
+        <div class="t">Have you seen my <b>bat</b>? I left it with my baseball glove and helmet.</div>
+        <div class="to">→ moves towards <b>sports</b></div>
+      </div>
+      <div class="callout"><b>The attention mechanism lets the model understand meaning depending on the context.</b></div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <div class="note">Illustrative 2D projection. Real embeddings have thousands of dimensions.</div>
+    <div class="rule">same token · different context · different vector</div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Conversation history</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="prompt-base.css" />
+<style>
+  /* jeden szablon, cztery slajdy: prompt-czat.html?k=1..4 (slajdy 6-9) */
+  body { width: 1600px; height: 900px; padding: 48px 64px; display: grid; grid-template-columns: 1fr 400px; gap: 72px; }
+  /* okno rozmowy w stylu czatu webowego: ciepłe tło, wiadomości na środku, pole wpisywania na dole */
+  .win { min-width: 0; display: flex; flex-direction: column; background: #faf9f5; border: 1px solid #e6e3da;
+         border-radius: 22px; overflow: hidden; box-shadow: 0 24px 60px rgba(20, 20, 30, .08), 0 2px 6px rgba(20, 20, 30, .04); }
+  .bar { height: 54px; flex: none; display: flex; align-items: center; padding: 0 20px; border-bottom: 1px solid #ece9e1; position: relative; }
+  .bar .dots { display: flex; gap: 8px; } .bar .dots i { width: 12px; height: 12px; border-radius: 50%; background: #dcd9d0; }
+  .bar .title { position: absolute; left: 0; right: 0; text-align: center; font-size: 16px; font-weight: 600; color: #3d3d3a; }
+  .bar .title span { color: #8b8b93; font-weight: 400; margin-left: 6px; }
+  .msgs { flex: 1; min-height: 0; overflow: hidden; display: flex; flex-direction: column; justify-content: flex-end; gap: 22px;
+          padding: 0 70px 26px; -webkit-mask-image: linear-gradient(180deg, transparent 0, #000 110px); mask-image: linear-gradient(180deg, transparent 0, #000 110px); }
+  .past { opacity: .45; display: flex; flex-direction: column; gap: 22px; }
+  .u { align-self: flex-end; max-width: 620px; background: color-mix(in oklab, var(--ins) 10%, white); border: 1px solid color-mix(in oklab, var(--ins) 28%, white);
+       border-radius: 18px; padding: 14px 20px; font-size: 20px; line-height: 1.45; color: #1f1f1d; }
+  .att { align-self: flex-end; width: 250px; background: color-mix(in oklab, var(--ctx) 8%, white); border: 1px solid color-mix(in oklab, var(--ctx) 32%, white);
+         border-radius: 14px; padding: 14px 16px; }
+  .att .nm { font-size: 16px; font-weight: 600; line-height: 1.3; color: #1f1f1d; }
+  .att .meta { margin-top: 10px; display: flex; align-items: center; gap: 8px; font-size: 13px; color: #8b8b93; }
+  .att .meta b { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #fff; background: var(--ctx); border-radius: 4px; padding: 2px 6px; }
+  .a { border-left: 3px solid var(--ast); padding-left: 22px; font-family: 'Source Serif 4', Georgia, serif; font-size: 21px; line-height: 1.5; color: #2b2b28; }
+  .a h4 { font-weight: 600; font-size: 21px; margin-bottom: 4px; }
+  .a ol { padding-left: 26px; }
+  .a .sig { display: flex; align-items: center; gap: 8px; margin-top: 10px; font-family: Inter, sans-serif; font-size: 13px; color: #8b8b93; }
+  .a .sig i { width: 10px; height: 10px; border-radius: 50%; background: var(--ast); }
+  .search { display: inline-flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 12px; font-family: Inter, sans-serif; font-size: 15px;
+            color: #5b21b6; background: color-mix(in oklab, var(--ctx) 8%, white); border: 1px solid color-mix(in oklab, var(--ctx) 32%, white);
+            border-radius: 12px; padding: 8px 12px; }
+  .search span { color: var(--muted); background: #fff; border: 1px solid var(--line-strong); border-radius: 999px; padding: 2px 10px; font-size: 13px; }
+  .tool { display: inline-flex; align-items: center; gap: 10px; margin-bottom: 10px; font-family: 'JetBrains Mono', monospace; font-size: 15px;
+          color: #92400e; background: color-mix(in oklab, var(--ast) 10%, white); border: 1px solid color-mix(in oklab, var(--ast) 38%, white);
+          border-radius: 10px; padding: 6px 12px; }
+  .tool b { font-weight: 700; }
+  .input { flex: none; margin: 0 40px 26px; background: #fff; border: 1px solid #e0ddd4; border-radius: 22px; padding: 16px 18px 12px;
+           box-shadow: 0 4px 14px rgba(20, 20, 30, .05); }
+  .input .ph { font-size: 18px; color: #a3a3a0; padding: 0 4px 16px; }
+  .input .row { display: flex; align-items: center; gap: 10px; }
+  .input .btn { height: 34px; min-width: 34px; border-radius: 10px; border: 1px solid #e6e3da; display: flex; align-items: center; justify-content: center;
+                font-size: 15px; color: #6b6b68; padding: 0 10px; }
+  .input .btn.on { color: #1f1f1d; background: #f0eee6; border-color: #d6d3c9; }
+  .input .model { margin-left: auto; font-size: 15px; color: #3d3d3a; }
+  .input .send { width: 34px; height: 34px; border-radius: 10px; background: #3f3f46; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 18px; }
+  .side { display: flex; flex-direction: column; justify-content: center; }
+  .side .hdr { margin-bottom: 20px; }
+  .hist { display: flex; flex-direction: column; gap: 8px; }
+  .hist .blk { height: 54px; font-size: 19px; padding-left: 26px; }
+  .hist .blk.ctx { height: 72px; }
+  .hist .blk small { font-weight: 500; color: var(--muted); margin-left: 8px; font-size: 16px; }
+  .hist .turn { margin: 12px 0 0 2px; }
+  .hist .turn.first { margin-top: 2px; }
+  .note { margin-top: 30px; display: flex; gap: 14px; align-items: flex-start; font-size: 19px; line-height: 1.4; color: var(--muted); }
+  .note::before { content: ''; flex: none; width: 4px; align-self: stretch; border-radius: 2px;
+                  background: linear-gradient(in oklab 180deg, #6366f1, #d6f540 50%, #c084fc 80%, #fde68a); }
+  .note b { color: var(--text); font-weight: 600; }
+  .src { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 4px; }
+  .src span { font-size: 15px; color: var(--muted); background: #fff; border: 1px solid var(--line-strong); border-radius: 999px; padding: 4px 12px; }
+</style>
+</head>
+<body>
+  <div class="win"><div class="bar"><div class="dots"><i></i><i></i><i></i></div><div class="title">LLM workshop agenda<span>⌄</span></div></div><div class="msgs" id="chat"></div><div class="input" id="input"></div></div>
+  <div class="side">
+    <div class="hdr">History</div>
+    <div class="hist" id="hist"></div>
+    <div class="note" id="note"></div>
+  </div>
+<script>
+  const k = +(new URLSearchParams(location.search).get('k') || 1);
+  const att = (nm, sz) => `<div class="att"><div class="nm">${nm}</div><div class="meta"><b>MD</b>${sz}</div></div>`;
+  const u = t => `<div class="u">${t}</div>`;
+  const a = (h, items, pre = '', last = false) => `<div class="a">${pre}${h ? `<h4>${h}</h4>` : ''}${items ? `<ol>${items.map(i => `<li>${i}</li>`).join('')}</ol>` : ''}${last ? '<div class="sig"><i></i>llama3-8b</div>' : ''}</div>`;
+  const turns = [
+    l => att('LLM RAG i Finetuning Workshop - Agenda.md', '4.6 KB')
+         + u('Based on given context please prepare english version of document. Be exact, don\'t skip any chapter.')
+         + a('Module 1: Theoretical Background (5h)', ['Capabilities and Limitations of Models', 'Large Language Models', 'Infrastructure', 'Orchestration', 'Vector Bases'], '', l),
+    l => u('Based on given document and its translation prepare list of prerequisites that participants should be familiar with before workshop starts.')
+         + a('Pre-requisites for the Workshop:', ['Programming skills, preferably Python', 'Basic knowledge of deep learning', 'Experience with large language models', 'Knowledge of NLP: tokenization, stemming'], '', l),
+    l => u('Prepare list of tools that are widely used to orchestrate AI workloads.')
+         + a('List of Tools for Orchestrating AI Workloads:', ['Kubernetes', 'Apache Airflow', 'Apache Spark', 'Dask', 'TensorFlow Extended (TFX)'], '', l),
+    l => u('What is Apache Airflow?')
+         + a(null, null, `<div class="tool">tool call · <b>web_search</b>("apache airflow")</div><br><div class="search">Results: 3 pages <span>airflow.apache.org</span><span>Agenda.md</span><span>+2</span></div>
+              <p>Apache Airflow is an open-source platform for programmatically authoring, scheduling, and monitoring workflows. Workflows are defined as DAGs of tasks.</p>`, l),
+  ];
+  // starsze tury przygaszone i ucięte u góry, bieżąca na dole jak w przewiniętym czacie
+  document.getElementById('chat').innerHTML =
+    (k > 1 ? `<div class="past">${turns.slice(0, k - 1).map(t => t(false)).join('')}</div>` : '') + turns[k - 1](true);
+  document.getElementById('input').innerHTML = `<div class="ph">Reply...</div><div class="row"><div class="btn">+</div>
+    <div class="btn${k === 4 ? ' on' : ''}">Web search</div><div class="model">llama3-8b ⌄</div><div class="send">↑</div></div>`;
+
+  // historia: [klasa, tekst, stan] ; stan: on | off | ring
+  const B = (c, t, s = 'on') => `<div class="blk ${c} ${s === 'on' ? '' : s}">${t}</div>`;
+  const T = (n, first) => `<div class="turn${first ? ' first' : ''}">Turn ${n}</div>`;
+  const past = s => s === 'on' ? 'on' : 'off';
+  let h = '';
+  if (k <= 3) {
+    h += B('sys', 'System prompt', k === 1 ? 'on' : 'off');
+    h += T(1, true) + B('ins', 'User instruction', past(k === 1 ? 'on' : 'x'))
+       + B('ctx', 'User context <small>agenda.md</small>', k === 1 ? 'on' : 'ring')
+       + B('ast', 'Assistant', k === 1 ? 'on' : 'off');
+    if (k >= 2) h += T(2) + B('ins', 'User instruction', k === 2 ? 'on' : 'off') + B('ast', 'Assistant', k === 2 ? 'on' : 'off');
+    if (k >= 3) h += T(3) + B('ins', 'User instruction') + B('ast', 'Assistant');
+  } else {
+    h += B('sys', 'System prompt', 'off') + T('1–3', true) + `<div class="blk ghost">earlier conversation</div>`
+       + T(4) + B('ins', 'User instruction') + B('ast', 'Assistant <small>tool call: web_search</small>')
+       + B('ctx', 'Tool result <small>web results</small>') + B('ast', 'Assistant <small>answer</small>');
+  }
+  document.getElementById('hist').innerHTML = h;
+
+  const notes = {
+    1: 'Every message <b>goes into the history</b> as a separate block.',
+    2: 'The new instruction has no file, but <b>the model still sees the agenda from turn 1</b>.',
+    3: 'The history grows with every turn and <b>all of it goes to the model</b> with every question.',
+    4: 'The model <b>calls a tool</b> on its own, and the result comes back into the history <b>as context</b>.',
+  };
+  document.getElementById('note').innerHTML = `<span>${notes[k]}</span>`;
+</script>
+</body>
+</html>
