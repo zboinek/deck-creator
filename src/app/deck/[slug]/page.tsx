@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
-import { loadDeck } from "@/lib/deck-loader";
+import { loadDeck, loadDeckTranslations, DEFAULT_DECK_LANG } from "@/lib/deck-loader";
 import { DeckPresentation } from "@/components/DeckPresentation";
 
 interface DeckPageProps {
@@ -14,6 +14,8 @@ export default async function DeckPage({ params }: DeckPageProps) {
   if (!deck || deck.slides.length === 0) {
     notFound();
   }
+
+  const translations = await loadDeckTranslations(slug);
 
   return (
     <Suspense
@@ -30,7 +32,13 @@ export default async function DeckPage({ params }: DeckPageProps) {
         </div>
       }
     >
-      <DeckPresentation meta={deck.meta} slides={deck.slides} slug={slug} />
+      <DeckPresentation
+        meta={deck.meta}
+        slides={deck.slides}
+        slug={slug}
+        defaultLang={DEFAULT_DECK_LANG}
+        translations={translations}
+      />
     </Suspense>
   );
 }

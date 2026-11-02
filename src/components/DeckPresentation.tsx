@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
@@ -17,6 +17,28 @@ interface DeckPresentationProps {
   meta: DeckMeta;
   slides: ParsedSlide[];
   slug: string;
+  /** Language of `meta`/`slides` (deck.md). */
+  defaultLang?: string;
+  /** Other languages from deck-<lang>.md, switched on the client without a reload. */
+  translations?: Record<string, { meta: DeckMeta; slides: ParsedSlide[] }>;
+}
+
+function LangToggle({ langs, lang, onSelect }: { langs: string[]; lang: string; onSelect: (lang: string) => void }) {
+  return (
+    <div className="theme-toggle lang-toggle" role="group" aria-label="Deck language" title="Switch language (L)">
+      {langs.map((l) => (
+        <button
+          key={l}
+          type="button"
+          onClick={() => onSelect(l)}
+          aria-pressed={l === lang}
+          className={`theme-toggle__option lang-toggle__option ${l === lang ? "theme-toggle__option--active" : ""}`}
+        >
+          {l.toUpperCase()}
+        </button>
+      ))}
+    </div>
+  );
 }
 
 function ThemeToggle({ theme, onToggle }: { theme: SlideTheme; onToggle: () => void }) {
@@ -207,10 +229,25 @@ function PresenterView({
   );
 }
 
-export function DeckPresentation({ meta, slides, slug }: DeckPresentationProps) {
+export function DeckPresentation({
+  meta: baseMeta,
+  slides: baseSlides,
+  slug,
+  defaultLang = "pl",
+  translations = {},
+}: DeckPresentationProps) {
   const searchParams = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
+
+  const langs = useMemo(() => [defaultLang, ...Object.keys(translations).sort()], [defaultLang, translations]);
+  const langParam = searchParams.get("lang");
+  const [lang, setLang] = useState<string>(
+    langParam && translations[langParam] ? langParam : defaultLang
+  );
+  const active = lang !== defaultLang && translations[lang] ? translations[lang] : null;
+  const meta = active ? active.meta : baseMeta;
+  const slides = active ? active.slides : baseSlides;
 
   const isPrinting = searchParams.get("print") === "true";
 
@@ -251,6 +288,26 @@ export function DeckPresentation({ meta, slides, slug }: DeckPresentationProps) 
   const toggleTheme = useCallback(() => {
     setTheme((t) => (t === "dark" ? "light" : "dark"));
   }, []);
+
+  // Slides of all languages are already loaded, so switching keeps the slide number and does not reload.
+  const selectLang = useCallback(
+    (next: string) => {
+      const target = next !== defaultLang && translations[next] ? translations[next] : null;
+      const count = (target ?? { slides: baseSlides }).slides.length;
+      setLang(target ? next : defaultLang);
+      setCurrent((c) => Math.min(c, count - 1));
+      const params = new URLSearchParams(window.location.search);
+      if (target) params.set("lang", next);
+      else params.delete("lang");
+      const qs = params.toString();
+      window.history.replaceState(null, "", qs ? `${pathname}?${qs}` : pathname);
+    },
+    [defaultLang, translations, baseSlides, pathname]
+  );
+
+  const cycleLang = useCallback(() => {
+    selectLang(langs[(langs.indexOf(lang) + 1) % langs.length]);
+  }, [selectLang, langs, lang]);
 
   const goTo = useCallback(
     (index: number) => {
@@ -367,12 +424,15 @@ export function DeckPresentation({ meta, slides, slug }: DeckPresentationProps) 
         case "t":
           toggleTheme();
           break;
+        case "l":
+          if (langs.length > 1) cycleLang();
+          break;
       }
     }
 
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, [next, prev, navigateSlide, slides.length, isPrinting, toggleTheme, role]);
+  }, [next, prev, navigateSlide, slides.length, isPrinting, toggleTheme, cycleLang, langs.length, role]);
 
   const handlePrintRequest = () => {
     const params = new URLSearchParams(searchParams.toString());
@@ -520,6 +580,7 @@ export function DeckPresentation({ meta, slides, slug }: DeckPresentationProps) 
             onReturnToLive={handleReturnToLive}
           />
           <span style={{ color: "var(--slide-chrome-border)" }}>|</span>
+          {langs.length > 1 && <LangToggle langs={langs} lang={lang} onSelect={selectLang} />}
           <ThemeToggle theme={theme} onToggle={toggleTheme} />
           {!isPresenterMode && (
             <button
