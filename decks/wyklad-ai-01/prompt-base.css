@@ -1,0 +1,47 @@
+/* lekkie diagramy promptu i historii (slajdy 5-10), jasne tło, kolory ról z rodziny --gradient-bar */
+:root {
+  --bg: #ffffff; --text: #0a0a0a; --muted: #52525b; --dim: #8b8b93;
+  --line: #e4e4e7; --line-strong: #d4d4d8; --soft: #f7f7f8;
+  --sys: #3f3f46; --ins: #6366f1; --ctx: #a855f7; --ast: #f59e0b;
+  --grad-bar: linear-gradient(in oklab 90deg, #6366f1 0%, #d6f540 50%, #c084fc 80%, #fde68a 100%);
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: var(--bg); color: var(--text); font-family: Inter, system-ui, sans-serif; }
+.mono { font-family: 'JetBrains Mono', monospace; }
+
+/* blok promptu: jasne tło w kolorze roli, pasek z lewej */
+.blk { position: relative; border-radius: 12px; padding: 0 22px 0 30px; display: flex; align-items: center;
+       font-size: 24px; font-weight: 600; color: var(--text); background: color-mix(in oklab, var(--c) 9%, white);
+       border: 1.5px solid color-mix(in oklab, var(--c) 30%, white); }
+.blk::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 8px; border-radius: 12px 0 0 12px; background: var(--c); }
+.blk.sys { --c: var(--sys); } .blk.ins { --c: var(--ins); } .blk.ctx { --c: var(--ctx); } .blk.ast { --c: var(--ast); }
+.blk.off { opacity: .35; }
+.blk.ghost { background: none; border-style: dashed; color: var(--dim); }
+.blk.ghost::before { display: none; }
+.blk.ring { box-shadow: 0 0 0 4px #fff, 0 0 0 7px var(--c); }
+
+.hdr { font-family: 'JetBrains Mono', monospace; font-size: 17px; font-weight: 700; letter-spacing: .18em;
+       text-transform: uppercase; color: var(--dim); }
+.turn { font-family: 'JetBrains Mono', monospace; font-size: 14px; font-weight: 700; letter-spacing: .14em;
+        text-transform: uppercase; color: var(--dim); }
+
+/* czat */
+.tag { font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 700; letter-spacing: .14em;
+       text-transform: uppercase; color: var(--c); }
+.ubub { --c: var(--ins); align-self: flex-end; max-width: 760px; background: color-mix(in oklab, var(--ins) 8%, white);
+        border: 1.5px solid color-mix(in oklab, var(--ins) 35%, white); border-radius: 20px 20px 6px 20px;
+        padding: 18px 24px; font-size: 22px; line-height: 1.4; }
+.file { --c: var(--ctx); align-self: flex-end; display: flex; align-items: center; gap: 14px; padding: 12px 18px 12px 14px;
+        border-radius: 14px; background: color-mix(in oklab, var(--ctx) 8%, white); border: 1.5px solid color-mix(in oklab, var(--ctx) 35%, white); }
+.file .ic { width: 40px; height: 48px; border-radius: 6px; background: var(--ctx); color: #fff; display: flex; align-items: flex-end;
+            justify-content: center; padding-bottom: 7px; font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 700; }
+.file .nm { font-size: 19px; font-weight: 600; }
+.file .sz { font-size: 15px; color: var(--dim); }
+.abub { --c: var(--ast); border-left: 5px solid var(--ast); padding: 6px 0 6px 24px; font-size: 21px; line-height: 1.45; color: var(--muted);
+        position: relative; }
+.abub .who { display: flex; align-items: baseline; gap: 14px; margin-bottom: 8px; }
+.abub .model { font-weight: 700; color: var(--text); font-size: 20px; }
+.abub h4 { font-size: 22px; color: var(--text); font-weight: 700; margin-bottom: 6px; }
+.abub ol { padding-left: 28px; }
+.fade { -webkit-mask-image: linear-gradient(180deg, #000 55%, transparent); mask-image: linear-gradient(180deg, #000 55%, transparent); }
+.earlier { font-size: 17px; color: var(--dim); text-align: right; font-family: 'JetBrains Mono', monospace; letter-spacing: .08em; }

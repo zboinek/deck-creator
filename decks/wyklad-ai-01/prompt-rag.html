@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8" />
+<title>RAG: kontekst z dokumentów</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="prompt-base.css" />
+<style>
+  /* 1200x900, obok listy na slajdzie; pozycje bezwzględne, żeby krzywe trafiały w bloki */
+  body { width: 1200px; height: 900px; position: relative; }
+  .stack { position: absolute; left: 560px; top: 163px; width: 580px; display: flex; flex-direction: column; gap: 22px; }
+  .stack .blk { height: 110px; font-size: 28px; }
+  .stack .blk.ctx { height: 200px; }
+  .doc { position: absolute; left: 90px; width: 120px; height: 146px; border-radius: 12px; background: var(--soft);
+         border: 1.5px solid var(--line-strong); display: flex; align-items: flex-end; justify-content: center; padding-bottom: 20px; }
+  .doc::before { content: ''; position: absolute; left: 22px; right: 22px; top: 26px; height: 54px;
+                 background: repeating-linear-gradient(180deg, var(--line-strong) 0 4px, transparent 4px 14px); }
+  .doc span { font-family: 'JetBrains Mono', monospace; font-weight: 700; font-size: 20px; color: var(--ctx);
+              background: #fff; border: 1.5px solid color-mix(in oklab, var(--ctx) 40%, white); border-radius: 8px; padding: 3px 10px; }
+  svg { position: absolute; inset: 0; }
+</style>
+</head>
+<body>
+  <!-- środki dokumentów: y = 250, 450, 650; wejście w User context: (556, 527) -->
+  <div class="doc" style="top:177px"><span>PDF</span></div>
+  <div class="doc" style="top:377px"><span>DOCX</span></div>
+  <div class="doc" style="top:577px"><span>WWW</span></div>
+  <svg width="1200" height="900" viewBox="0 0 1200 900">
+    <defs>
+      <linearGradient id="g" gradientUnits="userSpaceOnUse" x1="220" y1="0" x2="550" y2="0">
+        <stop offset="0" stop-color="#6366f1" /><stop offset="1" stop-color="#a855f7" /></linearGradient>
+      <marker id="a" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto">
+        <path d="M0,0 L10,5 L0,10 z" fill="#a855f7" /></marker>
+    </defs>
+    <g fill="none" stroke="url(#g)" stroke-width="4" stroke-linecap="round">
+      <path d="M226 250 C 400 250, 400 527, 540 527" />
+      <path d="M226 450 C 400 450, 400 527, 540 527" />
+      <path d="M226 650 C 400 650, 400 527, 540 527" marker-end="url(#a)" />
+    </g>
+  </svg>
+  <div class="stack">
+    <div class="blk sys">System prompt</div>
+    <div class="blk ins">User instruction</div>
+    <div class="blk ctx ring">User context</div>
+    <div class="blk ast">Assistant</div>
+  </div>
+</body>
+</html>

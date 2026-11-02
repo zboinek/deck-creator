@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8" />
+<title>Wagi atencji</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="atencja-base.css" />
+<link rel="stylesheet" href="../../node_modules/katex/dist/katex.min.css" />
+<script src="../../node_modules/katex/dist/katex.min.js"></script>
+<style>
+  .main { gap: 56px; align-items: stretch; }
+  .chart { flex: 1; display: flex; flex-direction: column; justify-content: center; gap: 6px; }
+  /* skala: 1% = 17 px  ->  22% = 374 px */
+  .row { display: grid; grid-template-columns: 190px 1fr; align-items: center; gap: 18px; height: 36px; }
+  .row .w { text-align: right; font-size: 22px; font-weight: 600; color: var(--muted); }
+  .row .barw { display: flex; align-items: center; gap: 12px; }
+  .row .bar { height: 24px; border-radius: 4px; background: var(--line-strong); }
+  .row .pct { font-family: 'JetBrains Mono', monospace; font-size: 19px; font-weight: 700; color: var(--dim); }
+  .row.top .w { color: var(--text); }
+  .row.top .bar { background: var(--cg); }
+  .row.top .pct { color: var(--cg); }
+  .row.self .w { color: var(--text); }
+  .row.self .w::after { content: ' (sam)'; color: var(--dim); font-weight: 500; font-size: 17px; }
+  .sep { height: 1px; background: var(--line); margin: 6px 0 6px 208px; }
+
+  .side { width: 560px; display: flex; flex-direction: column; justify-content: center; gap: 30px; }
+  .formula { padding: 30px 24px; display: flex; justify-content: center; }
+  .formula .katex { font-size: 34px; }
+  .steps { display: flex; flex-direction: column; gap: 14px; font-size: 21px; color: var(--muted); line-height: 1.35; }
+  .steps div { display: grid; grid-template-columns: 36px 1fr; }
+  .steps .n { font-family: 'JetBrains Mono', monospace; font-weight: 700; color: var(--cg); }
+  .steps b { color: var(--text); font-weight: 600; }
+</style>
+<style>
+  /* jasne wydanie: akcent = gradient z paska postępu apki (--gradient-bar w globals.css) */
+  :root { --grad-bar: linear-gradient(in oklab 90deg, #6366f1 0%, #d6f540 50%, #c084fc 80%, #fde68a 100%);
+          --grad-bar-v: linear-gradient(in oklab 180deg, #6366f1 0%, #d6f540 50%, #c084fc 80%, #fde68a 100%);
+          --grad-text: linear-gradient(90deg, #6366f1 0%, #a855f7 100%); }
+  .gt, .footer .rule, .card.hi .verdict .big, .mid .score, .fact .n.acc, .tokname.acc, .tok.hi .word, .axis .end {
+    background: var(--grad-text); -webkit-background-clip: text; background-clip: text; color: transparent; width: fit-content; }
+  .tok.hi .word { margin-left: auto; margin-right: auto; }
+  .eyebrow::after, .rule-line { height: 2px; background: var(--grad-bar); }
+  .card.hi { border: 2px solid transparent;
+             background: linear-gradient(var(--soft), var(--soft)) padding-box, var(--grad-bar) border-box; }
+  .callout { border-left: 0; position: relative; padding-left: 26px; }
+  .callout::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; border-radius: 2px; background: var(--grad-bar-v); }
+  .row.top .bar { background: var(--grad-bar); background-size: 400px 100%; }
+  .stage.hi .chip { border: 2px solid transparent; color: #4f46e5;
+                    background: linear-gradient(#fff, #fff) padding-box, var(--grad-bar) border-box; }
+  .role.on { border: 2px solid transparent; background: linear-gradient(var(--panel), var(--panel)) padding-box, var(--grad-bar) border-box; }
+  .axis .bar { background: var(--grad-bar); }
+  .axis .bar::after { border-left-color: #c084fc; }
+</style>
+</head>
+<body>
+  <div class="eyebrow">Krok 2 · wagi atencji</div>
+  <h1>Na kogo patrzy „muchy”</h1>
+  <div class="thesis">Query „muchy” porównane z kluczem każdego tokenu. <b>Po softmaksie wagi sumują się do 100%.</b></div>
+
+  <div class="main">
+    <div class="chart" id="c"></div>
+    <div class="side">
+      <div class="card formula" id="f"></div>
+      <div class="steps">
+        <div><span class="n">1</span><span><b>q · k</b> dla każdego tokenu: jak bardzo pasuje</span></div>
+        <div><span class="n">2</span><span><b>÷ √d<sub>k</sub></b>, żeby liczby nie rosły z wymiarem</span></div>
+        <div><span class="n">3</span><span><b>softmax</b> zamienia wyniki na procenty</span></div>
+      </div>
+      <div class="callout"><b>„krawatów”, „wieszaku”, „wisiała”</b> razem to ponad połowa uwagi. Słowa o owadach się tu nie pojawiają.</div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <div class="note">Wagi poglądowe. W modelu dekoderowym tokeny widzą tylko wcześniejsze, więc kontekst „krawatów” trafia do późniejszych wektorów.</div>
+    <div class="rule">Σ wag = 100%</div>
+  </div>
+<script>
+  katex.render(String.raw`\alpha_j = \mathrm{softmax}_j\!\left(\frac{q_{\text{muchy}} \cdot k_j}{\sqrt{d_k}}\right)`,
+               document.getElementById('f'), { displayMode: true });
+  const rows = [['Nie', 2], ['widzieliście', 5], ['może', 2], ['mojej', 10], ['muchy', 14, 'self'], ['?', 1], null,
+                ['Ostatnio', 2], ['wisiała', 16, 'top'], ['na', 2], ['wieszaku', 20, 'top'], ['obok', 3], ['krawatów', 22, 'top'], ['.', 1]];
+  console.assert(rows.filter(Boolean).reduce((s, r) => s + r[1], 0) === 100);
+  document.getElementById('c').innerHTML = rows.map(r => r === null ? '<div class="sep"></div>' : `
+    <div class="row ${r[2] || ''}"><div class="w">${r[0]}</div>
+      <div class="barw"><div class="bar" style="width:${r[1] * 17}px"></div><div class="pct">${r[1]}%</div></div></div>`).join('');
+</script>
+</body>
+</html>

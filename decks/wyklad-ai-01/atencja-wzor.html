@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8" />
+<title>Wzór atencji</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+<!-- KaTeX z node_modules repo, render offline -->
+<link rel="stylesheet" href="../../node_modules/katex/dist/katex.min.css" />
+<script src="../../node_modules/katex/dist/katex.min.js"></script>
+<style>
+  :root {
+    --bg: #ffffff; --text: #0a0a0a; --muted: #52525b; --dim: #8b8b93;
+    --line: #e4e4e7; --line-strong: #d4d4d8; --cg: #6366f1; --soft: #f7f7f8;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    width: 1600px; height: 900px; background: var(--bg); color: var(--text);
+    font-family: Inter, system-ui, sans-serif; padding: 50px 64px;
+    display: flex; gap: 56px; align-items: center;
+  }
+  .left { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+  .eyebrow { display: flex; align-items: center; gap: 18px; font-family: 'JetBrains Mono', monospace;
+             font-size: 16px; font-weight: 700; letter-spacing: .2em; text-transform: uppercase; color: var(--cg); }
+  .eyebrow::after { content: ''; flex: 1; height: 1px; background: var(--line); }
+
+  .formula { margin-top: 40px; background: var(--soft); border: 1px solid var(--line-strong);
+             border-radius: 18px; padding: 48px 24px; display: flex; justify-content: center; }
+  .formula .katex { font-size: 40px; white-space: nowrap; color: var(--text); }
+  .formula .katex-display { margin: 0; }
+
+  .legend { margin-top: 36px; display: grid; grid-template-columns: 112px 1fr; row-gap: 20px; align-items: baseline; }
+  .legend .sym { font-size: 30px; text-align: left; }
+  .legend .sym .katex { font-size: 30px; color: var(--cg); }
+  .legend .txt { font-size: 23px; color: var(--muted); line-height: 1.35; }
+  .legend .txt b { color: var(--text); font-weight: 600; }
+
+  .right { flex-shrink: 0; width: 610px; height: 800px; background: #fff; border-radius: 18px; overflow: hidden;
+           display: flex; align-items: center; justify-content: center; }
+  /* skala obrazka 0.9: 644x872 -> 580x785, przycięte artefakty z prawej i z dołu */
+  .crop { width: 548px; height: 768px; overflow: hidden; }
+  .crop img { width: 580px; display: block; margin-top: -12px; }
+</style>
+<style>
+  /* jasne wydanie: akcent = gradient z paska postępu apki (--gradient-bar w globals.css) */
+  :root { --grad-bar: linear-gradient(in oklab 90deg, #6366f1 0%, #d6f540 50%, #c084fc 80%, #fde68a 100%);
+          --grad-bar-v: linear-gradient(in oklab 180deg, #6366f1 0%, #d6f540 50%, #c084fc 80%, #fde68a 100%);
+          --grad-text: linear-gradient(90deg, #6366f1 0%, #a855f7 100%); }
+  .gt, .footer .rule, .card.hi .verdict .big, .mid .score, .fact .n.acc, .tokname.acc, .tok.hi .word, .axis .end {
+    background: var(--grad-text); -webkit-background-clip: text; background-clip: text; color: transparent; width: fit-content; }
+  .tok.hi .word { margin-left: auto; margin-right: auto; }
+  .eyebrow::after, .rule-line { height: 2px; background: var(--grad-bar); }
+  .card.hi { border: 2px solid transparent;
+             background: linear-gradient(var(--soft), var(--soft)) padding-box, var(--grad-bar) border-box; }
+  .callout { border-left: 0; position: relative; padding-left: 26px; }
+  .callout::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; border-radius: 2px; background: var(--grad-bar-v); }
+  .row.top .bar { background: var(--grad-bar); background-size: 400px 100%; }
+  .stage.hi .chip { border: 2px solid transparent; color: #4f46e5;
+                    background: linear-gradient(#fff, #fff) padding-box, var(--grad-bar) border-box; }
+  .role.on { border: 2px solid transparent; background: linear-gradient(var(--panel), var(--panel)) padding-box, var(--grad-bar) border-box; }
+  .axis .bar { background: var(--grad-bar); }
+  .axis .bar::after { border-left-color: #c084fc; }
+</style>
+</head>
+<body>
+  <div class="left">
+    <div class="eyebrow">Vaswani i in., 2017</div>
+    <div class="formula" id="f"></div>
+    <div class="legend">
+      <div class="sym" data-tex="Q"></div>
+      <div class="txt"><b>Query</b>, czego szuka bieżący token</div>
+      <div class="sym" data-tex="K"></div>
+      <div class="txt"><b>Key</b>, co oferuje każdy z pozostałych tokenów</div>
+      <div class="sym" data-tex="V"></div>
+      <div class="txt"><b>Value</b>, treść, którą token przekazuje dalej</div>
+      <div class="sym" data-tex="QK^{\top}"></div>
+      <div class="txt"><b>Dopasowanie</b> każdego tokenu do każdego innego</div>
+      <div class="sym" data-tex="\sqrt{d_k}"></div>
+      <div class="txt"><b>Skalowanie</b> wymiarem klucza, żeby softmax się nie nasycał</div>
+    </div>
+  </div>
+  <div class="right">
+    <div class="crop"><img src="attachments/43-transformer.png" alt="Architektura transformera" /></div>
+  </div>
+<script>
+  katex.render(String.raw`\mathrm{Attention}(Q,K,V) = \mathrm{softmax}\!\left(\frac{QK^{\top}}{\sqrt{d_k}}\right)V`,
+               document.getElementById('f'), { displayMode: true });
+  document.querySelectorAll('[data-tex]').forEach(e => katex.render(e.dataset.tex, e));
+</script>
+</body>
+</html>

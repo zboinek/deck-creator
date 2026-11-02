@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8" />
+<title>Skąd wziąć LLM-a</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+<style>
+  /* loga: oficjalne pliki z repozytoriów projektów, w logos/ obok tego pliku */
+  :root {
+    --bg: #ffffff; --text: #0a0a0a; --muted: #52525b; --dim: #8b8b93;
+    --line: #e4e4e7; --line-strong: #d4d4d8; --cg: #6366f1;
+    --soft: #f7f7f8; --panel: #f4f4f5;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    width: 1600px; height: 900px; background: var(--bg); color: var(--text);
+    font-family: Inter, system-ui, sans-serif; padding: 70px 64px 64px;
+    display: flex; flex-direction: column; justify-content: center;
+  }
+  .cards { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; }
+  .card {
+    background: var(--soft); border: 1px solid var(--line-strong); border-radius: 18px;
+    padding: 44px 32px 36px; display: flex; flex-direction: column; align-items: center;
+    text-align: center; height: 560px;
+  }
+  .logo { height: 210px; width: 100%; display: flex; align-items: center; justify-content: center; }
+  .logo img { max-height: 190px; max-width: 220px; }
+  .logo img.ollama { height: 180px; }
+  .logo img.llamacpp { height: 175px; }
+  .logo img.vllm { height: 170px; }
+  .logo img.sglang { height: 190px; }
+  .name { font-size: 40px; font-weight: 800; letter-spacing: -.02em; margin-top: 30px; }
+  .desc { font-size: 21px; line-height: 1.4; color: var(--muted); margin-top: 16px; }
+  .tag {
+    margin-top: auto; font-family: 'JetBrains Mono', monospace; font-size: 14px; font-weight: 700;
+    letter-spacing: .16em; text-transform: uppercase; color: var(--dim);
+    border: 1px solid var(--line-strong); border-radius: 999px; padding: 8px 16px;
+  }
+
+  /* oś: od laptopa do serwera GPU */
+  .axis { margin-top: 40px; display: flex; align-items: center; gap: 20px;
+          font-family: 'JetBrains Mono', monospace; font-size: 16px; font-weight: 700;
+          letter-spacing: .16em; text-transform: uppercase; color: var(--muted); }
+  .axis .bar { flex: 1; height: 2px; position: relative;
+               background: linear-gradient(90deg, var(--line-strong), var(--cg)); }
+  .axis .bar::after { content: ''; position: absolute; right: -2px; top: -7px;
+                      border-left: 14px solid var(--cg); border-top: 8px solid transparent;
+                      border-bottom: 8px solid transparent; }
+  .axis .end { color: var(--cg); }
+</style>
+<style>
+  /* jasne wydanie: akcent = gradient z paska postępu apki (--gradient-bar w globals.css) */
+  :root { --grad-bar: linear-gradient(in oklab 90deg, #6366f1 0%, #d6f540 50%, #c084fc 80%, #fde68a 100%);
+          --grad-bar-v: linear-gradient(in oklab 180deg, #6366f1 0%, #d6f540 50%, #c084fc 80%, #fde68a 100%);
+          --grad-text: linear-gradient(90deg, #6366f1 0%, #a855f7 100%); }
+  .gt, .footer .rule, .card.hi .verdict .big, .mid .score, .fact .n.acc, .tokname.acc, .tok.hi .word, .axis .end {
+    background: var(--grad-text); -webkit-background-clip: text; background-clip: text; color: transparent; width: fit-content; }
+  .tok.hi .word { margin-left: auto; margin-right: auto; }
+  .eyebrow::after, .rule-line { height: 2px; background: var(--grad-bar); }
+  .card.hi { border: 2px solid transparent;
+             background: linear-gradient(var(--soft), var(--soft)) padding-box, var(--grad-bar) border-box; }
+  .callout { border-left: 0; position: relative; padding-left: 26px; }
+  .callout::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; border-radius: 2px; background: var(--grad-bar-v); }
+  .row.top .bar { background: var(--grad-bar); background-size: 400px 100%; }
+  .stage.hi .chip { border: 2px solid transparent; color: #4f46e5;
+                    background: linear-gradient(#fff, #fff) padding-box, var(--grad-bar) border-box; }
+  .role.on { border: 2px solid transparent; background: linear-gradient(var(--panel), var(--panel)) padding-box, var(--grad-bar) border-box; }
+  .axis .bar { background: var(--grad-bar); }
+  .axis .bar::after { border-left-color: #c084fc; }
+</style>
+</head>
+<body>
+  <div class="cards">
+    <div class="card">
+      <div class="logo"><img class="ollama" src="logos/ollama.svg" alt="Ollama" /></div>
+      <div class="name">Ollama</div>
+      <div class="desc">Najprostszy start: jedna komenda pobiera i uruchamia model</div>
+      <div class="tag">laptop</div>
+    </div>
+    <div class="card">
+      <div class="logo"><img class="llamacpp" src="logos/llama-cpp.svg" alt="llama.cpp" /></div>
+      <div class="name">llama.cpp</div>
+      <div class="desc">Lekki silnik w C/C++, modele GGUF, działa na CPU, Macu i GPU</div>
+      <div class="tag">laptop · serwer</div>
+    </div>
+    <div class="card">
+      <div class="logo"><img class="vllm" src="logos/vllm.png" alt="vLLM" /></div>
+      <div class="name">vLLM</div>
+      <div class="desc">Serwowanie na GPU dla wielu użytkowników naraz, PagedAttention</div>
+      <div class="tag">serwer GPU</div>
+    </div>
+    <div class="card">
+      <div class="logo"><img class="sglang" src="logos/sglang.svg" alt="SGLang" /></div>
+      <div class="name">SGLang</div>
+      <div class="desc">Serwowanie na GPU, szybkie przy wspólnym prefiksie promptów</div>
+      <div class="tag">serwer GPU</div>
+    </div>
+  </div>
+  <div class="axis">
+    <span>Lokalnie, dla jednej osoby</span>
+    <div class="bar"></div>
+    <span class="end">Produkcyjnie, dla wielu</span>
+  </div>
+</body>
+</html>

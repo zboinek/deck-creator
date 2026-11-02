@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8" />
+<title>Nowy wektor muchy</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="atencja-base.css" />
+<link rel="stylesheet" href="../../node_modules/katex/dist/katex.min.css" />
+<script src="../../node_modules/katex/dist/katex.min.js"></script>
+<style>
+  .main { gap: 48px; align-items: stretch; }
+  .plot { width: 860px; padding: 10px; display: flex; align-items: center; justify-content: center; }
+  .side { flex: 1; display: flex; flex-direction: column; justify-content: center; gap: 26px; }
+  .formula { padding: 28px 20px; display: flex; justify-content: center; }
+  .formula .katex { font-size: 34px; }
+  .contrib { display: flex; flex-direction: column; gap: 10px; }
+  .contrib div { display: grid; grid-template-columns: 1fr auto; font-size: 21px; color: var(--muted);
+                 border-bottom: 1px solid var(--line); padding-bottom: 8px; }
+  .contrib .v { font-family: 'JetBrains Mono', monospace; font-weight: 700; color: var(--cg); }
+  .contrib .rest .v { color: var(--dim); }
+</style>
+<style>
+  /* jasne wydanie: akcent = gradient z paska postępu apki (--gradient-bar w globals.css) */
+  :root { --grad-bar: linear-gradient(in oklab 90deg, #6366f1 0%, #d6f540 50%, #c084fc 80%, #fde68a 100%);
+          --grad-bar-v: linear-gradient(in oklab 180deg, #6366f1 0%, #d6f540 50%, #c084fc 80%, #fde68a 100%);
+          --grad-text: linear-gradient(90deg, #6366f1 0%, #a855f7 100%); }
+  .gt, .footer .rule, .card.hi .verdict .big, .mid .score, .fact .n.acc, .tokname.acc, .tok.hi .word, .axis .end {
+    background: var(--grad-text); -webkit-background-clip: text; background-clip: text; color: transparent; width: fit-content; }
+  .tok.hi .word { margin-left: auto; margin-right: auto; }
+  .eyebrow::after, .rule-line { height: 2px; background: var(--grad-bar); }
+  .card.hi { border: 2px solid transparent;
+             background: linear-gradient(var(--soft), var(--soft)) padding-box, var(--grad-bar) border-box; }
+  .callout { border-left: 0; position: relative; padding-left: 26px; }
+  .callout::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; border-radius: 2px; background: var(--grad-bar-v); }
+  .row.top .bar { background: var(--grad-bar); background-size: 400px 100%; }
+  .stage.hi .chip { border: 2px solid transparent; color: #4f46e5;
+                    background: linear-gradient(#fff, #fff) padding-box, var(--grad-bar) border-box; }
+  .role.on { border: 2px solid transparent; background: linear-gradient(var(--panel), var(--panel)) padding-box, var(--grad-bar) border-box; }
+  .axis .bar { background: var(--grad-bar); }
+  .axis .bar::after { border-left-color: #c084fc; }
+</style>
+</head>
+<body>
+  <div class="eyebrow">Krok 3 · ważona suma</div>
+  <h1>Nowy wektor „muchy”</h1>
+  <div class="thesis">Do wektora dodajemy wartości v ważone uwagą. <b>Mucha przesuwa się od owadów w stronę garderoby.</b></div>
+
+  <div class="main">
+    <div class="card plot">
+      <!-- układ poglądowy, 2D zamiast tysięcy wymiarów; początek układu w (70, 520) -->
+      <svg width="830" height="560" viewBox="0 0 830 560">
+        <defs>
+          <marker id="ag" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="#8b8b93" /></marker>
+          <marker id="al" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="#6366f1" /></marker>
+          <linearGradient id="gb" gradientUnits="userSpaceOnUse" x1="70" y1="520" x2="585" y2="162"><stop offset="0.000" stop-color="#6366f1"/><stop offset="0.025" stop-color="#6670ec"/><stop offset="0.050" stop-color="#6a79e8"/><stop offset="0.075" stop-color="#6e82e3"/><stop offset="0.100" stop-color="#728add"/><stop offset="0.125" stop-color="#7792d8"/><stop offset="0.150" stop-color="#7c9ad3"/><stop offset="0.175" stop-color="#81a1cd"/><stop offset="0.200" stop-color="#87a8c7"/><stop offset="0.225" stop-color="#8dafc0"/><stop offset="0.250" stop-color="#93b6b9"/><stop offset="0.275" stop-color="#99bdb2"/><stop offset="0.300" stop-color="#9fc3aa"/><stop offset="0.325" stop-color="#a6caa2"/><stop offset="0.350" stop-color="#acd099"/><stop offset="0.375" stop-color="#b3d68f"/><stop offset="0.400" stop-color="#badd84"/><stop offset="0.425" stop-color="#c1e378"/><stop offset="0.450" stop-color="#c8e96a"/><stop offset="0.475" stop-color="#cfef58"/><stop offset="0.500" stop-color="#d6f540"/><stop offset="0.525" stop-color="#d4ed62"/><stop offset="0.550" stop-color="#d1e57a"/><stop offset="0.575" stop-color="#cfdd8d"/><stop offset="0.600" stop-color="#cdd49e"/><stop offset="0.625" stop-color="#cbccac"/><stop offset="0.650" stop-color="#c9c3ba"/><stop offset="0.675" stop-color="#c8bac6"/><stop offset="0.700" stop-color="#c6b0d2"/><stop offset="0.725" stop-color="#c4a6dd"/><stop offset="0.750" stop-color="#c39be8"/><stop offset="0.775" stop-color="#c190f2"/><stop offset="0.800" stop-color="#c084fc"/><stop offset="0.825" stop-color="#c693f2"/><stop offset="0.850" stop-color="#cda0e6"/><stop offset="0.875" stop-color="#d5addb"/><stop offset="0.900" stop-color="#dcb9ce"/><stop offset="0.925" stop-color="#e4c5c0"/><stop offset="0.950" stop-color="#ecd0b0"/><stop offset="0.975" stop-color="#f4db9f"/><stop offset="1.000" stop-color="#fde68a"/></linearGradient>
+        </defs>
+        <g stroke="#ececef" stroke-width="1">
+          <line x1="70" y1="40" x2="70" y2="520" /><line x1="70" y1="520" x2="800" y2="520" />
+        </g>
+        <!-- klastry -->
+        <g fill="#d4d4d8">
+          <circle cx="150" cy="120" r="9" /><circle cx="205" cy="95" r="9" /><circle cx="245" cy="140" r="9" />
+          <circle cx="180" cy="165" r="9" /><circle cx="120" cy="175" r="9" /><circle cx="225" cy="190" r="9" />
+        </g>
+        <text x="185" y="62" fill="#52525b" font-size="22" font-weight="700" text-anchor="middle">owady</text>
+        <g fill="#d4d4d8">
+          <circle cx="600" cy="110" r="9" /><circle cx="660" cy="140" r="9" /><circle cx="700" cy="95" r="9" />
+          <circle cx="630" cy="190" r="9" /><circle cx="720" cy="175" r="9" /><circle cx="545" cy="118" r="9" />
+        </g>
+        <text x="650" y="62" fill="#52525b" font-size="22" font-weight="700" text-anchor="middle">garderoba</text>
+        <!-- wektor przed: od początku układu -->
+        <line x1="70" y1="520" x2="226" y2="265" stroke="#8b8b93" stroke-width="4" stroke-dasharray="10 8" marker-end="url(#ag)" />
+        <!-- wkłady α·v, głowa do ogona: P0(230,260) P1(380,222) P2(500,192) P3(560,172) P4(585,162) -->
+        <g stroke="#6366f1" stroke-width="3" fill="none" marker-end="url(#al)" opacity=".85">
+          <line x1="230" y1="260" x2="376" y2="223" />
+          <line x1="380" y1="222" x2="496" y2="193" />
+          <line x1="500" y1="192" x2="556" y2="173" />
+          <line x1="560" y1="172" x2="582" y2="163" />
+        </g>
+        <g fill="#6366f1" font-size="16" font-weight="700" text-anchor="middle">
+          <text x="300" y="224">krawatów</text><text x="440" y="192">wieszaku</text><text x="512" y="158">wisiała</text>
+        </g>
+        <!-- wektor po -->
+        <line x1="70" y1="520" x2="580" y2="166" stroke="url(#gb)" stroke-width="6" />
+        <circle cx="230" cy="260" r="11" fill="#ffffff" stroke="#52525b" stroke-width="3" />
+        <circle cx="585" cy="162" r="13" fill="#a855f7" stroke="#fff" stroke-width="3" />
+        <text x="212" y="236" fill="#52525b" font-size="20" font-weight="700" text-anchor="end">muchy, przed</text>
+        <text x="600" y="232" fill="#6366f1" font-size="20" font-weight="700">muchy, po</text>
+      </svg>
+    </div>
+    <div class="side">
+      <div class="card formula" id="f"></div>
+      <div class="contrib">
+        <div><span>0.22 · v<sub>krawatów</sub></span><span class="v">największy wkład</span></div>
+        <div><span>0.20 · v<sub>wieszaku</sub></span><span class="v">ubranie wisi</span></div>
+        <div><span>0.16 · v<sub>wisiała</sub></span><span class="v">to rzecz, nie owad</span></div>
+        <div class="rest"><span>reszta tokenów</span><span class="v">drobne poprawki</span></div>
+      </div>
+      <div class="callout">Ten sam token, inny kontekst, <b>inny wektor</b>. To jest przesunięcie ze slajdu z muchą.</div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <div class="note">Uproszczenie: pomijam macierz wyjściową W<sub>O</sub> i wiele głów atencji liczonych równolegle.</div>
+    <div class="rule">nowy x = stary x + Σ α·v</div>
+  </div>
+<script>
+  katex.render(String.raw`x'_{\text{muchy}} = x_{\text{muchy}} + \sum_j \alpha_j\, v_j`,
+               document.getElementById('f'), { displayMode: true });
+</script>
+</body>
+</html>

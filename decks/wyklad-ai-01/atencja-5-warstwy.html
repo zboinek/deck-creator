@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8" />
+<title>Warstwa po warstwie</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="atencja-base.css" />
+<style>
+  .main { flex-direction: column; justify-content: center; gap: 36px; }
+  .flow { display: grid; grid-template-columns: 1fr 40px 1fr 40px 1fr 40px 1fr; align-items: stretch; }
+  .arr { display: flex; align-items: center; justify-content: center; font-size: 30px; color: var(--dim); }
+  .stage { padding: 24px 24px 22px; display: flex; flex-direction: column; }
+  .stage .lvl { font-family: 'JetBrains Mono', monospace; font-size: 15px; font-weight: 700; letter-spacing: .18em;
+                text-transform: uppercase; color: var(--dim); }
+  .stage.hi .lvl { color: var(--cg); }
+  .stage h3 { font-size: 26px; font-weight: 800; margin-top: 8px; letter-spacing: -.01em; }
+  .stage .from { font-size: 18px; color: var(--dim); margin-top: 14px; }
+  .stage .from b { color: var(--muted); font-weight: 600; }
+  .stage .means { margin-top: auto; padding-top: 18px; font-size: 21px; line-height: 1.35; color: var(--text); }
+  .stage .chip { display: inline-block; margin-top: 16px; font-family: 'JetBrains Mono', monospace; font-size: 17px;
+                 font-weight: 700; padding: 6px 12px; border-radius: 8px; background: var(--panel); color: var(--muted);
+                 border: 1px solid var(--line-strong); }
+  .stage.hi .chip { background: var(--cg); color: #ffffff; border-color: var(--cg); }
+  .bottom { display: grid; grid-template-columns: 1fr auto; gap: 48px; align-items: center; }
+  .facts { display: flex; gap: 14px; }
+  .fact { padding: 14px 20px; text-align: center; }
+  .fact .n { font-family: 'JetBrains Mono', monospace; font-size: 30px; font-weight: 700; }
+  .fact .l { font-size: 16px; color: var(--dim); margin-top: 2px; }
+</style>
+<style>
+  /* jasne wydanie: akcent = gradient z paska postępu apki (--gradient-bar w globals.css) */
+  :root { --grad-bar: linear-gradient(in oklab 90deg, #6366f1 0%, #d6f540 50%, #c084fc 80%, #fde68a 100%);
+          --grad-bar-v: linear-gradient(in oklab 180deg, #6366f1 0%, #d6f540 50%, #c084fc 80%, #fde68a 100%);
+          --grad-text: linear-gradient(90deg, #6366f1 0%, #a855f7 100%); }
+  .gt, .footer .rule, .card.hi .verdict .big, .mid .score, .fact .n.acc, .tokname.acc, .tok.hi .word, .axis .end {
+    background: var(--grad-text); -webkit-background-clip: text; background-clip: text; color: transparent; width: fit-content; }
+  .tok.hi .word { margin-left: auto; margin-right: auto; }
+  .eyebrow::after, .rule-line { height: 2px; background: var(--grad-bar); }
+  .card.hi { border: 2px solid transparent;
+             background: linear-gradient(var(--soft), var(--soft)) padding-box, var(--grad-bar) border-box; }
+  .callout { border-left: 0; position: relative; padding-left: 26px; }
+  .callout::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; border-radius: 2px; background: var(--grad-bar-v); }
+  .row.top .bar { background: var(--grad-bar); background-size: 400px 100%; }
+  .stage.hi .chip { border: 2px solid transparent; color: #4f46e5;
+                    background: linear-gradient(#fff, #fff) padding-box, var(--grad-bar) border-box; }
+  .role.on { border: 2px solid transparent; background: linear-gradient(var(--panel), var(--panel)) padding-box, var(--grad-bar) border-box; }
+  .axis .bar { background: var(--grad-bar); }
+  .axis .bar::after { border-left-color: #c084fc; }
+</style>
+</head>
+<body>
+  <div class="eyebrow">Krok 4 · N× warstw</div>
+  <h1>Warstwa po warstwie</h1>
+  <div class="thesis">Atencja i sieć feed-forward powtarzają się <b>dziesiątki razy. Każde przejście dopisuje do wektorów kontekst.</b></div>
+
+  <div class="main">
+    <div class="flow">
+      <div class="card stage">
+        <div class="lvl">Embedding</div>
+        <h3>Wektor ze słownika</h3>
+        <div class="from">kontekst: <b>brak</b></div>
+        <div class="means">„muchy”: owad albo ubranie, model jeszcze nie wie</div>
+        <div><span class="chip">mucha = ?</span></div>
+      </div>
+      <div class="arr">→</div>
+      <div class="card stage">
+        <div class="lvl">Wczesne warstwy</div>
+        <h3>Gramatyka i sąsiedzi</h3>
+        <div class="from">patrzy na: <b>„mojej”</b></div>
+        <div class="means">rzeczownik, rodzaj żeński, coś, co należy do mówiącego</div>
+        <div><span class="chip">moja rzecz</span></div>
+      </div>
+      <div class="arr">→</div>
+      <div class="card stage hi">
+        <div class="lvl">Środkowe warstwy</div>
+        <h3>Znaczenie z kontekstu</h3>
+        <div class="from">patrzy na: <b>„wisiała”, „wieszaku”, „krawatów”</b></div>
+        <div class="means">część garderoby, muszka pod szyję</div>
+        <div><span class="chip">mucha = muszka</span></div>
+      </div>
+      <div class="arr">→</div>
+      <div class="card stage">
+        <div class="lvl">Ostatnia warstwa</div>
+        <h3>Następny token</h3>
+        <div class="from">Linear + Softmax</div>
+        <div class="means">z ostatniego wektora model liczy prawdopodobieństwo każdego tokenu ze słownika</div>
+        <div><span class="chip">P(następny token)</span></div>
+      </div>
+    </div>
+
+    <div class="bottom">
+      <div class="callout">Wektory nie są zastępowane, tylko <b>uzupełniane</b>: każda warstwa dodaje swoją poprawkę do tego, co już było. Dlatego po kilkudziesięciu warstwach jeden wektor niesie sens całego zdania.</div>
+      <div class="facts">
+        <div class="card fact"><div class="n acc">96</div><div class="l">warstw GPT-3</div></div>
+        <div class="card fact"><div class="n">80</div><div class="l">Llama 3 70B</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <div class="note">Podział na „wczesne” i „środkowe” warstwy jest poglądowy. To N× z diagramu transformera.</div>
+    <div class="rule">atencja miesza · FFN przetwarza · ×N</div>
+  </div>
+</body>
+</html>

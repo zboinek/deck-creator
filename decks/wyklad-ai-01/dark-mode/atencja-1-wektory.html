@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8" />
+<title>Tokeny jako wektory</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="atencja-base.css" />
+<style>
+  .main { flex-direction: column; justify-content: center; gap: 40px; }
+  .tokens { display: grid; grid-template-columns: repeat(6, 1fr); gap: 22px; }
+  .tok { display: flex; flex-direction: column; align-items: center; }
+  .vec { width: 100%; padding: 26px 0 22px; display: flex; flex-direction: column; align-items: center; gap: 10px;
+         font-family: 'JetBrains Mono', monospace; font-size: 26px; font-weight: 500; color: var(--muted); }
+  .vec .dots { color: var(--dim); line-height: .9; }
+  .tok.hi .vec { color: var(--cg); }
+  .word { margin-top: 20px; font-size: 32px; font-weight: 700; }
+  .tok.hi .word { color: var(--cg); }
+  .idx { margin-top: 6px; font-family: 'JetBrains Mono', monospace; font-size: 18px; color: var(--dim); }
+</style>
+</head>
+<body>
+  <div class="eyebrow">Jak LLM widzi tekst</div>
+  <h1>Każdy token to wektor liczb</h1>
+  <div class="thesis">Model nie widzi liter. <b>Widzi listę liczb, która koduje znaczenie tokenu.</b></div>
+
+  <div class="main">
+    <div class="tokens" id="t"></div>
+    <div class="callout">Na starcie wektor <b>„muchy”</b> jest taki sam w każdym zdaniu: owad i część garderoby siedzą w nim naraz.
+      <b>Kolejne slajdy pokazują, jak atencja to rozstrzyga.</b></div>
+  </div>
+
+  <div class="footer">
+    <div class="note">Uproszczenie: słowo ≈ token. W prawdziwym modelu wektor ma kilka tysięcy liczb, nie pięć.</div>
+    <div class="rule">1 token = 1 wektor</div>
+  </div>
+<script>
+  const data = [
+    ['Nie', [0.54, 0.04, -0.21, 0.97]], ['widzieliście', [0.16, -0.28, -0.93, 0.64]],
+    ['może', [0.11, -0.47, -0.34, 0.15]], ['mojej', [-0.05, 0.62, 0.23, -0.82]],
+    ['muchy', [0.72, -0.19, -0.71, 0.17], 1], ['?', [0.03, 0.88, -0.12, -0.40]],
+  ];
+  const f = v => (v < 0 ? '−' : ' ') + Math.abs(v).toFixed(2);
+  document.getElementById('t').innerHTML = data.map(([w, v, hi], i) => `
+    <div class="tok${hi ? ' hi' : ''}">
+      <div class="vec card${hi ? ' hi' : ''}">
+        <div>${f(v[0])}</div><div>${f(v[1])}</div><div>${f(v[2])}</div><div class="dots">⋮</div><div>${f(v[3])}</div>
+      </div>
+      <div class="word">${w}</div>
+      <div class="idx">x<sub>${i + 1}</sub></div>
+    </div>`).join('');
+</script>
+</body>
+</html>

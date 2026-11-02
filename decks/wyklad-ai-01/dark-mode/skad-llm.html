@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8" />
+<title>Skąd wziąć LLM-a</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+<style>
+  /* loga: oficjalne pliki z repozytoriów projektów, w logos/ obok tego pliku */
+  :root {
+    --bg: #0a0a0a; --text: #fafafa; --muted: #a1a1aa; --dim: #71717a;
+    --line: #27272a; --line-strong: #3f3f46; --cg: #d6f540;
+    --soft: #141414; --panel: #18181b;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    width: 1600px; height: 900px; background: var(--bg); color: var(--text);
+    font-family: Inter, system-ui, sans-serif; padding: 70px 64px 64px;
+    display: flex; flex-direction: column; justify-content: center;
+  }
+  .cards { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; }
+  .card {
+    background: var(--soft); border: 1px solid var(--line-strong); border-radius: 18px;
+    padding: 44px 32px 36px; display: flex; flex-direction: column; align-items: center;
+    text-align: center; height: 560px;
+  }
+  .logo { height: 210px; width: 100%; display: flex; align-items: center; justify-content: center; }
+  .logo img { max-height: 190px; max-width: 220px; }
+  .logo img.ollama { height: 180px; filter: invert(1); }
+  .logo img.llamacpp { height: 175px; }
+  .logo img.vllm { height: 170px; }
+  .logo img.sglang { height: 190px; }
+  .name { font-size: 40px; font-weight: 800; letter-spacing: -.02em; margin-top: 30px; }
+  .desc { font-size: 21px; line-height: 1.4; color: var(--muted); margin-top: 16px; }
+  .tag {
+    margin-top: auto; font-family: 'JetBrains Mono', monospace; font-size: 14px; font-weight: 700;
+    letter-spacing: .16em; text-transform: uppercase; color: var(--dim);
+    border: 1px solid var(--line-strong); border-radius: 999px; padding: 8px 16px;
+  }
+
+  /* oś: od laptopa do serwera GPU */
+  .axis { margin-top: 40px; display: flex; align-items: center; gap: 20px;
+          font-family: 'JetBrains Mono', monospace; font-size: 16px; font-weight: 700;
+          letter-spacing: .16em; text-transform: uppercase; color: var(--muted); }
+  .axis .bar { flex: 1; height: 2px; position: relative;
+               background: linear-gradient(90deg, var(--line-strong), var(--cg)); }
+  .axis .bar::after { content: ''; position: absolute; right: -2px; top: -7px;
+                      border-left: 14px solid var(--cg); border-top: 8px solid transparent;
+                      border-bottom: 8px solid transparent; }
+  .axis .end { color: var(--cg); }
+</style>
+</head>
+<body>
+  <div class="cards">
+    <div class="card">
+      <div class="logo"><img class="ollama" src="../logos/ollama.svg" alt="Ollama" /></div>
+      <div class="name">Ollama</div>
+      <div class="desc">Najprostszy start: jedna komenda pobiera i uruchamia model</div>
+      <div class="tag">laptop</div>
+    </div>
+    <div class="card">
+      <div class="logo"><img class="llamacpp" src="../logos/llama-cpp.svg" alt="llama.cpp" /></div>
+      <div class="name">llama.cpp</div>
+      <div class="desc">Lekki silnik w C/C++, modele GGUF, działa na CPU, Macu i GPU</div>
+      <div class="tag">laptop · serwer</div>
+    </div>
+    <div class="card">
+      <div class="logo"><img class="vllm" src="../logos/vllm.png" alt="vLLM" /></div>
+      <div class="name">vLLM</div>
+      <div class="desc">Serwowanie na GPU dla wielu użytkowników naraz, PagedAttention</div>
+      <div class="tag">serwer GPU</div>
+    </div>
+    <div class="card">
+      <div class="logo"><img class="sglang" src="../logos/sglang.svg" alt="SGLang" /></div>
+      <div class="name">SGLang</div>
+      <div class="desc">Serwowanie na GPU, szybkie przy wspólnym prefiksie promptów</div>
+      <div class="tag">serwer GPU</div>
+    </div>
+  </div>
+  <div class="axis">
+    <span>Lokalnie, dla jednej osoby</span>
+    <div class="bar"></div>
+    <span class="end">Produkcyjnie, dla wielu</span>
+  </div>
+</body>
+</html>
