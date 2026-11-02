@@ -67,7 +67,7 @@ export default async function HomePage() {
       }}
     >
       <div className="max-w-3xl mx-auto px-6 py-16">
-        <Kicker className="mb-4">Presentations</Kicker>
+        <Kicker className="mb-4">Prezentacje · Podcasty · Artykuły</Kicker>
 
         <header className="mb-14">
           <h1
@@ -80,7 +80,7 @@ export default async function HomePage() {
               color: "var(--text-primary)",
             }}
           >
-            Deck Creator.
+            Materiały edukacyjne Jakuba Zboiny.
           </h1>
           <p
             style={{
@@ -89,7 +89,7 @@ export default async function HomePage() {
               color: "var(--text-secondary)",
             }}
           >
-            Presentations from Markdown. Create, present, export to PDF.
+            Prezentacje, podcasty i artykuły w jednym miejscu.
           </p>
 
           <div className="mt-6">
