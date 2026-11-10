@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8" />
+<title>Pamięć kart GPU</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="base.css" />
+<style>
+  .main { flex-direction: column; gap: 14px; justify-content: center; }
+  /* skala: 1 GB = 2.2 px, więc 432 GB = 950 px */
+  .row { display: flex; align-items: center; gap: 16px; }
+  .lbl { width: 300px; text-align: right; font-size: 24px; font-weight: 600; }
+  .bar { height: 40px; border-radius: 0 6px 6px 0; background: var(--line-strong); }
+  .row.new .bar { background: var(--grad-bar); }
+  .val { font-family: 'JetBrains Mono', monospace; font-size: 24px; font-weight: 700; }
+  .grp { margin-left: 316px; font-size: 17px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin-top: 10px; }
+</style>
+</head>
+<body>
+  <div class="eyebrow">Rok później</div>
+  <h1>Na karcie jest coraz więcej miejsca</h1>
+  <div class="thesis">Następca MI355X ma <b>432 GB zamiast 288 GB.</b> Pamięć decyduje, ile modelu i kontekstu zmieścimy na jednej karcie.</div>
+  <div class="main" id="m"></div>
+  <div class="callout">Llama 3.1 70B Q8 z dzisiejszego wykładu zajmuje 69 GiB: <b>na H100 niemal całą kartę, na MI455X mniej niż jedną szóstą.</b></div>
+  <div class="footer">
+    <div class="note">Dane producentów na jedną kartę. Dostępność zależy od dostaw pamięci HBM, karta nowa nie znaczy łatwa do kupienia.</div>
+    <div class="rule">więcej VRAM = dłuższy kontekst</div>
+  </div>
+<script>
+  const a=[['g','Na wykresach z wykładu'],['','NVIDIA H100',80],['','NVIDIA B200',180],['','AMD MI355X',288],['g','Nowsze generacje'],['new','NVIDIA B300',288],['new','NVIDIA Vera Rubin',288],['new','AMD MI455X',432]];
+  document.getElementById('m').innerHTML=a.map(([c,n,v])=>c=='g'?`<div class="grp">${n}</div>`:`<div class="row ${c}"><div class="lbl">${n}</div><div class="bar" style="width:${v*2.2}px"></div><div class="val">${v} GB</div></div>`).join('');
+</script>
+</body>
+</html>

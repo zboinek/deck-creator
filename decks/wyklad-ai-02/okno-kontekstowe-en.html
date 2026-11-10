@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Context window</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="base.css" />
+<style>
+  body { padding: 36px 64px 28px; }
+  h1 { font-size: 40px; margin-top: 8px; }
+  .main { gap: 28px; margin-top: 16px; }
+  .col { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+  .ttl { font-size: 18px; font-weight: 700; margin-bottom: 8px; }
+  .chat { font-size: 19.5px; line-height: 1.3; }
+  .m { padding: 4px 12px; }
+  .m b { font-weight: 700; }
+  .win { border: 3px solid transparent; border-radius: 12px; background: linear-gradient(#fff, #fff) padding-box, var(--grad-bar) border-box; padding: 5px 0; }
+  .outside { color: #a1a1aa; }
+  .new { color: var(--muted); }
+  .callout { font-size: 20px; margin-top: 12px; }
+</style>
+</head>
+<body>
+  <div class="eyebrow">Context window</div>
+  <h1>The model sees only what fits in the window</h1>
+  <div class="main">
+    <div class="col">
+      <div class="ttl">Turn 5: the whole conversation is in the window</div>
+      <div class="chat" id="a"></div>
+    </div>
+    <div class="col">
+      <div class="ttl">Turn 6: the window has moved down</div>
+      <div class="chat" id="b"></div>
+    </div>
+  </div>
+  <div class="callout">Customer number <b>1337</b> and the report “The database is not working” are already outside the window. <b>For the model this information does not exist.</b></div>
+<script>
+  const msgs=[
+    ['User','Good morning'],
+    ['Assistant','Good morning. Welcome to "Quick Service". Please give me your customer number.'],
+    ['User','1337'],
+    ['Assistant','Thank you, Mr... (checks the database) ...Smith. What do you need today? A problem with a product?'],
+    ['User','The database is not working.'],
+    ['Assistant','Sorry for the inconvenience, Mr Smith. Is the database down completely, or did you see any specific errors while it was running?'],
+    ['User','Server connection error.'],
+    ['Assistant','Could you check whether your Internet connection is stable and whether other applications work properly?'],
+    ['User','The Internet works'],
+    ['Assistant','Thank you for confirming. In that case I can suggest a few steps to solve the problem. First, please check whether the latest product updates have been installed. Next, it is worth restarting the database server. Do you know how to do that?'],
+    ['User','I don\'t know'],
+  ];
+  const m=(x,c='')=>`<div class="m ${c}"><b>${x[0]}:</b> ${x[1]}</div>`;
+  document.getElementById('a').innerHTML=`<div class="win">${msgs.slice(0,9).map(x=>m(x)).join('')}</div>`+m(msgs[9],'new');
+  document.getElementById('b').innerHTML=msgs.slice(0,5).map(x=>m(x,'outside')).join('')+`<div class="win">${msgs.slice(5).map(x=>m(x)).join('')}</div>`;
+</script>
+</body>
+</html>

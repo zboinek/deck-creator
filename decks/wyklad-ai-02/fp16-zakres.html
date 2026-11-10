@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8" />
+<title>Zakres FP16</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="base.css" />
+<style>
+  .main { flex-direction: column; gap: 30px; }
+  /* oś: skala poglądowa, zakres FP16 to środkowe 800 px z 1472 px osi */
+  .axis { position: relative; height: 112px; }
+  .axis .line { position: absolute; left: 0; right: 0; top: 50px; height: 2px; background: var(--line-strong); }
+  .axis .range { position: absolute; left: 336px; width: 800px; top: 20px; height: 62px; border-radius: 10px; display: flex; align-items: center; justify-content: center;
+                 border: 3px solid transparent; background: linear-gradient(#fff, #fff) padding-box, var(--grad-bar) border-box; font-size: 25px; font-weight: 700; }
+  .axis .tick { position: absolute; top: 88px; font-family: 'JetBrains Mono', monospace; font-size: 18px; color: var(--muted); transform: translateX(-50%); }
+  .axis .out { position: absolute; top: 34px; font-family: 'JetBrains Mono', monospace; font-size: 20px; color: var(--dim); }
+  .cards { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; }
+  .card { padding: 26px 30px; }
+  .card .lbl { font-size: 18px; color: var(--muted); }
+  .card .num { font-family: 'JetBrains Mono', monospace; font-size: 34px; font-weight: 700; margin-top: 6px; }
+  .bits { display: flex; gap: 6px; margin-top: 18px; font-family: 'JetBrains Mono', monospace; font-size: 25px; }
+  .bits > div { background: #fff; border: 1px solid var(--line-strong); border-radius: 8px; padding: 9px 16px; text-align: center; }
+  .bits small { display: block; font-size: 13px; color: var(--dim); margin-top: 3px; font-family: Inter, sans-serif; }
+  .res { margin-top: 18px; font-size: 23px; color: var(--muted); }
+  .res b { color: var(--text); font-weight: 700; }
+</style>
+</head>
+<body>
+  <div class="eyebrow">FP16</div>
+  <h1>16 bitów ma twardą granicę zakresu</h1>
+  <div class="thesis">Liczby blisko zera są gęste, dalekie rzadkie, a <b>poza granicą zostaje tylko nieskończoność.</b></div>
+  <div class="main">
+    <div class="axis">
+      <div class="line"></div>
+      <div class="range">liczby skończone, około 65k w każdą stronę</div>
+      <div class="out" style="left:16px">-∞</div>
+      <div class="out" style="right:16px">+∞</div>
+      <div class="tick" style="left:336px">-65 504</div>
+      <div class="tick" style="left:736px">0</div>
+      <div class="tick" style="left:1136px">65 504</div>
+    </div>
+    <div class="cards">
+      <div class="card">
+        <div class="lbl">Mieści się w zakresie</div>
+        <div class="num">47 596</div>
+        <div class="bits"><div>0<small>znak</small></div><div>11110<small>wykładnik</small></div><div>01 1100 1111<small>mantysa</small></div></div>
+        <div class="res">Odczyt z pliku to <b>47 584</b>: zaokrąglenie o 12.</div>
+      </div>
+      <div class="card hi">
+        <div class="lbl">Poza zakresem</div>
+        <div class="num">24 364 256 435 747 596</div>
+        <div class="bits"><div>0<small>znak</small></div><div>11111<small>wykładnik</small></div><div>00 0000 0000<small>mantysa</small></div></div>
+        <div class="res">Hex <b>0x7C00</b>, czyli <b>+nieskończoność</b>. Wartość przepada.</div>
+      </div>
+    </div>
+    <div class="callout">Im dalej od zera, tym większe skoki między liczbami: przy 47 596 kolejne wartości FP16 dzieli już 32. <b>Dla wag modelu to nie problem, bo siedzą blisko zera.</b></div>
+  </div>
+  <div class="footer">
+    <div class="note">Sprawdź sam: numeral-systems.com/ieee-754-converter. Oś nie jest w skali.</div>
+    <div class="rule">FP16: max 65 504</div>
+  </div>
+</body>
+</html>

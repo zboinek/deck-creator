@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8" />
+<title>Następny token</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="base.css" />
+<style>
+  .main { align-items: center; gap: 44px; }
+  .pre { font-size: 58px; font-weight: 800; letter-spacing: -.02em; white-space: nowrap; }
+  /* skala: 1% = 15 px, więc 42% = 630 px */
+  .chart { display: flex; flex-direction: column; gap: 16px; flex: 1; }
+  .row { display: flex; align-items: center; gap: 16px; }
+  .tok { width: 210px; font-family: 'JetBrains Mono', monospace; font-size: 30px; font-weight: 700; text-align: right; white-space: nowrap; }
+  .bar { height: 34px; border-radius: 0 6px 6px 0; background: var(--line-strong); }
+  .row.top .bar { background: var(--grad-bar); }
+  .pct { font-family: 'JetBrains Mono', monospace; font-size: 24px; color: var(--muted); }
+</style>
+</head>
+<body>
+  <div class="eyebrow">Następny token</div>
+  <h1>Model nie pisze zdań, tylko losuje kolejny token</h1>
+  <div class="thesis">Ostatni wektor zamienia się w <b>rozkład prawdopodobieństwa po całym słowniku.</b></div>
+  <div class="main">
+    <div class="pre">Dawno, dawno</div>
+    <div class="chart" id="c"></div>
+  </div>
+  <div class="footer">
+    <div class="note">Pozostałe 19% to reszta słownika. Wynik doklejamy do tekstu i liczymy od nowa.</div>
+    <div class="rule">softmax → losowanie → kolejny token</div>
+  </div>
+<script>
+  const d=[['temu',42],[', raz',19],[', kiedy',8],[', gdy',5],[', na świecie',4],[', w krainie',3]];
+  document.getElementById('c').innerHTML=d.map(([t,p],i)=>`<div class="row ${i?'':'top'}"><div class="tok">${t}</div><div class="bar" style="width:${p*15}px"></div><div class="pct">${p}%</div></div>`).join('');
+</script>
+</body>
+</html>

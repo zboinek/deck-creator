@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8" />
+<title>Od promptu do wejścia</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="base.css" />
+<style>
+  .main { flex-direction: column; gap: 28px; justify-content: center; }
+  .flow { display: grid; grid-template-columns: 1fr 44px 1fr 44px 1fr 44px 1fr; align-items: stretch; }
+  .arrow { display: flex; align-items: center; justify-content: center; font-size: 30px; color: var(--dim); }
+  .stage { padding: 22px 20px; display: flex; flex-direction: column; gap: 14px; min-height: 300px; }
+  .stage h3 { font-size: 24px; font-weight: 700; }
+  .stage p { font-size: 17px; color: var(--muted); line-height: 1.35; margin-top: auto; }
+  .prompt { font-size: 23px; line-height: 1.35; font-weight: 500; }
+  .toks { display: flex; flex-wrap: wrap; gap: 7px; }
+  .toks span { background: #fff; border: 1px solid var(--line-strong); border-radius: 7px; padding: 4px 9px; font-family: 'JetBrains Mono', monospace; font-size: 17px; }
+  .vec { font-family: 'JetBrains Mono', monospace; font-size: 20px; line-height: 1.4; color: var(--muted); }
+  .vec b { color: var(--text); font-weight: 700; }
+  .plus { display: flex; gap: 14px; align-items: center; font-family: 'JetBrains Mono', monospace; font-size: 20px; line-height: 1.4; color: var(--muted); }
+  .facts { display: grid; grid-template-columns: 1.7fr 1fr; gap: 28px; }
+  .fact { padding: 16px 22px; }
+  .fact .l { font-size: 17px; color: var(--muted); }
+  .fact .n { font-family: 'JetBrains Mono', monospace; font-size: 27px; font-weight: 700; margin-top: 4px; }
+</style>
+</head>
+<body>
+  <div class="eyebrow">Proces</div>
+  <h1>Od promptu do wejścia transformera</h1>
+  <div class="thesis">Sam embedding nie wie, gdzie stoi słowo, więc <b>pozycja dokleja się do wektora.</b></div>
+  <div class="main">
+    <div class="flow">
+      <div class="card stage"><h3>User prompt</h3><div class="prompt">Nie widzieliście może mojej muchy?</div><p>Tekst, tak jak go wpisał użytkownik.</p></div>
+      <div class="arrow">→</div>
+      <div class="card stage"><h3>Tokenizacja</h3><div class="toks"><span>Nie</span><span>widzieliście</span><span>może</span><span>mojej</span><span>muchy</span><span>?</span></div><p>Tekst zamienia się w numery tokenów.</p></div>
+      <div class="arrow">→</div>
+      <div class="card stage"><h3>Embedding</h3><div class="vec"><b>muchy</b><br>0.72<br>-0.19<br>-0.71<br>…</div><p>Każdy token dostaje wektor o stałej długości.</p></div>
+      <div class="arrow">→</div>
+      <div class="card hi stage"><h3 class="gt" style="width:fit-content">+ pozycja</h3><div class="vec"><b>muchy, pozycja 5</b><br>wektor + informacja, gdzie token stoi w kontekście</div><p>Dopiero to wchodzi do transformera.</p></div>
+    </div>
+    <div class="facts">
+      <div class="card fact"><div class="l">Popularne długości kontekstu (tokeny)</div><div class="n">8192 · 32 768 · 131 072 → 1M</div></div>
+      <div class="card fact"><div class="l">Przykład: NVIDIA A100, model 70B</div><div class="n">73K tokenów</div></div>
+    </div>
+  </div>
+  <div class="footer">
+    <div class="note">Uproszczenie: słowo ≈ token. Prawdziwy tokenizer tnie tekst drobniej.</div>
+    <div class="rule">embedding + pozycja = wejście</div>
+  </div>
+</body>
+</html>

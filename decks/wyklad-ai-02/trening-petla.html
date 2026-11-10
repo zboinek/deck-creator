@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8" />
+<title>Pętla treningu</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="base.css" />
+<style>
+  .main { display: block; position: relative; margin-top: 18px; }
+  .shot { position: absolute; left: 150px; top: 50px; width: 1020px; height: 481px; border-radius: 12px; overflow: hidden; border: 1px solid var(--line-strong); }
+  .shot img { width: 100%; display: block; }
+  .h { position: absolute; left: 150px; width: 1020px; height: 3px; background: var(--grad-bar); }
+  .v { position: absolute; left: 1200px; top: 50px; width: 3px; height: 481px; background: var(--grad-bar-v); }
+  .t { position: absolute; font-size: 26px; font-weight: 700; }
+  .head { position: absolute; width: 0; height: 0; }
+</style>
+</head>
+<body>
+  <div class="eyebrow">Podstawowy trening</div>
+  <h1>Trening to ta sama pętla, powtarzana bez końca</h1>
+  <div class="main">
+    <div class="t" style="left:150px;top:0;width:1020px;text-align:center">1. Przepuść przez sieć</div>
+    <div class="h" style="top:38px"></div>
+    <div class="head" style="left:1170px;top:31px;border-left:16px solid #fde68a;border-top:9px solid transparent;border-bottom:9px solid transparent"></div>
+    <div class="shot"><img src="zrodla/tf-playground.png" alt="" /></div>
+    <div class="v"></div>
+    <div class="head" style="left:1193px;top:531px;border-top:16px solid #fde68a;border-left:9px solid transparent;border-right:9px solid transparent"></div>
+    <div class="t" style="left:1226px;top:270px">2. Policz błąd</div>
+    <div class="h" style="top:556px"></div>
+    <div class="head" style="left:134px;top:549px;border-right:16px solid #6366f1;border-top:9px solid transparent;border-bottom:9px solid transparent"></div>
+    <div class="t" style="left:150px;top:570px;width:1020px;text-align:center">3. Zaktualizuj wagi</div>
+  </div>
+  <div class="footer">
+    <div class="note">Zrzut: playground.tensorflow.org</div>
+    <div class="rule">forward → błąd → aktualizacja wag</div>
+  </div>
+</body>
+</html>

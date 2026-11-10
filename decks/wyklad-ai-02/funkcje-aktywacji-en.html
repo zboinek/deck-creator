@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Activation functions</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="base.css" />
+<style>
+  .main { display: grid; grid-template-columns: repeat(4, 1fr); gap: 22px; }
+  .fn { display: flex; flex-direction: column; align-items: center; padding: 18px 14px; min-height: 0; }
+  .fn h3 { font-size: 28px; font-weight: 700; }
+  .fn .use { font-size: 18px; color: var(--muted); margin: 4px 0 12px; text-align: center; height: 48px; }
+  .fn .img { flex: 1; min-height: 0; width: 100%; background: #fff; border-radius: 10px; display: flex; align-items: center; justify-content: center; padding: 6px; }
+  .fn img { max-width: 100%; max-height: 100%; }
+</style>
+</head>
+<body>
+  <div class="eyebrow">Activation functions</div>
+  <h1>Four shapes worth recognising</h1>
+  <div class="thesis">Without non-linearity the network collapses into a single matrix, <b>and each of these curves reshapes the result differently.</b></div>
+  <div class="main">
+    <div class="card fn"><h3>Linear</h3><div class="use">regression: output unchanged</div><div class="img"><img src="zrodla/aktywacja-linear.png" alt="" /></div></div>
+    <div class="card fn"><h3>Sigmoid</h3><div class="use">squeezes the output into 0–1</div><div class="img"><img src="zrodla/aktywacja-sigmoid.png" alt="" /></div></div>
+    <div class="card fn"><h3>ReLU</h3><div class="use">hidden layers: negatives become 0</div><div class="img"><img src="zrodla/aktywacja-relu.png" alt="" /></div></div>
+    <div class="card fn"><h3>Softmax</h3><div class="use">turns scores into a probability distribution</div><div class="img"><img src="zrodla/aktywacja-softmax.png" alt="" /></div></div>
+  </div>
+  <div class="footer">
+    <div class="note">Charts: encord.com/blog/activation-functions-neural-networks</div>
+    <div class="rule">non-linearity = depth makes sense</div>
+  </div>
+</body>
+</html>

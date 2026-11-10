@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8" />
+<title>Tokeny po polsku</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="base.css" />
+<style>
+  .main { flex-direction: column; gap: 20px; justify-content: center; }
+  .r { display: grid; grid-template-columns: 215px 1fr 74px; gap: 18px; align-items: center; }
+  .who b { display: block; font-size: 22px; font-weight: 700; }
+  .who span { font-size: 16px; color: var(--muted); }
+  .toks { display: flex; flex-wrap: wrap; gap: 6px; }
+  .toks i { font-style: normal; font-family: 'JetBrains Mono', monospace; font-size: 22px; padding: 6px 11px; border-radius: 7px; background: var(--panel); border: 1px solid var(--line-strong); }
+  .toks i:nth-child(even) { background: #fff; }
+  .n { font-family: 'JetBrains Mono', monospace; font-size: 36px; font-weight: 700; text-align: right; }
+  .r.en .toks i { background: rgba(99,102,241,.1); border-color: rgba(99,102,241,.35); }
+  .sep { height: 1px; background: var(--line); }
+</style>
+</head>
+<body>
+  <div class="eyebrow">Token</div>
+  <h1>Token to kawałek tekstu, nie słowo</h1>
+  <div class="thesis">Model dostaje słownik kawałków, zwykle częstych w angielskim. <b>Polskie słowa trzeba z nich dopiero składać.</b></div>
+  <div class="main" id="m"></div>
+  <div class="callout" style="margin-top:14px">Na dłuższym zdaniu różnica jest mniejsza: o musze na wieszaku GPT-4o zużywa <b>27 tokenów po polsku i 19 po angielsku.</b> Polski kosztuje więcej, ale nowsze słowniki tną go coraz rozsądniej.</div>
+  <div class="footer">
+    <div class="note">Własny pomiar: tiktoken, kodowania gpt2, cl100k_base i o200k_base. Rok później: Bielik v3 przeszedł na własny, polski słownik.</div>
+    <div class="rule">1500 tokenów ≈ 1 strona A4</div>
+  </div>
+<script>
+  const rows=[
+    ['en','Po angielsku','GPT-2, 2019',['He',' was',' wearing',' short',' red',' shorts']],
+    ['pl','Po polsku','GPT-2, 2019',['M','ia','ł',' na',' so','bie',' k','r','ó','tk','ie',' c','zer','w','one',' sp','od','en','ki']],
+    ['pl','Po polsku','GPT-4, 2023',['M','iał',' na',' sobie',' kr','ó','tk','ie',' c','zer','w','one',' sp','oden','ki']],
+    ['pl','Po polsku','GPT-4o, 2024',['M','iał',' na',' sobie',' kró','tk','ie',' czerw','one',' sp','oden','ki']],
+  ];
+  document.getElementById('m').innerHTML=rows.map(([c,a,b,t],i)=>`${i==1?'<div class="sep"></div>':''}<div class="r ${c}"><div class="who"><b>${a}</b><span>${b}</span></div><div class="toks">${t.map(x=>`<i>${x.trim()}</i>`).join('')}</div><div class="n">${t.length}</div></div>`).join('');
+</script>
+</body>
+</html>

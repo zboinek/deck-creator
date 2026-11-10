@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>GPU memory</title>
+<!-- English rebuild of attachments/31-pamiec-gpu.png: bar positions copied 1:1 from the Polish original
+     (1860 x 1110 canvas), so the proportions are exactly as in the source, not recomputed. -->
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { width: 1860px; height: 1110px; background: #fff; font-family: Arial, Helvetica, sans-serif; position: relative; overflow: hidden; }
+  .t { position: absolute; font-size: 40px; color: #000; }
+  .box { position: absolute; height: 226px; border: 3px solid #000; }
+  .p, .c { position: absolute; top: -3px; height: 229px; color: #fff; padding: 46px 32px; }
+  .p { background: #000; left: -3px; }
+  .c { background: #2f5bff; padding: 24px 22px; }
+  .p b, .c b { display: block; font-weight: 400; font-size: 44px; }
+  .p span, .c span { display: block; font-size: 36px; margin-top: 14px; }
+</style>
+</head>
+<body>
+  <div class="t" style="left:16px;top:12px">Google Gemma 3 27B Q8_0</div>
+  <div class="box" style="left:14px;top:80px;width:1802px">
+    <div class="p" style="width:600px"><b>Parameters</b><span>27 GiB</span></div>
+    <div class="c" style="left:595px;width:1135px"><b>Context</b><span>50 GiB</span><span>633k tok.</span></div>
+  </div>
+  <div class="t" style="left:10px;top:353px">Meta Llama 3.1 70B Q8_0</div>
+  <div class="box" style="left:10px;top:420px;width:1803px">
+    <div class="p" style="width:1549px"><b>Parameters</b><span>69 GiB</span></div>
+    <div class="c" style="left:1543px;width:220px;padding:24px 12px"><b>Context</b><span>19 GiB</span><span>31k tok.</span></div>
+  </div>
+  <div class="t" style="left:14px;top:753px">OpenAI GPT-OSS 120B MXFP4_MOE</div>
+  <div class="box" style="left:12px;top:820px;width:1802px">
+    <div class="p" style="width:1317px"><b>Parameters</b><span>58 GiB</span></div>
+    <div class="c" style="left:1311px;width:425px;padding:24px 28px"><b>Context</b><span>27 GiB</span><span>529k tok.</span></div>
+  </div>
+</body>
+</html>

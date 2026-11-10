@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Short red shorts</title>
+<!-- English rebuild of attachments/19-qkv-spodenki.png (GeoGebra screenshot): same geometry, English labels.
+     Coordinates: x unit = 64.6 px, y unit = 138.2 px (non-uniform, as in the original), origin at (240, 936) of the 1050 x 1100 canvas. -->
+<style>
+  * { margin: 0; padding: 0; }
+  body { width: 1050px; height: 1100px; background: #fff; font-family: Arial, Helvetica, sans-serif; overflow: hidden; }
+  svg text { font-family: Arial, Helvetica, sans-serif; }
+</style>
+</head>
+<body>
+<svg id="s" width="1050" height="1100" viewBox="0 0 1050 1100"></svg>
+<script>
+  const UX = 64.6, UY = 138.2, OX = 240, OY = 936;
+  const X = x => OX + x * UX, Y = y => OY - y * UY;
+  let h = '<defs>';
+  for (const [id, c] of [['b','#0000ff'],['g','#3c9a00'],['r','#ee0000'],['o','#ff6600']])
+    h += `<marker id="${id}" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="${id=='o'?4.5:5.5}" markerHeight="${id=='o'?4.5:5.5}" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="${c}"/></marker>`;
+  h += '</defs>';
+  // minor grid
+  for (let x = -2; x <= 13; x += 0.5) h += `<line x1="${X(x)}" y1="0" x2="${X(x)}" y2="1100" stroke="#e6e6e6" stroke-width="1" stroke-dasharray="4 4"/>`;
+  for (let y = -1.5; y <= 7; y += 0.25) h += `<line x1="0" y1="${Y(y)}" x2="1050" y2="${Y(y)}" stroke="#e6e6e6" stroke-width="1" stroke-dasharray="4 4"/>`;
+  // major grid
+  for (let x = -2; x <= 13; x += 2) if (x) h += `<line x1="${X(x)}" y1="0" x2="${X(x)}" y2="1100" stroke="#bdbdbd" stroke-width="1.4" stroke-dasharray="7 5"/>`;
+  for (let y = -1; y <= 7; y++) if (y) h += `<line x1="0" y1="${Y(y)}" x2="1050" y2="${Y(y)}" stroke="#bdbdbd" stroke-width="1.4" stroke-dasharray="7 5"/>`;
+  // axes
+  h += `<line x1="0" y1="${OY}" x2="1050" y2="${OY}" stroke="#000" stroke-width="2"/><line x1="${OX}" y1="0" x2="${OX}" y2="1100" stroke="#000" stroke-width="2"/>`;
+  for (let x = -2; x <= 12; x += 2) h += `<text x="${X(x)}" y="${OY+34}" font-size="22" text-anchor="middle">${x<0?'−'+(-x):x}</text>`;
+  for (let y = -1; y <= 6; y++) if (y) h += `<text x="${OX-14}" y="${Y(y)+8}" font-size="22" text-anchor="end">${y<0?'−'+(-y):y}</text>`;
+  const P0=[0,0], P1=[5.55,4.85], P2=[7.3,5.33], P3=[9.8,4.2];
+  const arrow = (a, b, c, m, w) => `<line x1="${X(a[0])}" y1="${Y(a[1])}" x2="${X(b[0])}" y2="${Y(b[1])}" stroke="${c}" stroke-width="${w}" marker-end="url(#${m})"/>`;
+  h += arrow(P0, P3, '#ff6600', 'o', 7) + arrow(P0, P1, '#0000ff', 'b', 4) + arrow(P1, P2, '#3c9a00', 'g', 4) + arrow(P2, P3, '#ee0000', 'r', 4);
+  for (const p of [P1, P2, P3]) h += `<circle cx="${X(p[0])}" cy="${Y(p[1])}" r="11" fill="#ff6a13" stroke="#333" stroke-width="2"/>`;
+  h += `<circle cx="${OX}" cy="${OY}" r="7" fill="#444"/>`;
+  h += `<text x="395" y="358" font-size="24">Shorts</text><text x="585" y="200" font-size="24">Short</text><text x="796" y="257" font-size="24">Red</text>`;
+  document.getElementById('s').innerHTML = h;
+</script>
+</body>
+</html>

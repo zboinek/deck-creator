@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>How much a model weighs</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="base.css" />
+<style>
+  .main { flex-direction: column; gap: 26px; justify-content: center; }
+  /* skala: 1 GB = 3 px, więc 280 GB = 840 px, limit karty 80 GB = 240 px */
+  .plot { position: relative; margin-left: 300px; display: flex; flex-direction: column; gap: 20px; padding-top: 42px; }
+  .row { display: flex; align-items: center; gap: 16px; height: 62px; position: relative; }
+  .lbl { position: absolute; left: -300px; width: 280px; text-align: right; }
+  .lbl b { display: block; font-size: 25px; font-weight: 700; }
+  .lbl span { font-size: 17px; color: var(--muted); }
+  .bar { height: 46px; border-radius: 0 6px 6px 0; background: var(--line-strong); }
+  .row.fit .bar { background: var(--grad-bar); }
+  .val { font-family: 'JetBrains Mono', monospace; font-size: 25px; font-weight: 700; }
+  .verdict { font-size: 19px; color: var(--muted); }
+  .limit { position: absolute; left: 240px; top: 30px; bottom: -6px; width: 0; border-left: 3px dashed var(--text); }
+  .limit span { position: absolute; left: -2px; top: -30px; white-space: nowrap; font-family: 'JetBrains Mono', monospace; font-size: 18px; font-weight: 700; }
+</style>
+</head>
+<body>
+  <div class="eyebrow">Why fewer bits</div>
+  <h1>One model, four different sizes</h1>
+  <div class="thesis">It is simple multiplication: <b>number of parameters × how much space one takes.</b> Example: 70 billion parameters.</div>
+  <div class="main">
+    <div class="plot">
+      <div class="limit"><span>NVIDIA H100 card: 80 GB</span></div>
+      <div class="row"><div class="lbl"><b>FP32</b><span>4 bytes per parameter</span></div><div class="bar" style="width:840px"></div><div class="val">280 GB</div></div>
+      <div class="row"><div class="lbl"><b>FP16</b><span>2 bytes per parameter</span></div><div class="bar" style="width:420px"></div><div class="val">140 GB</div><div class="verdict">does not fit</div></div>
+      <div class="row fit"><div class="lbl"><b>Q8</b><span>1 byte per parameter</span></div><div class="bar" style="width:210px"></div><div class="val" style="margin-left:48px">70 GB</div><div class="verdict">fits, but little is left for context</div></div>
+      <div class="row fit"><div class="lbl"><b>Q4</b><span>half a byte per parameter</span></div><div class="bar" style="width:105px"></div><div class="val" style="margin-left:153px">35 GB</div><div class="verdict">fits, with room to spare</div></div>
+    </div>
+    <div class="callout">Like a photo saved as a smaller file: <b>the details get worse, but you can still see the picture.</b> Every bit we save costs a little quality, as we saw in the previous lecture.</div>
+  </div>
+  <div class="footer">
+    <div class="note">The weights file alone, without context and buffers. Numbers rounded.</div>
+    <div class="rule">parameters × bytes = memory</div>
+  </div>
+</body>
+</html>

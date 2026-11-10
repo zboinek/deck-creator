@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Choosing an activation function</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="base.css" />
+<style>
+  .main { position: relative; display: block; }
+  svg { position: absolute; inset: 0; width: 1472px; height: 470px; }
+  .n { position: absolute; transform: translate(-50%, -50%); padding: 14px 26px; font-size: 25px; font-weight: 600; text-align: center; white-space: nowrap; background: var(--soft); border: 1px solid var(--line-strong); border-radius: 14px; }
+  .n small { display: block; font-size: 17px; font-weight: 400; color: var(--muted); margin-top: 2px; }
+  .n.root { font-size: 27px; font-weight: 700; }
+  .n.out { background: linear-gradient(#fff, #fff) padding-box, var(--grad-bar) border-box; border: 3px solid transparent; font-family: 'JetBrains Mono', monospace; font-weight: 700; }
+  .lv { position: absolute; left: 0; transform: translateY(-50%); font-size: 17px; color: var(--dim); }
+  .callout { position: absolute; left: 0; right: 0; top: 448px; }
+</style>
+</head>
+<body>
+  <div class="eyebrow">Activation functions</div>
+  <h1>The network output is chosen to fit the task</h1>
+  <div class="thesis">The same network inside, <b>and the last function decides what the output numbers mean.</b></div>
+  <div class="main">
+    <svg viewBox="0 0 1472 470" fill="none" stroke="#c9c9d0" stroke-width="2">
+      <path d="M780 62 L500 150"/><path d="M780 62 L1270 150"/>
+      <path d="M500 190 L200 280"/><path d="M500 190 L520 280"/><path d="M500 190 L840 280"/>
+      <path d="M200 320 L200 372"/><path d="M520 320 L520 372"/><path d="M840 320 L840 372"/><path d="M1270 190 L1270 372"/>
+    </svg>
+    <div class="n root" style="left:780px;top:40px">Type of task</div>
+    <div class="n" style="left:500px;top:170px">Classification</div>
+    <div class="n" style="left:1270px;top:170px">Regression<small>e.g. a flat price</small></div>
+    <div class="n" style="left:200px;top:300px">Binary<small>spam or not spam</small></div>
+    <div class="n" style="left:520px;top:300px">Multiclass<small>cat, dog or bird</small></div>
+    <div class="n" style="left:840px;top:300px">Multilabel<small>film tags: several at once</small></div>
+    <div class="n out" style="left:200px;top:400px">Sigmoid</div>
+    <div class="n out" style="left:520px;top:400px">Softmax</div>
+    <div class="n out" style="left:840px;top:400px">Sigmoid</div>
+    <div class="n out" style="left:1270px;top:400px">Linear</div>
+    <div class="callout">Softmax gives a distribution that sums to 1: <b>exactly one class.</b> Sigmoid scores each label separately: <b>many at once.</b> ReLU works in the hidden layers.</div>
+  </div>
+  <div class="footer">
+    <div class="note">Applies to the last layer of the network.</div>
+    <div class="rule">task → output function</div>
+  </div>
+</body>
+</html>

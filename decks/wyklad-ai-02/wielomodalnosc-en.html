@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Multimodality</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="base.css" />
+<style>
+  /* geometria: kolumny 0-540 | 660-940 | 1060-1472, wiersze 124 px co 140 px od y=32 (środki 94, 234, 374, 514) */
+  .main { position: relative; display: block; height: 576px; flex: none; }
+  .head { position: absolute; top: 0; font-family: 'JetBrains Mono', monospace; font-size: 16px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--dim); }
+  .row { position: absolute; height: 124px; display: flex; align-items: center; background: var(--soft); border: 1px solid var(--line-strong); border-radius: 16px; }
+  .row.in { left: 0; width: 540px; padding: 0 22px; gap: 18px; }
+  .row.out { left: 1060px; width: 412px; padding: 0 24px; gap: 18px; }
+  .r1 { top: 32px; } .r2 { top: 172px; } .r3 { top: 312px; } .r4 { top: 452px; }
+  .ico { width: 52px; height: 52px; flex: none; }
+  .ico * { fill: none; stroke: var(--text); stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+  .name { font-size: 25px; font-weight: 800; letter-spacing: -.01em; }
+  .in .name { width: 104px; flex: none; }
+  .desc { font-size: 19px; line-height: 1.3; color: var(--muted); margin-top: 3px; }
+  .cut { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 8px; align-items: flex-start; }
+  .cut small { font-size: 18px; color: var(--muted); }
+  .chips { display: flex; gap: 6px; font-family: 'JetBrains Mono', monospace; font-size: 22px; font-weight: 700; }
+  .chips span { padding: 6px 12px; background: #fff; border: 1px solid var(--line-strong); border-radius: 8px; }
+  .wires { position: absolute; inset: 0; width: 1472px; height: 576px; overflow: visible; }
+  .wires path { fill: none; stroke: var(--dim); stroke-width: 2.5; }
+  .core { position: absolute; left: 660px; top: 32px; width: 280px; height: 544px; padding: 26px 24px; display: flex; flex-direction: column; align-items: stretch; gap: 16px; }
+  .core .lbl { font-size: 19px; font-weight: 600; color: var(--muted); text-align: center; }
+  .vec { height: 22px; background: var(--grad-bar);
+         -webkit-mask: repeating-linear-gradient(90deg, #000 0 16px, transparent 16px 23px);
+         mask: repeating-linear-gradient(90deg, #000 0 16px, transparent 16px 23px); }
+  .vecs { display: flex; flex-direction: column; gap: 8px; }
+  .arrow { align-self: center; width: 2.5px; height: 30px; background: var(--dim); position: relative; }
+  .arrow::after { content: ''; position: absolute; left: 50%; bottom: -2px; width: 11px; height: 11px; border-right: 2.5px solid var(--dim); border-bottom: 2.5px solid var(--dim); transform: translateX(-50%) rotate(45deg); }
+  .model { flex: 1; border-radius: 12px; background: var(--line-strong); display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 6px; }
+  .model b { font-size: 34px; font-weight: 800; letter-spacing: -.02em; line-height: 1.1; }
+  .model span { font-size: 19px; color: var(--muted); }
+</style>
+</head>
+<body>
+  <div class="eyebrow">Multimodality</div>
+  <h1>Images and sound become tokens too</h1>
+  <div class="thesis">Only the way of cutting into pieces changes. <b>The same path follows: tokens, vectors, model.</b></div>
+
+  <div class="main">
+    <div class="head" style="left:0">Input and cutting into tokens</div>
+    <div class="head" style="left:660px;width:280px;text-align:center">Shared path</div>
+    <div class="head" style="left:1060px">Output</div>
+
+    <svg class="wires" viewBox="0 0 1472 576">
+      <defs>
+        <marker id="a" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M1 1 L8 5 L1 9" style="stroke:#8b8b93;stroke-width:2;fill:none"/></marker>
+      </defs>
+      <!-- wejścia zbiegają do lewej krawędzi modelu (x=660), wyjścia rozchodzą się od prawej (x=940) -->
+      <path marker-end="url(#a)" d="M540 94 C600 94 600 245 656 245" />
+      <path marker-end="url(#a)" d="M540 234 C600 234 600 285 656 285" />
+      <path marker-end="url(#a)" d="M540 374 C600 374 600 325 656 325" />
+      <path marker-end="url(#a)" d="M540 514 C600 514 600 365 656 365" />
+      <path marker-end="url(#a)" d="M940 245 C1000 245 1000 94 1056 94" />
+      <path marker-end="url(#a)" d="M940 285 C1000 285 1000 234 1056 234" />
+      <path marker-end="url(#a)" d="M940 325 C1000 325 1000 374 1056 374" />
+      <path marker-end="url(#a)" d="M940 365 C1000 365 1000 514 1056 514" />
+    </svg>
+
+    <!-- WEJŚCIA -->
+    <div class="row in r1">
+      <svg class="ico" viewBox="0 0 48 48"><path d="M12 5h17l9 9v29H12z"/><path d="M29 5v9h9"/><path d="M18 23h14M18 30h14M18 37h9"/></svg>
+      <div class="name">Text</div>
+      <div class="cut">
+        <div class="chips"><span>The</span><span>cat</span><span>sle</span><span>eps</span></div>
+        <small>words and their fragments</small>
+      </div>
+    </div>
+
+    <div class="row in r2">
+      <svg class="ico" viewBox="0 0 48 48"><rect x="5" y="9" width="38" height="30" rx="3"/><circle cx="15" cy="18" r="3"/><path d="M5 34l11-11 8 8 6-6 13 12"/></svg>
+      <div class="name">Image</div>
+      <div class="cut">
+        <!-- ten sam pejzaż co ikona, pocięty na kwadraty 29 x 29 (8 x 2) -->
+        <svg width="232" height="58" viewBox="0 0 232 58">
+          <rect width="232" height="58" fill="#d4d4d8"/>
+          <circle cx="43.5" cy="14.5" r="7" fill="#fff"/>
+          <path d="M0 58 L52 30 L96 58 Z M72 58 L152 8 L232 58 Z" fill="#52525b"/>
+          <path d="M29 0V58M58 0V58M87 0V58M116 0V58M145 0V58M174 0V58M203 0V58M0 29H232" stroke="#f7f7f8" stroke-width="4"/>
+        </svg>
+        <small>square image patches</small>
+      </div>
+    </div>
+
+    <div class="row in r3">
+      <svg class="ico" viewBox="0 0 48 48"><path d="M6 20v8M13 13v22M20 7v34M27 15v18M34 10v28M41 19v10"/></svg>
+      <div class="name">Audio</div>
+      <div class="cut">
+        <svg width="232" height="58" viewBox="0 0 222 58" preserveAspectRatio="xMinYMid meet">
+          <g fill="#f7f7f8" stroke="#d4d4d8"><rect x=".5" y=".5" width="51" height="57" rx="6" fill="#fff"/><rect x="57.5" y=".5" width="51" height="57" rx="6" fill="#fff"/><rect x="114.5" y=".5" width="51" height="57" rx="6" fill="#fff"/><rect x="171" y=".5" width="50.5" height="57" rx="6" fill="#fff"/></g>
+          <path stroke="#52525b" stroke-width="4" stroke-linecap="round" d="M11 24v10M21 15v28M31 8v42M41 20v18M68 18v22M78 11v36M88 22v14M98 14v30M125 24v10M135 12v34M145 6v46M155 18v22M182 15v28M192 24v10M202 10v38M212 21v16"/>
+        </svg>
+        <small>short slices of the recording</small>
+      </div>
+    </div>
+
+    <div class="row in r4">
+      <svg class="ico" viewBox="0 0 48 48"><rect x="6" y="6" width="36" height="36" rx="3"/><path d="M14 6v36M34 6v36M6 15h8M6 24h8M6 33h8M34 15h8M34 24h8M34 33h8"/><path d="M20 17l9 7-9 7z"/></svg>
+      <div class="name">Video</div>
+      <div class="cut">
+        <!-- trzy klatki 58 x 58, każda pocięta na kwadraty 29 x 29; kropka przesuwa się między klatkami -->
+        <svg width="232" height="58" viewBox="0 0 232 58">
+          <defs>
+            <g id="f"><rect width="58" height="58" fill="#d4d4d8"/></g>
+            <path id="g" d="M29 0V58M0 29H58" stroke="#f7f7f8" stroke-width="4"/>
+          </defs>
+          <use href="#f" x="0"/><circle cx="14" cy="43" r="8" fill="#52525b"/><use href="#g" x="0"/>
+          <use href="#f" x="87"/><circle cx="101" cy="15" r="8" fill="#52525b"/><use href="#g" x="87"/>
+          <use href="#f" x="174"/><circle cx="218" cy="15" r="8" fill="#52525b"/><use href="#g" x="174"/>
+        </svg>
+        <small>patches from consecutive frames</small>
+      </div>
+    </div>
+
+    <!-- WSPÓLNA DROGA -->
+    <div class="card hi core">
+      <div class="lbl">Every piece<br>is a vector</div>
+      <div class="vecs"><div class="vec"></div><div class="vec"></div><div class="vec"></div></div>
+      <div class="arrow"></div>
+      <div class="model">
+        <b>The same<br>model</b>
+        <span>vectors, attention,<br>the same lecture map</span>
+      </div>
+    </div>
+
+    <!-- WYJŚCIA -->
+    <div class="row out r1">
+      <svg class="ico" viewBox="0 0 48 48"><path d="M12 5h17l9 9v29H12z"/><path d="M29 5v9h9"/><path d="M18 23h14M18 30h14M18 37h9"/></svg>
+      <div><div class="name">Text</div><div class="desc">answers, image captions, transcripts</div></div>
+    </div>
+    <div class="row out r2">
+      <svg class="ico" viewBox="0 0 48 48"><rect x="5" y="9" width="38" height="30" rx="3"/><circle cx="15" cy="18" r="3"/><path d="M5 34l11-11 8 8 6-6 13 12"/></svg>
+      <div><div class="name">Image</div><div class="desc">generating and editing images</div></div>
+    </div>
+    <div class="row out r3">
+      <svg class="ico" viewBox="0 0 48 48"><path d="M6 20v8M13 13v22M20 7v34M27 15v18M34 10v28M41 19v10"/></svg>
+      <div><div class="name">Audio</div><div class="desc">speech synthesis, music</div></div>
+    </div>
+    <div class="row out r4">
+      <svg class="ico" viewBox="0 0 48 48"><rect x="6" y="6" width="36" height="36" rx="3"/><path d="M14 6v36M34 6v36M6 15h8M6 24h8M6 33h8M34 15h8M34 24h8M34 33h8"/><path d="M20 17l9 7-9 7z"/></svg>
+      <div><div class="name">Video</div><div class="desc">generating clips</div></div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <div class="note">Not every model supports every direction, its model card says which.</div>
+    <div class="rule">different input, same mechanism</div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Tokens in Polish</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="base.css" />
+<style>
+  .main { flex-direction: column; gap: 20px; justify-content: center; }
+  .r { display: grid; grid-template-columns: 215px 1fr 74px; gap: 18px; align-items: center; }
+  .who b { display: block; font-size: 22px; font-weight: 700; }
+  .who span { font-size: 16px; color: var(--muted); }
+  .toks { display: flex; flex-wrap: wrap; gap: 6px; }
+  .toks i { font-style: normal; font-family: 'JetBrains Mono', monospace; font-size: 22px; padding: 6px 11px; border-radius: 7px; background: var(--panel); border: 1px solid var(--line-strong); }
+  .toks i:nth-child(even) { background: #fff; }
+  .n { font-family: 'JetBrains Mono', monospace; font-size: 36px; font-weight: 700; text-align: right; }
+  .r.en .toks i { background: rgba(99,102,241,.1); border-color: rgba(99,102,241,.35); }
+  .sep { height: 1px; background: var(--line); }
+</style>
+</head>
+<body>
+  <div class="eyebrow">Token</div>
+  <h1>A token is a piece of text, not a word</h1>
+  <div class="thesis">The model gets a vocabulary of pieces, mostly ones common in English. <b>Polish words have to be assembled from them.</b></div>
+  <div class="main" id="m"></div>
+  <div class="callout" style="margin-top:14px">On a longer sentence the gap is smaller: for the fly on the coat rack sentence GPT-4o uses <b>27 tokens in Polish and 19 in English.</b> Polish costs more, but newer vocabularies cut it more and more sensibly.</div>
+  <div class="footer">
+    <div class="note">Own measurement: tiktoken, encodings gpt2, cl100k_base and o200k_base. A year later: Bielik v3 moved to its own Polish vocabulary.</div>
+    <div class="rule">1500 tokens ≈ 1 A4 page</div>
+  </div>
+<script>
+  const rows=[
+    ['en','English','GPT-2, 2019',['He',' was',' wearing',' short',' red',' shorts']],
+    ['pl','Polish','GPT-2, 2019',['M','ia','ł',' na',' so','bie',' k','r','ó','tk','ie',' c','zer','w','one',' sp','od','en','ki']],
+    ['pl','Polish','GPT-4, 2023',['M','iał',' na',' sobie',' kr','ó','tk','ie',' c','zer','w','one',' sp','oden','ki']],
+    ['pl','Polish','GPT-4o, 2024',['M','iał',' na',' sobie',' kró','tk','ie',' czerw','one',' sp','oden','ki']],
+  ];
+  document.getElementById('m').innerHTML=rows.map(([c,a,b,t],i)=>`${i==1?'<div class="sep"></div>':''}<div class="r ${c}"><div class="who"><b>${a}</b><span>${b}</span></div><div class="toks">${t.map(x=>`<i>${x.trim()}</i>`).join('')}</div><div class="n">${t.length}</div></div>`).join('');
+</script>
+</body>
+</html>

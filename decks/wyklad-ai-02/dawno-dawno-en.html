@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Next token</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="base.css" />
+<style>
+  .main { align-items: center; gap: 44px; }
+  .pre { font-size: 58px; font-weight: 800; letter-spacing: -.02em; white-space: nowrap; }
+  /* skala: 1% = 15 px, więc 42% = 630 px */
+  .chart { display: flex; flex-direction: column; gap: 16px; flex: 1; }
+  .row { display: flex; align-items: center; gap: 16px; }
+  .tok { width: 210px; font-family: 'JetBrains Mono', monospace; font-size: 30px; font-weight: 700; text-align: right; white-space: nowrap; }
+  .bar { height: 34px; border-radius: 0 6px 6px 0; background: var(--line-strong); }
+  .row.top .bar { background: var(--grad-bar); }
+  .pct { font-family: 'JetBrains Mono', monospace; font-size: 24px; color: var(--muted); }
+</style>
+</head>
+<body>
+  <div class="eyebrow">Next token</div>
+  <h1>The model does not write sentences, it samples the next token</h1>
+  <div class="thesis">The last vector turns into <b>a probability distribution over the whole vocabulary.</b></div>
+  <div class="main">
+    <div class="pre">Once upon a</div>
+    <div class="chart" id="c"></div>
+  </div>
+  <div class="footer">
+    <div class="note">The remaining 19% is the rest of the vocabulary. The result is appended to the text and we compute again.</div>
+    <div class="rule">softmax → sampling → next token</div>
+  </div>
+<script>
+  const d=[['time',42],['midnight',19],['dream',8],['hill',5],['star',4],['winter',3]];
+  document.getElementById('c').innerHTML=d.map(([t,p],i)=>`<div class="row ${i?'':'top'}"><div class="tok">${t}</div><div class="bar" style="width:${p*15}px"></div><div class="pct">${p}%</div></div>`).join('');
+</script>
+</body>
+</html>

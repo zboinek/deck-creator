@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8" />
+<title>LoRA jako nakładka</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="base.css" />
+<style>
+  .main { gap: 30px; }
+  .col { flex: 1; padding: 28px 30px; display: flex; flex-direction: column; gap: 18px; }
+  .col h3 { font-size: 30px; font-weight: 800; }
+  .col > p { font-size: 20px; color: var(--muted); }
+  .stage { flex: 1; display: flex; flex-direction: column; gap: 12px; justify-content: center; }
+  .base { height: 118px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 26px; font-weight: 700; background: var(--line-strong); }
+  .base.changed { background: var(--grad-bar); }
+  .over { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  .over div { text-align: center; padding: 14px 6px; font-size: 21px; font-weight: 600; border-radius: 10px; border: 1px solid var(--line-strong); background: #fff; color: var(--dim); }
+  .over div.on { border: 3px solid transparent; color: var(--text); background: linear-gradient(#fff,#fff) padding-box, var(--grad-bar) border-box; }
+  ul { list-style: none; display: flex; flex-direction: column; gap: 9px; font-size: 21px; }
+  li b { font-weight: 700; }
+</style>
+</head>
+<body>
+  <div class="eyebrow">Finetuning</div>
+  <h1>LoRA działa jak wymienne okulary</h1>
+  <div class="thesis">Zamiast przebudowywać cały model, <b>dokładamy małą nakładkę i zmieniamy ją w zależności od potrzeby.</b></div>
+  <div class="main">
+    <div class="card col">
+      <h3>Pełny finetuning</h3>
+      <p>Zmieniamy wagi samego modelu.</p>
+      <div class="stage"><div class="base changed">Wszystkie parametry w ruchu</div></div>
+      <ul><li><b>Kosztowny:</b> dużo obliczeń</li><li><b>Ryzykowny:</b> model może zapominać starsze informacje</li><li><b>Jeden wynik:</b> nowe zadanie to nowy trening</li></ul>
+    </div>
+    <div class="card hi col">
+      <h3>LoRA</h3>
+      <p>Model bazowy zostaje taki, jak był.</p>
+      <div class="stage">
+        <div class="over"><div>prawo</div><div class="on">medycyna</div><div>styl firmy</div></div>
+        <div class="base">Ten sam model bazowy</div>
+      </div>
+      <ul><li><b>Mniej zasobożerny:</b> uczymy tylko nakładkę</li><li><b>Bezpieczny:</b> starsza wiedza zostaje w bazie</li><li><b>Wymienny:</b> nakładkę zmieniamy pod zadanie</li></ul>
+    </div>
+  </div>
+  <div class="footer">
+    <div class="note">Dla porównania: RAG zmienia to, co model dostaje do przeczytania. Finetuning zmienia sam model.</div>
+    <div class="rule">baza + nakładka = model pod zadanie</div>
+  </div>
+</body>
+</html>
