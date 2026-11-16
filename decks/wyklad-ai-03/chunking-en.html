@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>How to cut a recipe</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="base.css" />
+<style>
+  .main { gap: 34px; }
+  .col { flex: 1; padding: 24px 28px; display: flex; flex-direction: column; gap: 12px; }
+  .col h3 { font-size: 28px; font-weight: 800; }
+  .col .sub { font-size: 18px; color: var(--muted); margin-top: -6px; margin-bottom: 4px; }
+  .chunk { position: relative; background: #fff; border: 1.5px solid var(--line-strong); border-radius: 12px; padding: 14px 18px 14px 58px; font-size: 21px; line-height: 1.45; color: var(--muted); }
+  .chunk .n { position: absolute; left: 14px; top: 12px; font-family: 'JetBrains Mono', monospace; font-size: 15px; font-weight: 700; color: var(--dim); }
+  .chunk b { color: var(--text); }
+  .ov { background: rgba(99, 102, 241, .14); color: var(--text); border-radius: 4px; padding: 0 2px; }
+  .cut { color: #dc2626; font-weight: 700; }
+  .crumb { font-family: 'JetBrains Mono', monospace; font-size: 17px; color: var(--cg); font-weight: 700; display: block; margin-bottom: 2px; }
+  .verdict { margin-top: auto; padding-top: 12px; border-top: 1px solid var(--line); font-size: 20px; line-height: 1.4; color: var(--muted); }
+  .verdict b { color: var(--text); }
+</style>
+</head>
+<body>
+  <div class="eyebrow">Step 2: chunks</div>
+  <h1>The same recipe, two ways to cut it</h1>
+  <div class="thesis">A chunk has to <b>make sense on its own</b>, because it goes into the prompt without the rest of the document.</div>
+  <div class="main">
+    <div class="card col">
+      <h3>By length</h3><div class="sub">fixed length (about 100 characters) and overlap</div>
+      <div class="chunk"><span class="n">#1</span><b>Zucchini fritters.</b> Ingredients: 2 zucchini, 2 eggs, 4 tbsp flour, salt, <span class="ov">pepper, oil for fr</span><span class="cut">✂</span></div>
+      <div class="chunk"><span class="n">#2</span><span class="ov">pepper, oil for fr</span>ying. Method: Grate the zucchini and squeeze out the <span class="ov">water. Add the eggs</span><span class="cut">✂</span></div>
+      <div class="chunk"><span class="n">#3</span><span class="ov">water. Add the eggs</span> and flour, season. Fry in hot oil for 3 minutes on each side.</div>
+      <div class="verdict">Simple and works for any text. But <b>#3 does not know it is about fritters</b>: it may not come up for a question about fritters.</div>
+    </div>
+    <div class="card hi col">
+      <h3 class="gt" style="width:fit-content">By structure</h3><div class="sub">by document sections, the title attached to each</div>
+      <div class="chunk"><span class="n">#1</span><span class="crumb">Zucchini fritters › Ingredients</span>2 zucchini, 2 eggs, 4 tbsp flour, salt, pepper, oil for frying.</div>
+      <div class="chunk"><span class="n">#2</span><span class="crumb">Zucchini fritters › Method</span>Grate the zucchini and squeeze out the water. Add the eggs and flour, season. Fry in hot oil for 3 minutes on each side.</div>
+      <div class="verdict">Every piece knows what it is about. <b>It needs structure</b>, meaning headings: easy in DOCX and HTML, hard in PDF. Sections that are too long still get cut further by length.</div>
+    </div>
+  </div>
+  <div class="footer">
+    <div class="note">Highlight: the overlap, text repeated in two chunks so that a sentence on the boundary is not lost.</div>
+    <div class="rule">chunk = meaning + context</div>
+  </div>
+</body>
+</html>

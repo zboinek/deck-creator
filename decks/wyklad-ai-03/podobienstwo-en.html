@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Three similarity measures</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="base.css" />
+<style>
+  .main { gap: 26px; }
+  .col { flex: 1; padding: 22px 24px; display: flex; flex-direction: column; gap: 6px; }
+  .col h3 { font-size: 28px; font-weight: 800; }
+  .col .f { font-family: 'JetBrains Mono', monospace; font-size: 17px; color: var(--muted); }
+  svg { display: block; margin: 6px auto 0; }
+  .res { font-family: 'JetBrains Mono', monospace; font-size: 20px; line-height: 1.55; }
+  .res b { color: var(--cg); }
+  .verdict { margin-top: auto; padding-top: 12px; border-top: 1px solid var(--line); font-size: 20px; line-height: 1.4; color: var(--muted); }
+  .verdict b { color: var(--text); }
+</style>
+</head>
+<body>
+  <div class="eyebrow">Vector similarity</div>
+  <h1>Which is closer to A: B or C?</h1>
+  <div class="thesis">A = (2, 1), B = (4, 2), C = (1, 2). <b>The answer depends on what we measure with.</b></div>
+  <div class="main" id="m"></div>
+  <div class="footer">
+    <div class="note">For vectors of length 1, the angle and the dot product give the same ranking.</div>
+    <div class="rule">measure the way the model was trained</div>
+  </div>
+<script>
+  // skala: 1 jednostka = 62 px, początek układu w (36, 290), osie 0..5
+  const U = 62, OX = 36, OY = 290;
+  const P = ([x, y]) => [OX + x * U, OY - y * U];
+  const A = [2, 1], B = [4, 2], C = [1, 2];
+  const grid = () => {
+    let g = '';
+    for (let i = 0; i <= 5; i++) {
+      g += `<line x1="${OX + i * U}" y1="${OY}" x2="${OX + i * U}" y2="${OY - 4.4 * U}" stroke="#f0f0f2"/>`;
+      g += `<line x1="${OX}" y1="${OY - i * U}" x2="${OX + 5 * U}" y2="${OY - i * U}" stroke="#f0f0f2"/>`;
+    }
+    return g + `<line x1="${OX}" y1="${OY}" x2="${OX + 5 * U}" y2="${OY}" stroke="#d4d4d8" stroke-width="2"/><line x1="${OX}" y1="${OY}" x2="${OX}" y2="${OY - 4.4 * U}" stroke="#d4d4d8" stroke-width="2"/>`;
+  };
+  const vec = (v, c, w = 4) => { const [x, y] = P(v); return `<line x1="${OX}" y1="${OY}" x2="${x}" y2="${y}" stroke="${c}" stroke-width="${w}" marker-end="url(#a${c.slice(1)})"/>`; };
+  const dot = (v, c) => { const [x, y] = P(v); return `<circle cx="${x}" cy="${y}" r="9" fill="${c}"/>`; };
+  const lbl = (v, t, dx, dy) => { const [x, y] = P(v); return `<text x="${x + dx}" y="${y + dy}" font-size="22" font-weight="700" fill="#0a0a0a">${t}</text>`; };
+  const defs = ['#52525b', '#6366f1', '#a855f7', '#8b8b93'].map(c => `<marker id="a${c.slice(1)}" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4.5" markerHeight="4.5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="${c}"/></marker>`).join('');
+  const seg = (p, q, c) => { const [x1, y1] = P(p), [x2, y2] = P(q); return `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${c}" stroke-width="3" stroke-dasharray="7 6"/>`; };
+  const svg = body => `<svg width="380" height="310" viewBox="0 0 380 310"><defs>${defs}</defs>${grid()}${body}</svg>`;
+
+  const panels = [
+    { h: 'Distance', f: '‖A − B‖, smaller means closer',
+      s: svg(seg(A, B, '#8b8b93') + seg(A, C, '#a855f7') + dot(A, '#52525b') + dot(B, '#8b8b93') + dot(C, '#a855f7') + lbl(A, 'A', 12, 22) + lbl(B, 'B', 12, -10) + lbl(C, 'C', -28, -10)),
+      r: 'A–B = 2.24<br>A–C = <b>1.41</b>', v: '<b>C wins.</b> What counts is where the tip of the arrow lies.' },
+    { h: 'Angle (cosine)', f: 'cos(A, B), 1 = same direction',
+      s: svg(vec(B, '#8b8b93') + vec(A, '#6366f1', 5) + vec(C, '#a855f7') + lbl(A, 'A', 10, 26) + lbl(B, 'B', 10, -6) + lbl(C, 'C', -28, -8)),
+      r: 'cos(A, B) = <b>1.00</b><br>cos(A, C) = 0.80', v: '<b>B wins.</b> Only direction counts, length not at all.' },
+    { h: 'Dot product', f: 'A · B = 2·4 + 1·2',
+      s: svg(vec(B, '#6366f1', 5) + vec(A, '#52525b') + vec(C, '#a855f7') + lbl(A, 'A', 10, 26) + lbl(B, 'B', 10, -6) + lbl(C, 'C', -28, -8)),
+      r: 'A · B = <b>10</b><br>A · C = 4', v: '<b>B wins</b>, even more clearly: angle and length at once.' },
+  ];
+  document.getElementById('m').innerHTML = panels.map((p, i) => `
+    <div class="card ${i === 1 ? 'hi' : ''} col"><h3>${p.h}</h3><div class="f">${p.f}</div>${p.s}<div class="res">${p.r}</div><div class="verdict">${p.v}</div></div>`).join('');
+</script>
+</body>
+</html>

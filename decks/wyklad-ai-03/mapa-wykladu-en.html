@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Lecture map</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="base.css" />
+<style>
+  .main { flex-direction: column; justify-content: center; gap: 0; }
+  .grid { display: grid; grid-template-columns: repeat(6, 1fr); column-gap: 30px; row-gap: 0; }
+  .lane { font-family: 'JetBrains Mono', monospace; font-size: 16px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--dim); margin-bottom: 12px; }
+  .step { padding: 18px 14px; text-align: center; position: relative; min-height: 172px; }
+  .step .n { font-family: 'JetBrains Mono', monospace; font-size: 15px; color: var(--dim); }
+  .step h3 { font-size: 24px; font-weight: 700; margin-top: 4px; }
+  .step p { font-size: 17px; color: var(--muted); margin-top: 8px; line-height: 1.35; }
+  .step.arrow::after { content: '→'; position: absolute; right: -25px; top: 50%; transform: translateY(-50%); font-size: 24px; color: var(--dim); }
+  .q { border: 1.5px dashed var(--line-strong); background: #fff; display: flex; flex-direction: column; justify-content: center; }
+  .q h3 { font-size: 21px; }
+  .note { align-self: center; font-size: 19px; color: var(--muted); line-height: 1.45; padding: 0 6px; }
+  .note b { color: var(--text); }
+  .link { height: 64px; position: relative; }
+  .link::before { content: ''; position: absolute; left: 50%; top: 0; bottom: 0; width: 3px; transform: translateX(-50%); background: var(--grad-bar-v); border-radius: 2px; }
+  .link span { position: absolute; left: calc(50% + 14px); top: 50%; transform: translateY(-50%); font-family: 'JetBrains Mono', monospace; font-size: 15px; font-weight: 700; color: var(--cg); white-space: nowrap; }
+</style>
+</head>
+<body>
+  <div class="eyebrow">Lecture map</div>
+  <h1>Cooking assistant: recipes from the web + LLM</h1>
+  <div class="thesis">RAG from lecture 8 taken apart into seven steps. <b>Each part of today's lecture is one of them.</b></div>
+  <div class="main">
+    <div class="grid">
+      <div class="lane" style="grid-column: 1 / span 6">Documents: once, up front</div>
+
+      <div class="card step arrow"><div class="n">1</div><h3>Extraction</h3><p>Web page, PDF, DOCX turned into clean text</p></div>
+      <div class="card step arrow"><div class="n">2</div><h3>Chunks</h3><p>Text cut into pieces, plus metadata</p></div>
+      <div class="card step arrow"><div class="n">3</div><h3>Embedding</h3><p>Every piece gets one vector</p></div>
+      <div class="card hi step"><div class="n">4</div><h3 class="gt" style="width:fit-content;margin:4px auto 0">Database</h3><p>Vectors, text and metadata in one place</p></div>
+      <div class="note" style="grid-column: 5 / span 2">About <b>1000 recipes</b> from cooking sites. We do this once and repeat it when new ones arrive.</div>
+
+      <div></div><div></div><div></div>
+      <div class="link"><span>search the database</span></div>
+      <div></div><div></div>
+
+      <div class="lane" style="grid-column: 1 / span 6">Question: every time</div>
+
+      <div class="note" style="grid-column: 1 / span 2">The user asks, and the system <b>searches, builds the prompt and answers</b>, citing sources.</div>
+      <div class="card step q arrow"><h3>“What can I make quickly with zucchini?”</h3></div>
+      <div class="card hi step arrow"><div class="n">5</div><h3 class="gt" style="width:fit-content;margin:4px auto 0">Search</h3><p>Vector similarity, keywords or both</p></div>
+      <div class="card step arrow"><div class="n">6</div><h3>Prompt</h3><p>Retrieved pieces with sources go into the context</p></div>
+      <div class="card step"><div class="n">7</div><h3>Answer</h3><p>The LLM writes, temperature controls the sampling</p></div>
+    </div>
+  </div>
+  <div class="footer">
+    <div class="note" style="font-size:18px;color:var(--dim)">At the end: how to run all of it as a working application.</div>
+    <div class="rule">good context = good answer</div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>DOCX and PDF</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="base.css" />
+<style>
+  .main { gap: 34px; }
+  .col { flex: 1; padding: 26px 30px; display: flex; flex-direction: column; gap: 16px; }
+  .col h3 { font-size: 30px; font-weight: 800; }
+  .col h3 span { font-size: 20px; font-weight: 500; color: var(--muted); margin-left: 10px; }
+  pre { font-family: 'JetBrains Mono', monospace; font-size: 21px; line-height: 1.55; background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 16px 20px; color: var(--muted); }
+  pre b { color: var(--text); }
+  pre .k { color: var(--cg); font-weight: 700; }
+  .says { margin-top: auto; font-size: 21px; line-height: 1.4; color: var(--muted); }
+  .says b { color: var(--text); }
+</style>
+</head>
+<body>
+  <div class="eyebrow">Extraction</div>
+  <h1>What is really inside the file?</h1>
+  <div class="thesis">The same paragraph in two formats. <b>DOCX remembers the structure, PDF only remembers where to put the letters.</b></div>
+  <div class="main">
+    <div class="card col">
+      <h3>DOCX <span>is a ZIP archive of XML files</span></h3>
+<pre>report.docx
+├─ [Content_Types].xml
+├─ docProps/core.xml      <span class="k">author, date</span>
+└─ word/
+   ├─ document.xml        <span class="k">content</span>
+   ├─ styles.xml
+   └─ media/chart.png</pre>
+<pre>&lt;w:pStyle w:val="<b>Heading1</b>"/&gt;
+&lt;w:t&gt;<b>Third quarter results</b>&lt;/w:t&gt;</pre>
+      <div class="says">The heading knows it is a heading. <b>Paragraphs, tables and metadata can be extracted directly.</b></div>
+    </div>
+    <div class="card hi col">
+      <h3>PDF <span>is instructions for drawing a page</span></h3>
+<pre>BT
+  /F1 <b>18</b> Tf  72 <b>720</b> Td
+  (<b>Third quar</b>) Tj
+  (<b>ter res</b>) Tj  (<b>ults</b>) Tj
+  /F2 <b>11</b> Tf  320 <b>720</b> Td
+  (<b>Revenue grew</b>) Tj
+ET</pre>
+      <div class="says">Set the font, move the pen, draw the glyphs. <b>There is no paragraph, heading or table.</b> The extractor has to guess reading order, columns and tables from positions, and a scan is just an image that needs OCR.</div>
+    </div>
+  </div>
+  <div class="footer">
+    <div class="note">Simplified PDF content stream: BT/ET is a text block, Tf the font, Td the position, Tj draw.</div>
+    <div class="rule">garbage in = garbage in the answer</div>
+  </div>
+</body>
+</html>

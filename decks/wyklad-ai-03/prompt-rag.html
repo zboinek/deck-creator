@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8" />
+<title>Prompt RAG</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="base.css" />
+<style>
+  /* kolory ról jak w prompt-base.css z W8 */
+  :root { --sys: #3f3f46; --ins: #6366f1; --ctx: #a855f7; --ast: #f59e0b; }
+  .main { flex-direction: column; gap: 14px; }
+  .row { display: grid; grid-template-columns: 1fr 300px; gap: 26px; align-items: center; }
+  .blk { position: relative; border-radius: 12px; padding: 14px 22px 14px 32px; background: color-mix(in oklab, var(--c) 8%, white);
+         border: 1.5px solid color-mix(in oklab, var(--c) 30%, white); font-size: 19px; line-height: 1.42; color: var(--muted); }
+  .blk::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 8px; border-radius: 12px 0 0 12px; background: var(--c); }
+  .blk .role { font-family: 'JetBrains Mono', monospace; font-size: 14px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--c); margin-bottom: 4px; }
+  .blk b { color: var(--text); }
+  .sys { --c: var(--sys); } .ins { --c: var(--ins); } .ctx { --c: var(--ctx); } .ast { --c: var(--ast); }
+  .frag { display: grid; grid-template-columns: 40px 1fr; gap: 6px; margin-top: 6px; }
+  .frag .id { font-family: 'JetBrains Mono', monospace; font-weight: 700; color: var(--ctx); }
+  .frag .src { font-family: 'JetBrains Mono', monospace; font-size: 15px; color: var(--dim); }
+  .ref { font-family: 'JetBrains Mono', monospace; font-weight: 700; color: var(--ctx); }
+  .why { font-size: 18px; color: var(--muted); line-height: 1.4; }
+  .why .k { font-family: 'JetBrains Mono', monospace; font-size: 15px; font-weight: 700; color: var(--cg); display: block; margin-bottom: 2px; }
+</style>
+</head>
+<body>
+  <div class="eyebrow">Krok 6: prompt</div>
+  <h1>Ten sam prompt co na wykładzie 8, tylko wypełniony</h1>
+  <div class="thesis">Wyszukiwanie dostarcza <b>fragmenty ze źródłami</b>, a instrukcja mówi, <b>co z nimi zrobić</b>.</div>
+  <div class="main">
+    <div class="row">
+      <div class="blk sys"><div class="role">System prompt</div>Jesteś asystentem kulinarnym. <b>Odpowiadaj tylko na podstawie fragmentów z kontekstu.</b> Jeśli ich brakuje, napisz, że nie wiesz. Przy każdej informacji podaj numer fragmentu.</div>
+      <div class="why"><span class="k">piszemy raz</span>Zasady: tylko kontekst, „nie wiem” zamiast zgadywania, źródła.</div>
+    </div>
+    <div class="row">
+      <div class="blk ins"><div class="role">User instruction</div><b>Co szybkiego zrobić z cukinii?</b></div>
+      <div class="why"><span class="k">od użytkownika</span>To samo pytanie poszło do wyszukiwania.</div>
+    </div>
+    <div class="row">
+      <div class="blk ctx"><div class="role">User context</div>
+        <div class="frag"><span class="id">[1]</span><span><b>Placki z cukinii.</b> Składniki: 2 cukinie, 2 jajka, 4 łyżki mąki ... Smaż po 3 minuty z każdej strony. <span class="src">przepisy/placki-z-cukinii · obiad · 20 min</span></span></div>
+        <div class="frag"><span class="id">[2]</span><span><b>Leczo z cukinią.</b> Podsmaż cebulę i kiełbasę, dodaj cukinię i paprykę ... <span class="src">przepisy/leczo · obiad · 40 min</span></span></div>
+        <div class="frag"><span class="id">[3]</span><span><b>Cukinia faszerowana.</b> Przekrój cukinię wzdłuż, wydrąż środek ... <span class="src">przepisy/cukinia-faszerowana · obiad · 50 min</span></span></div>
+      </div>
+      <div class="why"><span class="k">krok 5: top 3</span>Tekst chunków plus metadane z kroku 2: źródło, kategoria, czas.</div>
+    </div>
+    <div class="row">
+      <div class="blk ast"><div class="role">Assistant</div>Najszybsze będą <b>placki z cukinii</b>, ok. 20 minut <span class="ref">[1]</span>. Jeśli masz więcej czasu, leczo <span class="ref">[2]</span>.</div>
+      <div class="why"><span class="k">krok 7: model</span>Każde zdanie da się sprawdzić w źródle.</div>
+    </div>
+  </div>
+  <div class="footer">
+    <div class="note">Fragmenty przepisów skrócone. Kolory ról jak na slajdach o strukturze promptu z W8.</div>
+    <div class="rule">bez źródła = bez odpowiedzi</div>
+  </div>
+</body>
+</html>

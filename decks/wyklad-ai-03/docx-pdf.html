@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8" />
+<title>DOCX i PDF</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="base.css" />
+<style>
+  .main { gap: 34px; }
+  .col { flex: 1; padding: 26px 30px; display: flex; flex-direction: column; gap: 16px; }
+  .col h3 { font-size: 30px; font-weight: 800; }
+  .col h3 span { font-size: 20px; font-weight: 500; color: var(--muted); margin-left: 10px; }
+  pre { font-family: 'JetBrains Mono', monospace; font-size: 21px; line-height: 1.55; background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 16px 20px; color: var(--muted); }
+  pre b { color: var(--text); }
+  pre .k { color: var(--cg); font-weight: 700; }
+  .says { margin-top: auto; font-size: 21px; line-height: 1.4; color: var(--muted); }
+  .says b { color: var(--text); }
+</style>
+</head>
+<body>
+  <div class="eyebrow">Ekstrakcja</div>
+  <h1>Co naprawdę jest w środku pliku?</h1>
+  <div class="thesis">Ten sam akapit w dwóch formatach. <b>DOCX pamięta strukturę, PDF pamięta tylko, gdzie postawić litery.</b></div>
+  <div class="main">
+    <div class="card col">
+      <h3>DOCX <span>to archiwum ZIP z plikami XML</span></h3>
+<pre>raport.docx
+├─ [Content_Types].xml
+├─ docProps/core.xml      <span class="k">autor, data</span>
+└─ word/
+   ├─ document.xml        <span class="k">treść</span>
+   ├─ styles.xml
+   └─ media/wykres.png</pre>
+<pre>&lt;w:pStyle w:val="<b>Heading1</b>"/&gt;
+&lt;w:t&gt;<b>Wyniki za III kwartał</b>&lt;/w:t&gt;</pre>
+      <div class="says">Nagłówek wie, że jest nagłówkiem. <b>Akapity, tabele i metadane da się wyciągnąć wprost.</b></div>
+    </div>
+    <div class="card hi col">
+      <h3>PDF <span>to instrukcje rysowania strony</span></h3>
+<pre>BT
+  /F1 <b>18</b> Tf  72 <b>720</b> Td
+  (<b>Wyniki za III kw</b>) Tj
+  (<b>arta</b>) Tj  (<b>ł</b>) Tj
+  /F2 <b>11</b> Tf  320 <b>720</b> Td
+  (<b>Przychody wzrosły</b>) Tj
+ET</pre>
+      <div class="says">Ustaw czcionkę, przesuń pióro, narysuj glify. <b>Nie ma akapitu, nagłówka ani tabeli.</b> Kolejność czytania, kolumny i tabele ekstraktor musi odgadnąć z pozycji, a skan to w ogóle obrazek do OCR.</div>
+    </div>
+  </div>
+  <div class="footer">
+    <div class="note">Uproszczony zapis strumienia PDF: BT/ET to blok tekstu, Tf czcionka, Td pozycja, Tj rysuj.</div>
+    <div class="rule">śmieci na wejściu = śmieci w odpowiedzi</div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Prompt RAG</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="base.css" />
+<style>
+  /* kolory ról jak w prompt-base.css z W8 */
+  :root { --sys: #3f3f46; --ins: #6366f1; --ctx: #a855f7; --ast: #f59e0b; }
+  .main { flex-direction: column; gap: 14px; }
+  .row { display: grid; grid-template-columns: 1fr 300px; gap: 26px; align-items: center; }
+  .blk { position: relative; border-radius: 12px; padding: 14px 22px 14px 32px; background: color-mix(in oklab, var(--c) 8%, white);
+         border: 1.5px solid color-mix(in oklab, var(--c) 30%, white); font-size: 19px; line-height: 1.42; color: var(--muted); }
+  .blk::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 8px; border-radius: 12px 0 0 12px; background: var(--c); }
+  .blk .role { font-family: 'JetBrains Mono', monospace; font-size: 14px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--c); margin-bottom: 4px; }
+  .blk b { color: var(--text); }
+  .sys { --c: var(--sys); } .ins { --c: var(--ins); } .ctx { --c: var(--ctx); } .ast { --c: var(--ast); }
+  .frag { display: grid; grid-template-columns: 40px 1fr; gap: 6px; margin-top: 6px; }
+  .frag .id { font-family: 'JetBrains Mono', monospace; font-weight: 700; color: var(--ctx); }
+  .frag .src { font-family: 'JetBrains Mono', monospace; font-size: 15px; color: var(--dim); }
+  .ref { font-family: 'JetBrains Mono', monospace; font-weight: 700; color: var(--ctx); }
+  .why { font-size: 18px; color: var(--muted); line-height: 1.4; }
+  .why .k { font-family: 'JetBrains Mono', monospace; font-size: 15px; font-weight: 700; color: var(--cg); display: block; margin-bottom: 2px; }
+  .src { white-space: nowrap; }
+</style>
+</head>
+<body>
+  <div class="eyebrow">Step 6: prompt</div>
+  <h1>The same prompt as in lecture 8, only filled in</h1>
+  <div class="thesis">Search delivers <b>fragments with sources</b>, and the instruction says <b>what to do with them</b>.</div>
+  <div class="main">
+    <div class="row">
+      <div class="blk sys"><div class="role">System prompt</div>You are a cooking assistant. <b>Answer only from the fragments in the context.</b> If they are missing, say that you don't know. Give the fragment number with every piece of information.</div>
+      <div class="why"><span class="k">written once</span>Rules: context only, “I don't know” instead of guessing, sources.</div>
+    </div>
+    <div class="row">
+      <div class="blk ins"><div class="role">User instruction</div><b>What can I make quickly with zucchini?</b></div>
+      <div class="why"><span class="k">from the user</span>The same question went to search.</div>
+    </div>
+    <div class="row">
+      <div class="blk ctx"><div class="role">User context</div>
+        <div class="frag"><span class="id">[1]</span><span><b>Zucchini fritters.</b> Ingredients: 2 zucchini, 2 eggs, 4 tbsp flour ... Fry for 3 minutes on each side. <span class="src">recipes/zucchini-fritters · dinner · 20 min</span></span></div>
+        <div class="frag"><span class="id">[2]</span><span><b>Courgette ratatouille.</b> Fry the onion and garlic, add the courgette and peppers ... <span class="src">recipes/ratatouille · dinner · 40 min</span></span></div>
+        <div class="frag"><span class="id">[3]</span><span><b>Stuffed zucchini.</b> Cut the zucchini lengthwise, scoop out the middle ... <span class="src">recipes/stuffed-zucchini · dinner · 50 min</span></span></div>
+      </div>
+      <div class="why"><span class="k">step 5: top 3</span>Chunk text plus metadata from step 2: source, category, time.</div>
+    </div>
+    <div class="row">
+      <div class="blk ast"><div class="role">Assistant</div>The quickest are <b>zucchini fritters</b>, about 20 minutes <span class="ref">[1]</span>. If you have more time, ratatouille <span class="ref">[2]</span>.</div>
+      <div class="why"><span class="k">step 7: model</span>Every sentence can be checked against a source.</div>
+    </div>
+  </div>
+  <div class="footer">
+    <div class="note">Recipe fragments shortened. Role colours as on the prompt structure slides from L8.</div>
+    <div class="rule">no source = no answer</div>
+  </div>
+</body>
+</html>

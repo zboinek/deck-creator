@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8" />
+<title>Mapa wykładu</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="base.css" />
+<style>
+  .main { flex-direction: column; justify-content: center; gap: 0; }
+  .grid { display: grid; grid-template-columns: repeat(6, 1fr); column-gap: 30px; row-gap: 0; }
+  .lane { font-family: 'JetBrains Mono', monospace; font-size: 16px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--dim); margin-bottom: 12px; }
+  .step { padding: 18px 14px; text-align: center; position: relative; min-height: 172px; }
+  .step .n { font-family: 'JetBrains Mono', monospace; font-size: 15px; color: var(--dim); }
+  .step h3 { font-size: 24px; font-weight: 700; margin-top: 4px; }
+  .step p { font-size: 17px; color: var(--muted); margin-top: 8px; line-height: 1.35; }
+  .step.arrow::after { content: '→'; position: absolute; right: -25px; top: 50%; transform: translateY(-50%); font-size: 24px; color: var(--dim); }
+  .q { border: 1.5px dashed var(--line-strong); background: #fff; display: flex; flex-direction: column; justify-content: center; }
+  .q h3 { font-size: 21px; }
+  .note { align-self: center; font-size: 19px; color: var(--muted); line-height: 1.45; padding: 0 6px; }
+  .note b { color: var(--text); }
+  .link { height: 64px; position: relative; }
+  .link::before { content: ''; position: absolute; left: 50%; top: 0; bottom: 0; width: 3px; transform: translateX(-50%); background: var(--grad-bar-v); border-radius: 2px; }
+  .link span { position: absolute; left: calc(50% + 14px); top: 50%; transform: translateY(-50%); font-family: 'JetBrains Mono', monospace; font-size: 15px; font-weight: 700; color: var(--cg); white-space: nowrap; }
+</style>
+</head>
+<body>
+  <div class="eyebrow">Mapa wykładu</div>
+  <h1>Asystent kulinarny: przepisy z sieci + LLM</h1>
+  <div class="thesis">RAG z wykładu 8 rozebrany na siedem kroków. <b>Każda część dzisiejszego wykładu to jeden z nich.</b></div>
+  <div class="main">
+    <div class="grid">
+      <div class="lane" style="grid-column: 1 / span 6">Dokumenty: raz, z góry</div>
+
+      <div class="card step arrow"><div class="n">1</div><h3>Ekstrakcja</h3><p>Strona WWW, PDF, DOCX zamienione w czysty tekst</p></div>
+      <div class="card step arrow"><div class="n">2</div><h3>Chunki</h3><p>Tekst pocięty na kawałki, do tego metadane</p></div>
+      <div class="card step arrow"><div class="n">3</div><h3>Embedding</h3><p>Każdy kawałek dostaje jeden wektor</p></div>
+      <div class="card hi step"><div class="n">4</div><h3 class="gt" style="width:fit-content;margin:4px auto 0">Baza</h3><p>Wektory, tekst i metadane w jednym miejscu</p></div>
+      <div class="note" style="grid-column: 5 / span 2">Ok. <b>1000 przepisów</b> ze stron kulinarnych. Robimy to raz i powtarzamy, gdy dojdą nowe.</div>
+
+      <div></div><div></div><div></div>
+      <div class="link"><span>szukamy w bazie</span></div>
+      <div></div><div></div>
+
+      <div class="lane" style="grid-column: 1 / span 6">Pytanie: za każdym razem</div>
+
+      <div class="note" style="grid-column: 1 / span 2">Użytkownik pyta, a system <b>szuka, składa prompt i odpowiada</b>, podając źródła.</div>
+      <div class="card step q arrow"><h3>„Co szybkiego zrobić z cukinii?”</h3></div>
+      <div class="card hi step arrow"><div class="n">5</div><h3 class="gt" style="width:fit-content;margin:4px auto 0">Wyszukiwanie</h3><p>Podobieństwo wektorów, słowa kluczowe albo oba</p></div>
+      <div class="card step arrow"><div class="n">6</div><h3>Prompt</h3><p>Znalezione kawałki ze źródłami trafiają do kontekstu</p></div>
+      <div class="card step"><div class="n">7</div><h3>Odpowiedź</h3><p>LLM pisze, temperatura decyduje o losowaniu</p></div>
+    </div>
+  </div>
+  <div class="footer">
+    <div class="note" style="font-size:18px;color:var(--dim)">Na koniec: jak to wszystko uruchomić jako działającą aplikację.</div>
+    <div class="rule">dobry kontekst = dobra odpowiedź</div>
+  </div>
+</body>
+</html>

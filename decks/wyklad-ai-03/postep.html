@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8" />
+<title>Gdzie jesteśmy</title>
+<!-- Jedna mapa, osiem stanów: postep.html?krok=N (1-7 = bieżący krok, 8 = wszystkie omówione). Render: ./render.sh postep -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="base.css" />
+<style>
+  .main { flex-direction: column; justify-content: center; gap: 0; }
+  .grid { display: grid; grid-template-columns: repeat(6, 1fr); column-gap: 30px; row-gap: 0; }
+  .lane { font-family: 'JetBrains Mono', monospace; font-size: 16px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--dim); margin-bottom: 18px; }
+  .step { padding: 18px 14px; text-align: center; position: relative; min-height: 172px; }
+  .step .n { font-family: 'JetBrains Mono', monospace; font-size: 15px; color: var(--dim); }
+  .step h3 { font-size: 24px; font-weight: 700; margin-top: 4px; }
+  .step p { font-size: 17px; color: var(--muted); margin-top: 8px; line-height: 1.35; }
+  .step.arrow::after { content: '→'; position: absolute; right: -25px; top: 50%; transform: translateY(-50%); font-size: 24px; color: var(--dim); }
+
+  /* omówione: pełna karta, numer zamieniony na znacznik */
+  .step.done .n { color: var(--muted); font-weight: 700; }
+  .step.done .n::before { content: '✓ '; }
+  /* bieżący: ramka i tytuł w gradiencie, plakietka nad kartą */
+  .step.now .tag { position: absolute; left: 50%; top: -15px; transform: translateX(-50%); white-space: nowrap;
+                   font-family: 'JetBrains Mono', monospace; font-size: 14px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase;
+                   color: var(--text); background: var(--grad-bar); padding: 5px 14px; border-radius: 999px; }
+  .step.now h3 { width: fit-content; margin: 4px auto 0; background: var(--grad-text); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  /* przed nami: przerywana ramka, wyblakły tekst */
+  .step.todo { background: #fff; border: 1.5px dashed var(--line-strong); }
+  .step.todo h3 { color: var(--dim); }
+  .step.todo p { color: #a1a1aa; }
+
+  .q { background: #fff; border: 1px solid var(--line); display: flex; flex-direction: column; justify-content: center; }
+  .q h3 { font-size: 21px; font-weight: 600; color: var(--muted); }
+  .note { align-self: center; font-size: 19px; color: var(--muted); line-height: 1.45; padding: 0 6px; }
+  .note b { color: var(--text); }
+  .link { height: 64px; position: relative; }
+  .link::before { content: ''; position: absolute; left: 50%; top: 0; bottom: 0; width: 3px; transform: translateX(-50%); background: var(--line-strong); border-radius: 2px; }
+  .link.on::before { background: var(--grad-bar-v); }
+  .link span { position: absolute; left: calc(50% + 14px); top: 50%; transform: translateY(-50%); font-family: 'JetBrains Mono', monospace; font-size: 15px; font-weight: 700; color: var(--dim); white-space: nowrap; }
+  .link.on span { color: var(--cg); }
+  .progress { display: flex; align-items: center; gap: 8px; font-family: 'JetBrains Mono', monospace; font-size: 17px; color: var(--dim); }
+  .progress i { width: 34px; height: 8px; border-radius: 4px; background: var(--line); }
+  .progress i.done { background: var(--muted); }
+  .progress i.now { background: var(--grad-bar); }
+  .progress span { margin-left: 10px; }
+</style>
+</head>
+<body>
+  <div class="eyebrow">Gdzie jesteśmy</div>
+  <h1 id="title"></h1>
+  <div class="thesis" id="thesis"></div>
+  <div class="main">
+    <div class="grid">
+      <div class="lane" style="grid-column: 1 / span 6">Dokumenty: raz, z góry</div>
+
+      <div class="card step arrow" data-k="1"><div class="n">1</div><h3>Ekstrakcja</h3><p>Strona WWW, PDF, DOCX zamienione w czysty tekst</p></div>
+      <div class="card step arrow" data-k="2"><div class="n">2</div><h3>Chunki</h3><p>Tekst pocięty na kawałki, do tego metadane</p></div>
+      <div class="card step arrow" data-k="3"><div class="n">3</div><h3>Embedding</h3><p>Każdy kawałek dostaje jeden wektor</p></div>
+      <div class="card step" data-k="4"><div class="n">4</div><h3>Baza</h3><p>Wektory, tekst i metadane w jednym miejscu</p></div>
+      <div class="note" style="grid-column: 5 / span 2">Ok. <b>1000 przepisów</b> ze stron kulinarnych. Robimy to raz i powtarzamy, gdy dojdą nowe.</div>
+
+      <div></div><div></div><div></div>
+      <div class="link" id="link"><span>szukamy w bazie</span></div>
+      <div></div><div></div>
+
+      <div class="lane" style="grid-column: 1 / span 6">Pytanie: za każdym razem</div>
+
+      <div class="note" style="grid-column: 1 / span 2">Użytkownik pyta, a system <b>szuka, składa prompt i odpowiada</b>, podając źródła.</div>
+      <div class="card step q arrow"><h3>„Co szybkiego zrobić z cukinii?”</h3></div>
+      <div class="card step arrow" data-k="5"><div class="n">5</div><h3>Wyszukiwanie</h3><p>Podobieństwo wektorów, słowa kluczowe albo oba</p></div>
+      <div class="card step arrow" data-k="6"><div class="n">6</div><h3>Prompt</h3><p>Znalezione kawałki ze źródłami trafiają do kontekstu</p></div>
+      <div class="card step" data-k="7"><div class="n">7</div><h3>Odpowiedź</h3><p>LLM pisze, temperatura decyduje o losowaniu</p></div>
+    </div>
+  </div>
+  <div class="footer">
+    <div class="progress" id="progress"></div>
+    <div class="rule">dobry kontekst = dobra odpowiedź</div>
+  </div>
+<script>
+  const S = {
+    1: ['Krok 1 z 7: ekstrakcja', 'Zaczynamy od surowych plików. <b>Jak wyciągnąć z nich czysty tekst?</b>'],
+    2: ['Krok 2 z 7: chunki', 'Mamy czysty tekst. <b>Jak go pociąć, żeby każdy kawałek mówił o jednym?</b>'],
+    3: ['Krok 3 z 7: embedding', 'Mamy kawałki. <b>Jak zamienić każdy z nich w jeden wektor?</b>'],
+    4: ['Krok 4 z 7: baza', 'Mamy wektory. <b>Gdzie je trzymać razem z tekstem i metadanymi?</b>'],
+    5: ['Krok 5 z 7: wyszukiwanie', 'Górny tor gotowy, przychodzi pytanie. <b>Jak znaleźć w bazie właściwe kawałki?</b>'],
+    6: ['Krok 6 z 7: prompt', 'Mamy znalezione kawałki. <b>Jak podać je modelowi razem ze źródłami?</b>'],
+    7: ['Krok 7 z 7: odpowiedź', 'Prompt gotowy. <b>Jak model pisze odpowiedź i ile w niej losowania?</b>'],
+    8: ['Siedem kroków za nami', 'Asystent działa na papierze. <b>Zostało uruchomić go jako aplikację.</b>'],
+  };
+  const k = Math.min(8, Math.max(1, parseInt(new URLSearchParams(location.search).get('krok') || '1', 10)));
+  document.title = S[k][0];
+  document.getElementById('title').textContent = S[k][0];
+  document.getElementById('thesis').innerHTML = S[k][1];
+  document.querySelectorAll('[data-k]').forEach(el => {
+    const n = +el.dataset.k;
+    if (n < k) el.classList.add('done');
+    else if (n === k) { el.classList.add('now', 'hi'); el.insertAdjacentHTML('afterbegin', '<div class="tag">jesteśmy tutaj</div>'); }
+    else el.classList.add('todo');
+  });
+  if (k >= 5) document.getElementById('link').classList.add('on');
+  const bars = [1,2,3,4,5,6,7].map(n => `<i class="${n < k ? 'done' : n === k ? 'now' : ''}"></i>`).join('');
+  const label = k === 8 ? 'omówione: 7 z 7' : `omówione: ${k - 1} z 7`;
+  document.getElementById('progress').innerHTML = bars + `<span>${label}</span>`;
+</script>
+</body>
+</html>

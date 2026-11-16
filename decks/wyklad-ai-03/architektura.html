@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8" />
+<title>Co dziś budujemy</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="base.css" />
+<style>
+  /* pozycje bezwzględne w układzie strony 1600x900; linie SVG liczone z krawędzi kart */
+  .main { position: relative; margin-top: 22px; }
+  .box { position: absolute; border-radius: 16px; }
+  .net { left: 300px; top: 0; width: 1172px; height: 560px; border: 2px dashed var(--line-strong); }
+  .net .t { position: absolute; left: 20px; top: 14px; font-family: 'JetBrains Mono', monospace; font-size: 15px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--dim); }
+  .card.box { padding: 16px 20px; }
+  .box h3 { font-size: 25px; font-weight: 800; }
+  .box p { font-size: 17px; color: var(--muted); margin-top: 6px; line-height: 1.35; }
+  .box .ex { font-family: 'JetBrains Mono', monospace; font-size: 14px; color: var(--dim); margin-top: 8px; }
+  .user { left: 0; top: 200px; width: 230px; height: 150px; }
+  .app { left: 360px; top: 190px; width: 300px; height: 170px; }
+  .svc { left: 1120px; width: 320px; height: 140px; }
+  svg { position: absolute; left: 0; top: 0; overflow: visible; }
+  svg text { font-family: Inter, sans-serif; }
+</style>
+</head>
+<body>
+  <div class="eyebrow">Co dziś budujemy</div>
+  <h1>Cztery klocki i jedna sieć</h1>
+  <div class="thesis">Aplikacja sama nic nie wie. <b>Pyta po kolei trzy usługi</b> i składa z ich odpowiedzi wynik dla użytkownika.</div>
+  <div class="main">
+    <div class="box net"><div class="t">sieć prywatna</div></div>
+    <svg width="1472" height="560" viewBox="0 0 1472 560">
+      <defs>
+        <linearGradient id="g" gradientUnits="userSpaceOnUse" x1="660" y1="0" x2="1120" y2="0"><stop offset="0" stop-color="#6366f1"/><stop offset="1" stop-color="#a855f7"/></linearGradient>
+        <marker id="a" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#a855f7"/></marker>
+        <marker id="b" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#8b8b93"/></marker>
+      </defs>
+      <!-- użytkownik <-> aplikacja -->
+      <line x1="232" y1="252" x2="356" y2="252" stroke="#8b8b93" stroke-width="3" marker-end="url(#b)"/>
+      <line x1="356" y1="300" x2="232" y2="300" stroke="#8b8b93" stroke-width="3" marker-end="url(#b)"/>
+      <text x="294" y="238" font-size="16" fill="#52525b" text-anchor="middle">pytanie</text>
+      <text x="294" y="326" font-size="16" fill="#52525b" text-anchor="middle">odpowiedź</text>
+      <text x="294" y="346" font-size="16" fill="#52525b" text-anchor="middle">+ źródła</text>
+      <!-- aplikacja -> usługi: środki usług y = 100, 275, 450 -->
+      <path d="M662 230 C 860 230, 920 100, 1116 100" fill="none" stroke="url(#g)" stroke-width="4" marker-end="url(#a)"/>
+      <path d="M662 275 L 1116 275" fill="none" stroke="url(#g)" stroke-width="4" marker-end="url(#a)"/>
+      <path d="M662 320 C 860 320, 920 450, 1116 450" fill="none" stroke="url(#g)" stroke-width="4" marker-end="url(#a)"/>
+      <g font-size="18" fill="#0a0a0a" font-weight="600" stroke="#ffffff" stroke-width="10" stroke-linejoin="round" paint-order="stroke">
+        <text x="860" y="122" text-anchor="middle">① pytanie → wektor</text>
+        <text x="900" y="262" text-anchor="middle">② wektor + słowa → 3 chunki</text>
+        <text x="860" y="440" text-anchor="middle">③ prompt z chunkami → odpowiedź</text>
+      </g>
+    </svg>
+    <div class="card box user"><h3>Użytkownik</h3><p>przeglądarka albo komunikator</p></div>
+    <div class="card hi box app"><h3 class="gt" style="width:fit-content">Aplikacja</h3><p>kroki 5, 6 i 7 z mapy: szuka, składa prompt, oddaje wynik</p><div class="ex">Streamlit, bot w MS Teams</div></div>
+    <div class="card box svc" style="top:30px"><h3>Wektoryzer</h3><p>model embeddingowy z kroku 3</p><div class="ex">mmlw, silver-retriever</div></div>
+    <div class="card box svc" style="top:205px"><h3>Baza wektorowa</h3><p>krok 4: chunki, wektory, metadane</p><div class="ex">Weaviate, Qdrant, pgvector</div></div>
+    <div class="card box svc" style="top:380px"><h3>LLM API</h3><p>model językowy jako usługa</p><div class="ex">Ollama, vLLM, llama.cpp</div></div>
+  </div>
+  <div class="footer">
+    <div class="note">Indeksowanie (kroki 1–4) to osobny skrypt, który korzysta z tego samego wektoryzera i tej samej bazy.</div>
+    <div class="rule">każdy klocek da się wymienić osobno</div>
+  </div>
+</body>
+</html>

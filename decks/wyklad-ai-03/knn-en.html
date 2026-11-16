@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Semantic search</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="base.css" />
+<style>
+  .main { gap: 40px; align-items: stretch; }
+  .plot { width: 980px; flex: none; padding: 0; position: relative; }
+  .side { flex: 1; display: flex; flex-direction: column; gap: 22px; justify-content: center; }
+  .side h3 { font-size: 24px; font-weight: 700; }
+  ol { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+  ol li { display: grid; grid-template-columns: 34px 1fr auto; gap: 10px; align-items: baseline; font-size: 21px; }
+  ol li .n { font-family: 'JetBrains Mono', monospace; color: var(--dim); }
+  ol li .s { font-family: 'JetBrains Mono', monospace; font-size: 18px; color: var(--cg); font-weight: 700; }
+  ol li.out { color: var(--dim); }
+  ol li.out .s { color: var(--dim); font-weight: 500; }
+  svg text { font-family: Inter, sans-serif; }
+</style>
+</head>
+<body>
+  <div class="eyebrow">Semantic search</div>
+  <h1>We look for the question's k nearest neighbours</h1>
+  <div class="thesis">We turn the question into a vector <b>with the same model</b> as the chunks and take the ones that lie closest.</div>
+  <div class="main">
+    <div class="card plot"><svg id="p" width="980" height="540" viewBox="0 0 980 540"></svg></div>
+    <div class="side">
+      <h3>Top 3 for the question</h3>
+      <ol id="l"></ol>
+      <div class="callout">“Courgette ratatouille” is a hit, even though it says <b>“courgette”, not “zucchini”</b>. “Zucchini cake” has the word from the question but is further away: it is a dessert, not a quick dinner.</div>
+    </div>
+  </div>
+  <div class="footer">
+    <div class="note">The 2D map is illustrative, real vectors have hundreds of dimensions. “Ollie” is junk from the loader.</div>
+    <div class="rule">k = 3 → three chunks into the prompt</div>
+  </div>
+<script>
+  const Q = [490, 270];
+  const pts = [
+    ['Zucchini fritters', 410, 215], ['Courgette ratatouille', 585, 220], ['Stuffed zucchini', 530, 360],
+    ['Zucchini cake', 255, 300], ['Pumpkin cream soup', 330, 390], ['Shakshuka', 720, 300],
+    ['Sesame rolls', 260, 90], ['No-bake cheesecake', 720, 90], ['Skateboard ollie', 700, 475], ['Shop terms of service', 270, 475],
+  ];
+  const d = ([, x, y]) => Math.hypot(x - Q[0], y - Q[1]);
+  const ranked = [...pts].sort((a, b) => d(a) - d(b));
+  const topK = new Set(ranked.slice(0, 3).map(p => p[0]));
+  const R = d(ranked[2]) + 14;
+  let s = `<defs><linearGradient id="g" x1="0" x2="1"><stop offset="0" stop-color="#6366f1"/><stop offset="1" stop-color="#a855f7"/></linearGradient></defs>`;
+  s += `<circle cx="${Q[0]}" cy="${Q[1]}" r="${R}" fill="rgba(99,102,241,.05)" stroke="url(#g)" stroke-width="2.5" stroke-dasharray="8 7"/>`;
+  pts.forEach(p => { if (topK.has(p[0])) s += `<line x1="${Q[0]}" y1="${Q[1]}" x2="${p[1]}" y2="${p[2]}" stroke="url(#g)" stroke-width="3"/>`; });
+  pts.forEach(([t, x, y]) => {
+    const on = topK.has(t), right = x < Q[0] ? false : true;
+    s += `<circle cx="${x}" cy="${y}" r="${on ? 10 : 8}" fill="${on ? '#6366f1' : '#d4d4d8'}"/>`;
+    const tx = right ? x + 16 : x - 16;
+    s += `<text x="${tx}" y="${y + 7}" font-size="20" font-weight="${on ? 700 : 500}" fill="${on ? '#0a0a0a' : '#8b8b93'}" text-anchor="${right ? 'start' : 'end'}">${t}</text>`;
+  });
+  s += `<rect x="${Q[0] - 13}" y="${Q[1] - 13}" width="26" height="26" rx="5" fill="#a855f7" transform="rotate(45 ${Q[0]} ${Q[1]})"/>`;
+  s += `<text x="${Q[0]}" y="${Q[1] + 46}" font-size="21" font-weight="800" fill="#0a0a0a" text-anchor="middle" stroke="#f7f7f8" stroke-width="6" paint-order="stroke"><tspan x="${Q[0]}">“What can I make</tspan><tspan x="${Q[0]}" dy="25">quickly with zucchini?”</tspan></text>`;
+  document.getElementById('p').innerHTML = s;
+  document.getElementById('l').innerHTML = ranked.slice(0, 5).map((p, i) =>
+    `<li class="${i < 3 ? '' : 'out'}"><span class="n">${i + 1}.</span><span>${p[0]}</span><span class="s">${i < 3 ? 'into prompt' : 'outside k'}</span></li>`).join('');
+</script>
+</body>
+</html>

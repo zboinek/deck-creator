@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8" />
+<title>Jak pociąć przepis</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="base.css" />
+<style>
+  .main { gap: 34px; }
+  .col { flex: 1; padding: 24px 28px; display: flex; flex-direction: column; gap: 12px; }
+  .col h3 { font-size: 28px; font-weight: 800; }
+  .col .sub { font-size: 18px; color: var(--muted); margin-top: -6px; margin-bottom: 4px; }
+  .chunk { position: relative; background: #fff; border: 1.5px solid var(--line-strong); border-radius: 12px; padding: 14px 18px 14px 58px; font-size: 21px; line-height: 1.45; color: var(--muted); }
+  .chunk .n { position: absolute; left: 14px; top: 12px; font-family: 'JetBrains Mono', monospace; font-size: 15px; font-weight: 700; color: var(--dim); }
+  .chunk b { color: var(--text); }
+  .ov { background: rgba(99, 102, 241, .14); color: var(--text); border-radius: 4px; padding: 0 2px; }
+  .cut { color: #dc2626; font-weight: 700; }
+  .crumb { font-family: 'JetBrains Mono', monospace; font-size: 17px; color: var(--cg); font-weight: 700; display: block; margin-bottom: 2px; }
+  .verdict { margin-top: auto; padding-top: 12px; border-top: 1px solid var(--line); font-size: 20px; line-height: 1.4; color: var(--muted); }
+  .verdict b { color: var(--text); }
+</style>
+</head>
+<body>
+  <div class="eyebrow">Krok 2: chunki</div>
+  <h1>Ten sam przepis, dwa sposoby cięcia</h1>
+  <div class="thesis">Chunk ma być <b>zrozumiały sam w sobie</b>, bo do promptu trafi bez reszty dokumentu.</div>
+  <div class="main">
+    <div class="card col">
+      <h3>Po długości</h3><div class="sub">stała długość (ok. 100 znaków) i zakładka</div>
+      <div class="chunk"><span class="n">#1</span><b>Placki z cukinii.</b> Składniki: 2 cukinie, 2 jajka, 4 łyżki mąki, sól, <span class="ov">pieprz, olej do sm</span><span class="cut">✂</span></div>
+      <div class="chunk"><span class="n">#2</span><span class="ov">pieprz, olej do sm</span>ażenia. Przygotowanie: Cukinię zetrzyj na tarce i odciśnij z <span class="ov">wody. Dodaj jajka</span><span class="cut">✂</span></div>
+      <div class="chunk"><span class="n">#3</span><span class="ov">wody. Dodaj jajka</span> i mąkę, dopraw. Smaż na rozgrzanym oleju po 3 minuty z każdej strony.</div>
+      <div class="verdict">Proste i działa dla każdego tekstu. Ale <b>#3 nie wie, że dotyczy placków</b>: na pytanie o placki może nie wypłynąć.</div>
+    </div>
+    <div class="card hi col">
+      <h3 class="gt" style="width:fit-content">Po strukturze</h3><div class="sub">po sekcjach dokumentu, tytuł doklejony do każdej</div>
+      <div class="chunk"><span class="n">#1</span><span class="crumb">Placki z cukinii › Składniki</span>2 cukinie, 2 jajka, 4 łyżki mąki, sól, pieprz, olej do smażenia.</div>
+      <div class="chunk"><span class="n">#2</span><span class="crumb">Placki z cukinii › Przygotowanie</span>Cukinię zetrzyj na tarce i odciśnij z wody. Dodaj jajka i mąkę, dopraw. Smaż na rozgrzanym oleju po 3 minuty z każdej strony.</div>
+      <div class="verdict">Każdy kawałek wie, czego dotyczy. <b>Wymaga struktury</b>, czyli nagłówków: łatwo w DOCX i HTML, trudno w PDF. Za długie sekcje i tak tniemy dalej po długości.</div>
+    </div>
+  </div>
+  <div class="footer">
+    <div class="note">Podświetlenie: zakładka, czyli tekst powtórzony w dwóch chunkach, żeby zdanie na granicy nie zginęło.</div>
+    <div class="rule">chunk = sens + kontekst</div>
+  </div>
+</body>
+</html>

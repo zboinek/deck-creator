@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8" />
+<title>Jeden tekst, jeden wektor</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="base.css" />
+<style>
+  .main { flex-direction: column; gap: 26px; justify-content: center; }
+  .row { display: grid; grid-template-columns: 330px 70px 190px 70px 1fr; align-items: center; }
+  .in { padding: 20px 24px; }
+  .in b { display: block; font-size: 26px; font-weight: 700; }
+  .in span { font-family: 'JetBrains Mono', monospace; font-size: 17px; color: var(--dim); }
+  .ar { text-align: center; font-size: 30px; color: var(--dim); }
+  .model { padding: 20px 10px; text-align: center; font-weight: 700; font-size: 21px; }
+  .model span { display: block; font-family: 'JetBrains Mono', monospace; font-size: 15px; color: var(--dim); font-weight: 500; margin-top: 4px; }
+  .vec { display: flex; flex-direction: column; gap: 8px; }
+  .strip { height: 64px; display: flex; border-radius: 6px; overflow: hidden; border: 1px solid var(--line-strong); }
+  .strip i { flex: 1; }
+  .vec .cap { font-family: 'JetBrains Mono', monospace; font-size: 16px; color: var(--muted); display: flex; justify-content: space-between; }
+</style>
+</head>
+<body>
+  <div class="eyebrow">Model embeddingowy</div>
+  <h1>Zdanie i cała książka: tyle samo liczb</h1>
+  <div class="thesis">Model embeddingowy zwraca <b>jeden wektor o stałej długości</b>, niezależnie od tego, ile tekstu dostał.</div>
+  <div class="main">
+    <div class="row">
+      <div class="card in"><b>„Have you seen my bat?”</b><span>6 słów</span></div>
+      <div class="ar">→</div>
+      <div class="card model">embedder<span>ada-002</span></div>
+      <div class="ar">→</div>
+      <div class="vec"><div class="strip" id="s1"></div><div class="cap"><span>1536 liczb</span><span>jedno znaczenie, wyraźne</span></div></div>
+    </div>
+    <div class="row">
+      <div class="card hi in"><b>„Autostopem przez Galaktykę”</b><span>cała książka</span></div>
+      <div class="ar">→</div>
+      <div class="card model">embedder<span>ada-002</span></div>
+      <div class="ar">→</div>
+      <div class="vec"><div class="strip" id="s2"></div><div class="cap"><span>też 1536 liczb</span><span>tysiące wątków uśrednione w jedno</span></div></div>
+    </div>
+    <div class="callout">Pytanie o jeden szczegół z rozdziału 7 porównujemy z wektorem, który „mówi” o całej książce. <b>Szczegół ginie w średniej.</b> Dlatego dokumenty tniemy na chunki, a każdy chunk dostaje własny wektor. Zresztą cała książka i tak się nie zmieści: ada-002 przyjmuje najwyżej 8191 tokenów.</div>
+  </div>
+  <div class="footer">
+    <div class="note">Paski: wartości wektora jako kolor, ilustracyjnie. Pomysł za stackoverflow.blog (2023).</div>
+    <div class="rule">długi tekst → rozmyty wektor</div>
+  </div>
+<script>
+  // deterministyczny pseudolosowy pasek: s1 kontrastowy, s2 wygładzony (uśrednione znaczenia)
+  let seed = 7; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+  const pal = v => `color-mix(in oklab, #6366f1 ${Math.round(v * 100)}%, #fde68a)`;
+  const N = 192;
+  const a = Array.from({ length: N }, () => rnd());
+  const s1 = a.map(v => (v > 0.5 ? 0.5 + (v - 0.5) * 1.0 : v * 1.0));
+  const s2 = a.map((_, i) => { let s = 0, k = 0; for (let j = i - 6; j <= i + 6; j++) if (a[j] !== undefined) { s += a[j]; k++; } return 0.5 + (s / k - 0.5) * 0.6; });
+  document.getElementById('s1').innerHTML = s1.map(v => `<i style="background:${pal(v)}"></i>`).join('');
+  document.getElementById('s2').innerHTML = s2.map(v => `<i style="background:${pal(v)}"></i>`).join('');
+</script>
+</body>
+</html>

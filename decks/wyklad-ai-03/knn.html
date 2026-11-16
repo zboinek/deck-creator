@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8" />
+<title>Wyszukiwanie semantyczne</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="base.css" />
+<style>
+  .main { gap: 40px; align-items: stretch; }
+  .plot { width: 980px; flex: none; padding: 0; position: relative; }
+  .side { flex: 1; display: flex; flex-direction: column; gap: 22px; justify-content: center; }
+  .side h3 { font-size: 24px; font-weight: 700; }
+  ol { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+  ol li { display: grid; grid-template-columns: 34px 1fr auto; gap: 10px; align-items: baseline; font-size: 21px; }
+  ol li .n { font-family: 'JetBrains Mono', monospace; color: var(--dim); }
+  ol li .s { font-family: 'JetBrains Mono', monospace; font-size: 18px; color: var(--cg); font-weight: 700; }
+  ol li.out { color: var(--dim); }
+  ol li.out .s { color: var(--dim); font-weight: 500; }
+  svg text { font-family: Inter, sans-serif; }
+</style>
+</head>
+<body>
+  <div class="eyebrow">Wyszukiwanie semantyczne</div>
+  <h1>Szukamy k najbliższych sąsiadów pytania</h1>
+  <div class="thesis">Pytanie zamieniamy w wektor <b>tym samym modelem</b> co chunki i bierzemy te, które leżą najbliżej.</div>
+  <div class="main">
+    <div class="card plot"><svg id="p" width="980" height="540" viewBox="0 0 980 540"></svg></div>
+    <div class="side">
+      <h3>Top 3 dla pytania</h3>
+      <ol id="l"></ol>
+      <div class="callout">„Leczo z cukinią” trafia, choć ma <b>„cukinią”, a nie „cukinii”</b>. „Ciasto z cukinii” ma słowo z pytania, a jest dalej: to deser, nie szybki obiad.</div>
+    </div>
+  </div>
+  <div class="footer">
+    <div class="note">Mapa w 2 wymiarach jest poglądowa, prawdziwe wektory mają ich setki. „Ollie” to śmieć z loadera.</div>
+    <div class="rule">k = 3 → trzy chunki do promptu</div>
+  </div>
+<script>
+  const Q = [490, 270];
+  const pts = [
+    ['Placki z cukinii', 410, 215], ['Leczo z cukinią', 585, 220], ['Cukinia faszerowana', 530, 360],
+    ['Ciasto z cukinii', 255, 300], ['Zupa krem z dyni', 330, 390], ['Szakszuka', 720, 300],
+    ['Bułeczki z sezamem', 260, 90], ['Sernik na zimno', 720, 90], ['Ollie na deskorolce', 700, 475], ['Regulamin sklepu', 270, 475],
+  ];
+  const d = ([, x, y]) => Math.hypot(x - Q[0], y - Q[1]);
+  const ranked = [...pts].sort((a, b) => d(a) - d(b));
+  const topK = new Set(ranked.slice(0, 3).map(p => p[0]));
+  const R = d(ranked[2]) + 14;
+  let s = `<defs><linearGradient id="g" x1="0" x2="1"><stop offset="0" stop-color="#6366f1"/><stop offset="1" stop-color="#a855f7"/></linearGradient></defs>`;
+  s += `<circle cx="${Q[0]}" cy="${Q[1]}" r="${R}" fill="rgba(99,102,241,.05)" stroke="url(#g)" stroke-width="2.5" stroke-dasharray="8 7"/>`;
+  pts.forEach(p => { if (topK.has(p[0])) s += `<line x1="${Q[0]}" y1="${Q[1]}" x2="${p[1]}" y2="${p[2]}" stroke="url(#g)" stroke-width="3"/>`; });
+  pts.forEach(([t, x, y]) => {
+    const on = topK.has(t), right = x < Q[0] ? false : true;
+    s += `<circle cx="${x}" cy="${y}" r="${on ? 10 : 8}" fill="${on ? '#6366f1' : '#d4d4d8'}"/>`;
+    const tx = right ? x + 16 : x - 16;
+    s += `<text x="${tx}" y="${y + 7}" font-size="20" font-weight="${on ? 700 : 500}" fill="${on ? '#0a0a0a' : '#8b8b93'}" text-anchor="${right ? 'start' : 'end'}">${t}</text>`;
+  });
+  s += `<rect x="${Q[0] - 13}" y="${Q[1] - 13}" width="26" height="26" rx="5" fill="#a855f7" transform="rotate(45 ${Q[0]} ${Q[1]})"/>`;
+  s += `<text x="${Q[0]}" y="${Q[1] + 46}" font-size="21" font-weight="800" fill="#0a0a0a" text-anchor="middle">„Co szybkiego zrobić z cukinii?”</text>`;
+  document.getElementById('p').innerHTML = s;
+  document.getElementById('l').innerHTML = ranked.slice(0, 5).map((p, i) =>
+    `<li class="${i < 3 ? '' : 'out'}"><span class="n">${i + 1}.</span><span>${p[0]}</span><span class="s">${i < 3 ? 'do promptu' : 'poza k'}</span></li>`).join('');
+</script>
+</body>
+</html>

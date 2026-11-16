@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>How to build a vector</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="base.css" />
+<style>
+  .main { gap: 22px; align-items: stretch; }
+  .col { flex: 1; padding: 24px 26px; display: flex; flex-direction: column; gap: 16px; }
+  .arrow { align-self: center; font-size: 34px; color: var(--dim); }
+  .col h3 { font-size: 28px; font-weight: 800; }
+  .col .sub { font-size: 18px; color: var(--muted); margin-top: -10px; }
+  table { border-collapse: collapse; width: 100%; font-size: 24px; background: #fff; border-radius: 10px; overflow: hidden; }
+  th { font-size: 15px; font-weight: 600; color: var(--dim); text-transform: uppercase; letter-spacing: .04em; padding: 10px 8px; border-bottom: 1px solid var(--line-strong); }
+  td { padding: 24px 8px; text-align: center; border-bottom: 1px solid var(--line); font-family: 'JetBrains Mono', monospace; }
+  td:first-child { font-family: Inter, sans-serif; font-weight: 600; text-align: left; padding-left: 14px; }
+  td.on { font-weight: 700; color: var(--cg); }
+  tr:last-child td { border-bottom: 0; }
+  .verdict { margin-top: auto; padding-top: 14px; border-top: 1px solid var(--line); font-size: 20px; line-height: 1.4; color: var(--muted); }
+  .verdict b { color: var(--text); }
+</style>
+</head>
+<body>
+  <div class="eyebrow">From word to vector</div>
+  <h1>Three ways to turn a word into numbers</h1>
+  <div class="thesis">A number means nothing on its own. <b>What counts is whether similar things get similar numbers.</b></div>
+  <div class="main">
+    <div class="card col">
+      <h3>Label encoding</h3><div class="sub">the next number, like a token ID</div>
+      <table><tr><th>Name</th><th>Category</th></tr>
+        <tr><td>Apple</td><td>1</td></tr><tr><td>Pear</td><td>2</td></tr><tr><td>Carrot</td><td>3</td></tr></table>
+      <div class="verdict">Carrot = 3 × apple? <b>A false order</b> that the model will take seriously.</div>
+    </div>
+    <div class="arrow">→</div>
+    <div class="card col">
+      <h3>One-hot</h3><div class="sub">one column for every word</div>
+      <table><tr><th></th><th>Apple</th><th>Pear</th><th>Carrot</th></tr>
+        <tr><td>Apple</td><td class="on">1</td><td>0</td><td>0</td></tr>
+        <tr><td>Pear</td><td>0</td><td class="on">1</td><td>0</td></tr>
+        <tr><td>Carrot</td><td>0</td><td>0</td><td class="on">1</td></tr></table>
+      <div class="verdict">Every pair is <b>equally far apart</b>. With a vocabulary of 200k words that is 200k columns, almost all zeros.</div>
+    </div>
+    <div class="arrow">→</div>
+    <div class="card hi col">
+      <h3 class="gt" style="width:fit-content">Embedding</h3><div class="sub">a few dense numbers, learned from text</div>
+      <table><tr><th></th><th>Veg</th><th>Fruit</th><th>Comp.</th></tr>
+        <tr><td>Apple</td><td>0.67</td><td class="on">0.96</td><td class="on">0.32</td></tr>
+        <tr><td>Pear</td><td>0.63</td><td class="on">0.96</td><td>0.02</td></tr>
+        <tr><td>Carrot</td><td class="on">0.87</td><td>0.76</td><td>0</td></tr></table>
+      <div class="verdict">Apple is close to pear and <b>a bit close to computers</b> (Apple Inc.). That is the map of meanings from lecture 9.</div>
+    </div>
+  </div>
+  <div class="footer">
+    <div class="note">The column names are for us. A real model has hundreds of unnamed dimensions.</div>
+    <div class="rule">close on the map = similar meaning</div>
+  </div>
+</body>
+</html>
