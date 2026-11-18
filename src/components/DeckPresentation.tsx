@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback, useMemo, useRef } from "react";
+import { trackSlide } from "@/lib/track";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
@@ -276,6 +277,11 @@ export function DeckPresentation({
     )
   );
   const [current, setCurrent] = useState(initialSlide);
+
+  // Stats: furthest slide reached in this page view (skipped for PDF export).
+  useEffect(() => {
+    if (!isPrinting) trackSlide(pathname, current + 1, slides.length);
+  }, [isPrinting, pathname, current, slides.length]);
   const [showNotes, setShowNotes] = useState(false);
   const [theme, setTheme] = useState<SlideTheme>("dark");
 

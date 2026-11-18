@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { JetBrains_Mono } from "next/font/google";
 import "./globals.css";
+import { PageViewTracker } from "@/components/PageViewTracker";
 
 const jetbrainsMono = JetBrains_Mono({
   subsets: ["latin", "latin-ext"],
@@ -29,7 +30,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={jetbrainsMono.variable}>
-      <body className="antialiased">{children}</body>
+      <body className="antialiased">
+        {children}
+        <PageViewTracker />
+      </body>
     </html>
   );
 }

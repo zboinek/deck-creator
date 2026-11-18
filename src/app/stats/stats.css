@@ -1,0 +1,219 @@
+.stats {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: var(--space-10) var(--space-4) var(--space-16);
+  font-family: var(--font-sans);
+  color: var(--text-primary);
+  background: var(--surface-primary);
+  min-height: 100vh;
+}
+
+.stats h1 {
+  font-size: var(--text-4xl);
+  font-weight: 700;
+  letter-spacing: var(--tracking-tighter);
+  margin: 0;
+}
+
+.stats h2 {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  margin: 0 0 var(--space-4);
+}
+
+.stats-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--space-4);
+  margin-bottom: var(--space-8);
+}
+
+.stats-kicker {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  letter-spacing: var(--tracking-widest);
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: var(--space-1);
+}
+
+.stats-ranges {
+  display: flex;
+  gap: var(--space-1);
+  padding: var(--space-1);
+  background: var(--surface-secondary);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-full);
+}
+
+.stats-ranges a {
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-full);
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+  text-decoration: none;
+}
+
+.stats-ranges a.active {
+  background: var(--surface-inverse);
+  color: var(--text-inverse);
+}
+
+.stats-tiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+}
+
+.stats-tile,
+.stats-card {
+  background: var(--surface-card);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-lg);
+  padding: var(--space-5);
+}
+
+.stats-card {
+  margin-bottom: var(--space-4);
+}
+
+.stats-tile-label {
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+}
+
+.stats-tile-value {
+  font-size: var(--text-3xl);
+  font-weight: 700;
+  letter-spacing: var(--tracking-tight);
+  font-variant-numeric: tabular-nums;
+  margin-top: var(--space-1);
+}
+
+.stats-tile-hint {
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+}
+
+.stats-bars {
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 160px;
+  border-bottom: 1px solid var(--border-default);
+}
+
+.stats-bar {
+  flex: 1;
+  min-height: 2px;
+  background: #6366f1;
+  border-radius: 3px 3px 0 0;
+}
+
+.stats-bar:hover {
+  background: #4338ca;
+}
+
+.stats-axis {
+  display: flex;
+  justify-content: space-between;
+  margin-top: var(--space-2);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+}
+
+.stats-scroll {
+  overflow-x: auto;
+}
+
+.stats-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--text-sm);
+}
+
+.stats-table th {
+  text-align: left;
+  font-weight: 500;
+  color: var(--text-secondary);
+  padding: 0 var(--space-3) var(--space-2) 0;
+  border-bottom: 1px solid var(--border-default);
+  white-space: nowrap;
+}
+
+.stats-table td {
+  padding: var(--space-3) var(--space-3) var(--space-3) 0;
+  border-bottom: 1px solid var(--border-subtle);
+  vertical-align: top;
+}
+
+.stats-title {
+  font-weight: 500;
+}
+
+.stats-path {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+}
+
+.stats .num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.stats .nowrap {
+  white-space: nowrap;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: var(--space-4);
+}
+
+.stats-grid .stats-card {
+  margin-bottom: 0;
+}
+
+.stats-sub {
+  margin-top: var(--space-6) !important;
+}
+
+.stats-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  font-size: var(--text-sm);
+}
+
+.stats-list li {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding: var(--space-2) 0;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.stats-list li span:first-child {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.stats-empty {
+  color: var(--text-muted);
+  font-size: var(--text-sm);
+  margin: 0;
+}
+
+.stats-note {
+  margin-top: var(--space-8);
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+  max-width: 640px;
+}

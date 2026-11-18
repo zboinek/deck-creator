@@ -36,7 +36,8 @@ COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 COPY --from=builder --chown=nextjs:nodejs /app/podcasts ./podcasts
 
-RUN mkdir -p /app/decks && chown nextjs:nodejs /app/decks
+# /app/data: statystyki odwiedzin (hits.jsonl), montowane jako named volume.
+RUN mkdir -p /app/decks /app/data && chown nextjs:nodejs /app/decks /app/data
 
 USER nextjs
 

@@ -34,3 +34,6 @@ decks/*/preview/
 samples/
 /podcasts/*/audio-parts/
 /podcasts/*/*.partial.opus
+
+# Statystyki odwiedzin z lokalnego `npm run dev`
+/data/

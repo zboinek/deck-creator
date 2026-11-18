@@ -139,7 +139,23 @@ przez rsync bez rebuildu obrazu.
 blokuje deploy - stary obraz dalej działa na serwerze. Odpalamy na
 Node 24 LTS (aktualne LTS w Dockerfile i `@types/node`).
 
-## Skille
+## Statystyki odwiedzin
+
+Własne, bez zewnętrznych usług i cookies. `PageViewTracker` (w `layout.tsx`) i
+`DeckPresentation` wysyłają `sendBeacon` na `/api/hit`: odsłona strony i najdalszy
+osiągnięty slajd. Route waliduje ścieżkę (tylko istniejące decki i podcasty),
+odsiewa boty, limituje per IP i globalnie, dopisuje linię do `data/hits.jsonl`
+(limit 100 MB). IP nie jest zapisywane: visitor = hash z solą trzymaną w pamięci
+i zmienianą codziennie. Raport: `/stats`.
+
+- `/stats` chroni Basic Auth w `src/proxy.ts` + ponowne sprawdzenie w `page.tsx`.
+  Bez `STATS_PASSWORD` (min. 12 znaków) strona zwraca 404. 10 złych haseł z jednego
+  IP = 15 minut blokady.
+- Basic Auth ma sens tylko po HTTPS. IP klienta = ostatni wpis `X-Forwarded-For`,
+  więc reverse proxy przed apką musi go dopisywać.
+- Dane leżą w named volume `deck-creator-data` (`/app/data`), poza `decks/`, bo
+  rsync z `--delete` by je skasował. Lokalnie: `./data/` (w `.gitignore`).
+
 
 - `create-deck-markdown` - format `deck.md`, layouty, notatki prowadzącego
 - `create-deck-infographic` - HTML -> PNG, paleta, typografia

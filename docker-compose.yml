@@ -8,3 +8,10 @@ services:
     volumes:
       - ./deck-creator/decks:/app/decks:ro
       - ./deck-creator/podcasts:/app/podcasts:ro
+      - deck-creator-data:/app/data
+    environment:
+      - STATS_USER=${STATS_USER:-admin}
+      - STATS_PASSWORD=${STATS_PASSWORD:-}
+
+volumes:
+  deck-creator-data:
