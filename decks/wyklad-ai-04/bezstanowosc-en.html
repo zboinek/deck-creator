@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>The model is stateless</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="base.css" />
+<style>
+  .main { display: grid; grid-template-columns: repeat(3, 1fr); gap: 34px; align-items: start; align-content: center; }
+  .call { display: flex; flex-direction: column; gap: 10px; }
+  .call .model { margin-top: 8px; }
+  .main { align-self: stretch; padding-top: 20px; }
+  .call .head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px; }
+  .call .head .t { font-size: 24px; font-weight: 800; }
+  .call .head .tok { font-family: 'JetBrains Mono', monospace; font-size: 16px; font-weight: 700; color: var(--cg); }
+  .m { border-radius: 10px; padding: 10px 14px 10px 22px; font-size: 19px; line-height: 1.35; }
+  .m .role { font-size: 12px; margin-bottom: 1px; }
+  .old { opacity: .5; }
+  .new { box-shadow: 0 0 0 2px var(--c); }
+  .model { margin-top: 8px; text-align: center; padding: 14px; border-radius: 12px; border: 1.5px dashed var(--line-strong);
+           font-family: 'JetBrains Mono', monospace; font-size: 16px; color: var(--muted); }
+  .model b { color: var(--text); }
+</style>
+</head>
+<body>
+  <div class="eyebrow">Step 1: context</div>
+  <h1>Every time, the app sends the whole conversation</h1>
+  <div class="thesis">The model does not remember the previous request. <b>Chat “memory” is a list of messages the app attaches all over again.</b></div>
+  <div class="main">
+    <div class="call">
+      <div class="head"><span class="t">Request 1</span><span class="tok">≈ 60 tokens</span></div>
+      <div class="blk m sys new"><div class="role">system</div>You are a cooking assistant.</div>
+      <div class="blk m ins new"><div class="role">user</div>I have zucchini and eggs. What can I make?</div>
+      <div class="model">model → <b>“Zucchini fritters”</b></div>
+    </div>
+    <div class="call">
+      <div class="head"><span class="t">Request 2</span><span class="tok">≈ 250 tokens</span></div>
+      <div class="blk m sys old"><div class="role">system</div>You are a cooking assistant.</div>
+      <div class="blk m ins old"><div class="role">user</div>I have zucchini and eggs. What can I make?</div>
+      <div class="blk m ast old"><div class="role">assistant</div>Zucchini fritters: ...</div>
+      <div class="blk m ins new"><div class="role">user</div>And without eggs?</div>
+      <div class="model">model → <b>“Use ground flaxseed”</b></div>
+    </div>
+    <div class="call">
+      <div class="head"><span class="t">Request 3: new chat</span><span class="tok">≈ 30 tokens</span></div>
+      <div class="blk m sys new"><div class="role">system</div>You are a cooking assistant.</div>
+      <div class="blk m ins new"><div class="role">user</div>And how long do I fry them?</div>
+      <div class="model">model → <b>“Fry what?”</b><br/>a blank page</div>
+    </div>
+  </div>
+  <div class="footer">
+    <div class="note">The model sees the faded messages a second time because the app attached them to the request. Every request pays for the whole history.</div>
+    <div class="rule">chat = list + appending</div>
+  </div>
+</body>
+</html>

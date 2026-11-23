@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Before and after</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="base.css" />
+<style>
+  .main { display: grid; grid-template-columns: 0.8fr 1.2fr 0.62fr; gap: 28px; align-items: start; }
+  .col { display: flex; flex-direction: column; gap: 10px; }
+  .blk { font-size: 20px; }
+  .blk ol { padding-left: 24px; margin-top: 6px; }
+  .blk li { margin: 3px 0; }
+  .tags { display: flex; flex-direction: column; gap: 12px; padding-top: 34px; }
+  .tag { font-size: 18px; color: var(--muted); line-height: 1.4; padding-left: 14px; border-left: 4px solid var(--c); }
+  .tag b { display: block; font-family: 'JetBrains Mono', monospace; font-size: 13px; letter-spacing: .12em; text-transform: uppercase; color: var(--c); }
+  .before { opacity: .8; }
+</style>
+</head>
+<body>
+  <div class="eyebrow">Step 6: assembly</div>
+  <h1>Kuba asks about béchamel: before and after</h1>
+  <div class="thesis">Same model, same chunk [1] from the database. <b>Only the system message changed.</b></div>
+  <div class="main">
+    <div class="col before">
+      <div class="lbl">L10: RAG only</div>
+      <div class="blk ast"><div class="role">assistant</div>Melt 50 g butter, add 50 g flour and cook for 2 minutes. Gradually pour in 500 ml warm milk, stirring all the time. Simmer for 5 minutes, season with salt and nutmeg <span class="ref">[1]</span>.</div>
+    </div>
+    <div class="col">
+      <div class="lbl" style="color:var(--cg)">Today: RAG + persona + profile</div>
+      <div class="blk ast"><div class="role">assistant</div>Béchamel is a white sauce of butter, flour and milk <span class="ref">[1]</span>. For one portion of pasta:
+        <ol>
+          <li>1 tbsp butter, hob on medium.</li>
+          <li>Add 1 tbsp flour and stir for a minute. This is a <b>roux</b>: it should smell like a biscuit, not turn brown.</li>
+          <li>Pour in a glass of milk bit by bit, stirring with a fork. Lumps? Stir harder, they'll go.</li>
+          <li>Done when it coats a spoon. Salt, pepper.</li>
+        </ol></div>
+    </div>
+    <div class="tags">
+      <div class="tag" style="--c:#a855f7"><b>profile</b>beginner: explains one term, “roux”</div>
+      <div class="tag" style="--c:#a855f7"><b>profile</b>one person, 15 PLN: one portion, not 500 ml</div>
+      <div class="tag" style="--c:#a855f7"><b>profile</b>prefers steps: a numbered list</div>
+      <div class="tag" style="--c:#6366f1"><b>persona</b>concise, no “Great question!”</div>
+      <div class="tag" style="--c:#f59e0b"><b>RAG</b>1 : 1 ratio from chunk [1]</div>
+    </div>
+  </div>
+  <div class="footer">
+    <div class="note">Example answer, written by us. Live, every model will phrase it differently.</div>
+    <div class="rule">same knowledge, different listener</div>
+  </div>
+</body>
+</html>

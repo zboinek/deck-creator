@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>How the agent knows the user</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="base.css" />
+<style>
+  :root { --s1: #3f3f46; --s2: #6366f1; --s3: #a855f7; --s4: #f59e0b; }
+  .main { display: grid; grid-template-columns: 1fr 1.05fr; gap: 44px; align-items: center; }
+  .srcs { display: flex; flex-direction: column; gap: 14px; }
+  .src { display: grid; grid-template-columns: 44px 1fr; gap: 16px; padding: 14px 20px; align-items: start; }
+  .src .n { width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: #fff; font-family: 'JetBrains Mono', monospace; font-weight: 700; font-size: 20px; background: var(--c); }
+  .src h3 { font-size: 22px; font-weight: 700; }
+  .src h3 span { font-family: 'JetBrains Mono', monospace; font-size: 14px; color: var(--dim); font-weight: 700; margin-left: 8px; }
+  .src p { font-size: 18px; color: var(--muted); line-height: 1.4; margin-top: 3px; }
+  .file { background: #18181b; border-radius: 16px; padding: 22px 26px; font-family: 'JetBrains Mono', monospace; font-size: 19px; line-height: 1.6; color: #e4e4e7; }
+  .file .name { color: #a1a1aa; font-size: 15px; margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px solid #3f3f46; }
+  .file .h { color: #c4b5fd; font-weight: 700; margin-top: 6px; }
+  .file .l { display: flex; gap: 12px; align-items: baseline; }
+  .file .l i { flex: none; width: 10px; height: 10px; border-radius: 3px; background: var(--c); transform: translateY(-1px); }
+</style>
+</head>
+<body>
+  <div class="eyebrow">Step 5: user profile</div>
+  <h1>How does the assistant know who the user is?</h1>
+  <div class="thesis">Four sources, one file. <b>Every line in the profile has an origin.</b></div>
+  <div class="main">
+    <div class="srcs">
+      <div class="card src" style="--c:var(--s1)"><div class="n">1</div><div><h3>Static profile<span>at the start</span></h3><p>The user types it in: “been cooking for a month, I have one hob”.</p></div></div>
+      <div class="card src" style="--c:var(--s2)"><div class="n">2</div><div><h3>Long-term memory<span>past conversations</span></h3><p>A week ago he mentioned he hates coriander. Today he won't get any.</p></div></div>
+      <div class="card src" style="--c:var(--s3)"><div class="n">3</div><div><h3>Inference on the fly<span>current window</span></h3><p>He asks “what is a roux?”, so probably a beginner.</p></div></div>
+      <div class="card src" style="--c:var(--s4)"><div class="n">4</div><div><h3>Feedback loop<span>reaction</span></h3><p>“That's too hard for me” corrects the profile for the future.</p></div></div>
+    </div>
+    <div class="file">
+      <div class="name">user_profile.md</div>
+      <div class="h"># Kuba</div>
+      <div class="l" style="--c:var(--s1)"><i></i>- student, 19, lives in a dorm</div>
+      <div class="l" style="--c:var(--s1)"><i></i>- one induction hob, no oven</div>
+      <div class="l" style="--c:var(--s1)"><i></i>- budget: about 15 PLN per dinner</div>
+      <div class="h">## Knowledge</div>
+      <div class="l" style="--c:var(--s3)"><i></i>- beginner, doesn't know techniques</div>
+      <div class="l" style="--c:var(--s4)"><i></i>- one new term per answer</div>
+      <div class="h">## Preferences</div>
+      <div class="l" style="--c:var(--s2)"><i></i>- hates coriander</div>
+      <div class="l" style="--c:var(--s2)"><i></i>- likes Asian food</div>
+      <div class="l" style="--c:var(--s4)"><i></i>- prefers steps to descriptions</div>
+    </div>
+  </div>
+  <div class="footer">
+    <div class="note">Sources 2 and 4 need someone (the app or the agent itself) to add a line to the file. Otherwise the knowledge dies with the conversation.</div>
+    <div class="rule">a profile is a file, not magic</div>
+  </div>
+</body>
+</html>

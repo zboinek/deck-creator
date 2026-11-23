@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8" />
+<title>Składanie promptu</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="base.css" />
+<style>
+  .main { display: grid; grid-template-columns: 0.95fr 50px 1.35fr; gap: 20px; align-items: center; }
+  .files { display: flex; flex-direction: column; gap: 16px; }
+  .f { padding: 16px 22px; }
+  .f .fn { font-family: 'JetBrains Mono', monospace; font-size: 20px; font-weight: 700; }
+  .f .q { font-family: 'JetBrains Mono', monospace; font-size: 14px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--c); margin-top: 4px; }
+  .f p { font-size: 18px; color: var(--muted); margin-top: 4px; line-height: 1.4; }
+  .f { border-left: 6px solid var(--c); }
+  .arrow { font-size: 44px; color: var(--cg); text-align: center; }
+  .msgs { display: flex; flex-direction: column; gap: 12px; }
+  .blk { font-size: 20px; }
+  .blk .part { font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 700; color: var(--dim); letter-spacing: .08em; }
+  .blk .seg { padding: 4px 0 6px; border-bottom: 1px dashed var(--line-strong); }
+  .blk .seg:last-child { border-bottom: 0; }
+</style>
+</head>
+<body>
+  <div class="eyebrow">Krok 6: składanie</div>
+  <h1>Trzy pliki, jedno zapytanie</h1>
+  <div class="thesis">Persona mówi <b>jak</b>, profil mówi <b>do kogo</b>, RAG z W10 mówi <b>co</b>. Aplikacja skleja je w jedną wiadomość systemową.</div>
+  <div class="main">
+    <div class="files">
+      <div class="card f" style="--c:#6366f1"><div class="fn">persona.md</div><div class="q">jak: nadawca</div><p>Sous-chef, rzeczowy, kwestionuje złe pomysły, bez waty i przeprosin.</p></div>
+      <div class="card f" style="--c:#a855f7"><div class="fn">user_profile.md</div><div class="q">do kogo: odbiorca</div><p>Kuba, początkujący, jedna płyta, 15 zł, bez kolendry.</p></div>
+      <div class="card f" style="--c:#f59e0b"><div class="fn">fragmenty z bazy</div><div class="q">co: wiedza (W10)</div><p>[1] Sos beszamelowy, przepisy/beszamel</p></div>
+    </div>
+    <div class="arrow">→</div>
+    <div class="msgs">
+      <div class="blk sys"><div class="role">system</div>
+        <div class="seg"><div class="part">ramy (krok 2)</div>Jesteś pomocnikiem kucharza. Dziś jest 22.11.2026. Odpowiadasz tylko z fragmentów.</div>
+        <div class="seg"><div class="part">persona.md</div>Rzeczowy sous-chef. Kwestionujesz złe pomysły. Bez przeprosin i waty.</div>
+        <div class="seg"><div class="part">user_profile.md</div>Kuba: początkujący, jedna płyta, bez piekarnika, nie znosi kolendry.</div>
+      </div>
+      <div class="blk ins"><div class="role">user</div><b>Jak zrobić beszamel?</b><br/><span style="font-size:16px">## Fragmenty: [1] Sos beszamelowy: 50 g masła, 50 g mąki ...</span></div>
+    </div>
+  </div>
+  <div class="footer">
+    <div class="note">Bez persony i profilu model świeci jak latarka: na wszystkich po trochu. Z nimi jak laser: w jedną osobę.</div>
+    <div class="rule">latarka → laser</div>
+  </div>
+</body>
+</html>

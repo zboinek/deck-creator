@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8" />
+<title>Przebieg pętli agenta</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="base.css" />
+<style>
+  .main { display: grid; grid-template-columns: 1fr 360px; gap: 40px; align-items: center; }
+  .trace { display: flex; flex-direction: column; gap: 10px; }
+  .ask { font-size: 21px; font-weight: 600; padding: 12px 20px; border-radius: 12px; background: color-mix(in oklab, var(--ins) 8%, white); border: 1.5px solid color-mix(in oklab, var(--ins) 30%, white); }
+  .ask span { font-family: 'JetBrains Mono', monospace; font-size: 14px; font-weight: 700; letter-spacing: .14em; color: var(--ins); margin-right: 12px; }
+  .it { display: grid; grid-template-columns: 70px 1fr 1fr; gap: 14px; align-items: stretch; }
+  .it .k { font-family: 'JetBrains Mono', monospace; font-size: 14px; font-weight: 700; color: var(--dim); display: flex; align-items: center; justify-content: center; border-radius: 10px; background: var(--panel); }
+  .call, .res { padding: 9px 14px; border-radius: 10px; font-family: 'JetBrains Mono', monospace; font-size: 15px; line-height: 1.4; }
+  .call { background: color-mix(in oklab, #6366f1 8%, white); border: 1.5px solid color-mix(in oklab, #6366f1 30%, white); color: var(--text); }
+  .res { background: color-mix(in oklab, #a855f7 7%, white); border: 1.5px solid color-mix(in oklab, #a855f7 25%, white); color: var(--muted); }
+  .call i, .res i { display: block; font-style: normal; font-size: 12px; letter-spacing: .12em; text-transform: uppercase; font-weight: 700; color: var(--dim); margin-bottom: 1px; }
+  .fin { padding: 12px 20px; border-radius: 12px; font-size: 19px; line-height: 1.4; color: var(--muted); background: color-mix(in oklab, #f59e0b 8%, white); border: 1.5px solid color-mix(in oklab, #f59e0b 30%, white); }
+  .fin b { color: var(--text); }
+  .side { display: flex; flex-direction: column; gap: 22px; }
+  .side .callout { font-size: 20px; }
+</style>
+</head>
+<body>
+  <div class="eyebrow">Krok 7: narzędzia</div>
+  <h1>Jedno polecenie, cztery narzędzia, jedna pętla</h1>
+  <div class="thesis">Kolejność kroków wybiera <b>model</b>, po przeczytaniu każdego wyniku. Kod tylko kręci pętlą.</div>
+  <div class="main">
+    <div class="trace">
+      <div class="ask"><span>KUBA</span>Zaplanuj mi 3 obiady na ten tydzień do 45 zł i dopisz, czego brakuje, do listy zakupów.</div>
+      <div class="it"><div class="k">obrót 1</div>
+        <div class="call"><i>model prosi</i>szukaj_przepisow("tanie obiady, jedna płyta, bez kolendry")</div>
+        <div class="res"><i>wynik</i>5 przepisów: leczo, ryż smażony z jajkiem, makaron z cukinią, ...</div></div>
+      <div class="it"><div class="k">obrót 2</div>
+        <div class="call"><i>model prosi</i>policz_koszt(["leczo", "ryż smażony", "makaron z cukinią"])</div>
+        <div class="res"><i>wynik</i>razem 41 zł</div></div>
+      <div class="it"><div class="k">obrót 3</div>
+        <div class="call"><i>model prosi</i>czytaj_liste_zakupow()</div>
+        <div class="res"><i>wynik</i>["jajka", "ryż", "cebula"]</div></div>
+      <div class="it"><div class="k">obrót 4</div>
+        <div class="call"><i>model prosi</i>dodaj_do_listy(["cukinia ×2", "papryka", "kiełbasa", "makaron"])</div>
+        <div class="res"><i>wynik</i>dodano 4 pozycje</div></div>
+      <div class="fin"><b>Odpowiedź:</b> trzy obiady za ok. 41 zł, z listą kroków dla początkującego. Jajka, ryż i cebulę już masz, <b>dopisałem 4 brakujące rzeczy</b>.</div>
+    </div>
+    <div class="side">
+      <div class="callout">Obrót 3 nie był w poleceniu. Model <b>sam uznał</b>, że zanim coś dopisze, sprawdzi, co już jest.</div>
+      <div class="callout">Każdy wynik wraca do kontekstu, więc kontekst <b>rośnie z każdym obrotem</b> (krok 1).</div>
+      <div class="callout">Pętla kończy się, gdy model zamiast prośby o narzędzie <b>pisze zwykłą odpowiedź</b>.</div>
+    </div>
+  </div>
+  <div class="footer">
+    <div class="note">Przebieg poglądowy, nazwy narzędzi nasze. Ceny przykładowe.</div>
+    <div class="rule">narzędzia + pętla = agent</div>
+  </div>
+</body>
+</html>

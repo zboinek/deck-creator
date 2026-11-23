@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Prompt assembly</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="base.css" />
+<style>
+  .main { display: grid; grid-template-columns: 0.95fr 50px 1.35fr; gap: 20px; align-items: center; }
+  .files { display: flex; flex-direction: column; gap: 16px; }
+  .f { padding: 16px 22px; }
+  .f .fn { font-family: 'JetBrains Mono', monospace; font-size: 20px; font-weight: 700; }
+  .f .q { font-family: 'JetBrains Mono', monospace; font-size: 14px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--c); margin-top: 4px; }
+  .f p { font-size: 18px; color: var(--muted); margin-top: 4px; line-height: 1.4; }
+  .f { border-left: 6px solid var(--c); }
+  .arrow { font-size: 44px; color: var(--cg); text-align: center; }
+  .msgs { display: flex; flex-direction: column; gap: 12px; }
+  .blk { font-size: 20px; }
+  .blk .part { font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 700; color: var(--dim); letter-spacing: .08em; }
+  .blk .seg { padding: 4px 0 6px; border-bottom: 1px dashed var(--line-strong); }
+  .blk .seg:last-child { border-bottom: 0; }
+</style>
+</head>
+<body>
+  <div class="eyebrow">Step 6: assembly</div>
+  <h1>Three files, one request</h1>
+  <div class="thesis">The persona says <b>how</b>, the profile says <b>to whom</b>, RAG from L10 says <b>what</b>. The app glues them into one system message.</div>
+  <div class="main">
+    <div class="files">
+      <div class="card f" style="--c:#6366f1"><div class="fn">persona.md</div><div class="q">how: the sender</div><p>Sous-chef, matter-of-fact, challenges bad ideas, no filler or apologies.</p></div>
+      <div class="card f" style="--c:#a855f7"><div class="fn">user_profile.md</div><div class="q">to whom: the receiver</div><p>Kuba, beginner, one hob, 15 PLN, no coriander.</p></div>
+      <div class="card f" style="--c:#f59e0b"><div class="fn">chunks from the database</div><div class="q">what: knowledge (L10)</div><p>[1] Béchamel sauce, recipes/bechamel</p></div>
+    </div>
+    <div class="arrow">→</div>
+    <div class="msgs">
+      <div class="blk sys"><div class="role">system</div>
+        <div class="seg"><div class="part">frame (step 2)</div>You are Chef's Helper. Today is 2026-11-22. Answer only from the chunks.</div>
+        <div class="seg"><div class="part">persona.md</div>A matter-of-fact sous-chef. You challenge bad ideas. No apologies, no filler.</div>
+        <div class="seg"><div class="part">user_profile.md</div>Kuba: beginner, one hob, no oven, hates coriander.</div>
+      </div>
+      <div class="blk ins"><div class="role">user</div><b>How do I make béchamel?</b><br/><span style="font-size:16px">## Chunks: [1] Béchamel sauce: 50 g butter, 50 g flour ...</span></div>
+    </div>
+  </div>
+  <div class="footer">
+    <div class="note">Without a persona and profile the model shines like a flashlight: a little on everyone. With them, like a laser: on one person.</div>
+    <div class="rule">flashlight → laser</div>
+  </div>
+</body>
+</html>

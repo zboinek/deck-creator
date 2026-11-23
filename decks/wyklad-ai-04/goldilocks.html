@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8" />
+<title>Zasada Goldilocks</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="base.css" />
+<style>
+  .main { flex-direction: column; gap: 22px; justify-content: center; }
+  .ask { align-self: center; font-size: 23px; font-weight: 600; padding: 14px 26px; border-radius: 14px; background: color-mix(in oklab, var(--ins) 8%, white); border: 1.5px solid color-mix(in oklab, var(--ins) 30%, white); }
+  .ask span { font-family: 'JetBrains Mono', monospace; font-size: 14px; font-weight: 700; letter-spacing: .14em; color: var(--ins); margin-right: 14px; }
+  .scale { position: relative; height: 14px; border-radius: 7px; margin: 18px 0 4px;
+           background: linear-gradient(90deg, #e4e4e7 0%, #e4e4e7 28%, #6366f1 38%, #a855f7 62%, #e4e4e7 72%, #e4e4e7 100%); }
+  .ends { display: flex; justify-content: space-between; font-family: 'JetBrains Mono', monospace; font-size: 15px; color: var(--dim); }
+  .cols { display: grid; grid-template-columns: 1fr 1.15fr 1fr; gap: 30px; align-items: stretch; }
+  .col { display: flex; flex-direction: column; gap: 10px; }
+  .col .lbl { text-align: center; }
+  .col .blk { flex: 1; font-size: 22px; }
+  .col.off .blk { opacity: .75; }
+  .col .verdict { text-align: center; font-size: 20px; color: var(--muted); }
+  .col .verdict b { color: var(--text); }
+  .mid .lbl { color: var(--cg); }
+</style>
+</head>
+<body>
+  <div class="eyebrow">Krok 4: teoria umysłu</div>
+  <h1>Zasada Goldilocks: ani za prosto, ani za trudno</h1>
+  <div class="thesis">To samo pytanie od Kuby z akademika. <b>Dobra odpowiedź zależy od tego, co Kuba już wie.</b></div>
+  <div class="main">
+    <div class="ask"><span>KUBA</span>Po co obsmażać mięso przed duszeniem?</div>
+    <div>
+      <div class="scale"></div>
+      <div class="ends"><span>za prosto: infantylizacja</span><span>w sam raz</span><span>za trudno: bariera poznawcza</span></div>
+    </div>
+    <div class="cols">
+      <div class="col off">
+        <div class="lbl">za prosto</div>
+        <div class="blk ast"><div class="role">assistant</div>Bo tak jest smaczniej! 😊 Po prostu wrzuć na patelnię na chwilę.</div>
+        <div class="verdict">Kuba <b>nie wie więcej</b> niż przed pytaniem.</div>
+      </div>
+      <div class="col mid">
+        <div class="lbl">w sam raz</div>
+        <div class="blk ast"><div class="role">assistant</div>Na mocno rozgrzanej patelni powierzchnia mięsa <b>rumieni się i powstaje skórka pełna smaku</b>. W garnku tego nie dostaniesz, bo tam temperatura nie przekroczy 100°C. Soków to nie „zamyka”, to mit.</div>
+        <div class="verdict">Rozumie <b>dlaczego</b> i wie, co zrobić.</div>
+      </div>
+      <div class="col off">
+        <div class="lbl">za trudno</div>
+        <div class="blk ast"><div class="role">assistant</div>Powyżej ok. 140°C zachodzi reakcja Maillarda między aminokwasami a cukrami redukującymi, prowadząca do powstania melanoidyn i lotnych heterocykli.</div>
+        <div class="verdict">Prawda, tylko <b>nie dla Kuby</b>.</div>
+      </div>
+    </div>
+  </div>
+  <div class="footer">
+    <div class="note">Dla szefowej kuchni prawa odpowiedź byłaby „w sam raz”. Poziom zależy od odbiorcy, nie od pytania.</div>
+    <div class="rule">poziom = odbiorca</div>
+  </div>
+</body>
+</html>

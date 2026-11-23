@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8" />
+<title>Przed i po</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="base.css" />
+<style>
+  .main { display: grid; grid-template-columns: 0.8fr 1.2fr 0.62fr; gap: 28px; align-items: start; }
+  .col { display: flex; flex-direction: column; gap: 10px; }
+  .blk { font-size: 20px; }
+  .blk ol { padding-left: 24px; margin-top: 6px; }
+  .blk li { margin: 3px 0; }
+  .tags { display: flex; flex-direction: column; gap: 12px; padding-top: 34px; }
+  .tag { font-size: 18px; color: var(--muted); line-height: 1.4; padding-left: 14px; border-left: 4px solid var(--c); }
+  .tag b { display: block; font-family: 'JetBrains Mono', monospace; font-size: 13px; letter-spacing: .12em; text-transform: uppercase; color: var(--c); }
+  .before { opacity: .8; }
+</style>
+</head>
+<body>
+  <div class="eyebrow">Krok 6: składanie</div>
+  <h1>Kuba pyta o beszamel: przed i po</h1>
+  <div class="thesis">Ten sam model, ten sam fragment [1] z bazy. <b>Zmieniła się tylko wiadomość systemowa.</b></div>
+  <div class="main">
+    <div class="col before">
+      <div class="lbl">W10: sam RAG</div>
+      <div class="blk ast"><div class="role">assistant</div>Roztop 50 g masła, dodaj 50 g mąki i zasmażaj 2 minuty. Stopniowo wlewaj 500 ml ciepłego mleka, cały czas mieszając. Gotuj 5 minut, dopraw solą i gałką muszkatołową <span class="ref">[1]</span>.</div>
+    </div>
+    <div class="col">
+      <div class="lbl" style="color:var(--cg)">Dziś: RAG + persona + profil</div>
+      <div class="blk ast"><div class="role">assistant</div>Beszamel to biały sos z masła, mąki i mleka <span class="ref">[1]</span>. Na jedną porcję makaronu:
+        <ol>
+          <li>1 łyżka masła na średnią moc płyty.</li>
+          <li>Dosyp 1 łyżkę mąki i mieszaj minutę. To jest <b>zasmażka</b>: ma pachnieć jak herbatnik, nie brązowieć.</li>
+          <li>Wlewaj szklankę mleka po trochu, mieszając widelcem. Grudki? Mieszaj mocniej, znikną.</li>
+          <li>Gotowe, gdy oblepia łyżkę. Sól, pieprz.</li>
+        </ol></div>
+    </div>
+    <div class="tags">
+      <div class="tag" style="--c:#a855f7"><b>profil</b>początkujący: wyjaśnia jedno pojęcie, „zasmażka”</div>
+      <div class="tag" style="--c:#a855f7"><b>profil</b>jedna osoba, 15 zł: porcja zamiast 500 ml</div>
+      <div class="tag" style="--c:#a855f7"><b>profil</b>woli kroki: numerowana lista</div>
+      <div class="tag" style="--c:#6366f1"><b>persona</b>zwięźle, bez „Świetne pytanie!”</div>
+      <div class="tag" style="--c:#f59e0b"><b>RAG</b>proporcje 1 : 1 z fragmentu [1]</div>
+    </div>
+  </div>
+  <div class="footer">
+    <div class="note">Odpowiedź przykładowa, napisana przez nas. Na żywo każdy model sformułuje ją inaczej.</div>
+    <div class="rule">ta sama wiedza, inny odbiorca</div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>An agent loop run</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="base.css" />
+<style>
+  .main { display: grid; grid-template-columns: 1fr 360px; gap: 40px; align-items: center; }
+  .trace { display: flex; flex-direction: column; gap: 10px; }
+  .ask { font-size: 21px; font-weight: 600; padding: 12px 20px; border-radius: 12px; background: color-mix(in oklab, var(--ins) 8%, white); border: 1.5px solid color-mix(in oklab, var(--ins) 30%, white); }
+  .ask span { font-family: 'JetBrains Mono', monospace; font-size: 14px; font-weight: 700; letter-spacing: .14em; color: var(--ins); margin-right: 12px; }
+  .it { display: grid; grid-template-columns: 70px 1fr 1fr; gap: 14px; align-items: stretch; }
+  .it .k { font-family: 'JetBrains Mono', monospace; font-size: 14px; font-weight: 700; color: var(--dim); display: flex; align-items: center; justify-content: center; border-radius: 10px; background: var(--panel); }
+  .call, .res { padding: 9px 14px; border-radius: 10px; font-family: 'JetBrains Mono', monospace; font-size: 15px; line-height: 1.4; }
+  .call { background: color-mix(in oklab, #6366f1 8%, white); border: 1.5px solid color-mix(in oklab, #6366f1 30%, white); color: var(--text); }
+  .res { background: color-mix(in oklab, #a855f7 7%, white); border: 1.5px solid color-mix(in oklab, #a855f7 25%, white); color: var(--muted); }
+  .call i, .res i { display: block; font-style: normal; font-size: 12px; letter-spacing: .12em; text-transform: uppercase; font-weight: 700; color: var(--dim); margin-bottom: 1px; }
+  .fin { padding: 12px 20px; border-radius: 12px; font-size: 19px; line-height: 1.4; color: var(--muted); background: color-mix(in oklab, #f59e0b 8%, white); border: 1.5px solid color-mix(in oklab, #f59e0b 30%, white); }
+  .fin b { color: var(--text); }
+  .side { display: flex; flex-direction: column; gap: 22px; }
+  .side .callout { font-size: 20px; }
+</style>
+</head>
+<body>
+  <div class="eyebrow">Step 7: tools</div>
+  <h1>One instruction, four tools, one loop</h1>
+  <div class="thesis">The <b>model</b> chooses the order of steps after reading each result. The code just turns the loop.</div>
+  <div class="main">
+    <div class="trace">
+      <div class="ask"><span>KUBA</span>Plan 3 dinners for this week under 45 PLN and add whatever's missing to my shopping list.</div>
+      <div class="it"><div class="k">turn 1</div>
+        <div class="call"><i>model asks</i>search_recipes("cheap dinners, one hob, no coriander")</div>
+        <div class="res"><i>result</i>5 recipes: lecho, egg fried rice, zucchini pasta, ...</div></div>
+      <div class="it"><div class="k">turn 2</div>
+        <div class="call"><i>model asks</i>calculate_cost(["lecho", "fried rice", "zucchini pasta"])</div>
+        <div class="res"><i>result</i>total 41 PLN</div></div>
+      <div class="it"><div class="k">turn 3</div>
+        <div class="call"><i>model asks</i>read_shopping_list()</div>
+        <div class="res"><i>result</i>["eggs", "rice", "onion"]</div></div>
+      <div class="it"><div class="k">turn 4</div>
+        <div class="call"><i>model asks</i>add_to_list(["zucchini ×2", "pepper", "sausage", "pasta"])</div>
+        <div class="res"><i>result</i>4 items added</div></div>
+      <div class="fin"><b>Answer:</b> three dinners for about 41 PLN, with beginner-friendly steps. You already have eggs, rice and onion, <b>I added the 4 missing items</b>.</div>
+    </div>
+    <div class="side">
+      <div class="callout">Turn 3 wasn't in the instruction. The model <b>decided on its own</b> to check what was already there before adding anything.</div>
+      <div class="callout">Every result goes back into the context, so the context <b>grows with every turn</b> (step 1).</div>
+      <div class="callout">The loop ends when, instead of a tool request, the model <b>writes a normal answer</b>.</div>
+    </div>
+  </div>
+  <div class="footer">
+    <div class="note">Illustrative run, tool names are ours. Example prices.</div>
+    <div class="rule">tools + loop = agent</div>
+  </div>
+</body>
+</html>

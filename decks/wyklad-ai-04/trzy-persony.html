@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8" />
+<title>Trzy persony</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="base.css" />
+<style>
+  .main { flex-direction: column; gap: 26px; }
+  .ask { align-self: center; font-size: 24px; font-weight: 600; padding: 14px 26px; border-radius: 14px; background: color-mix(in oklab, var(--ins) 8%, white); border: 1.5px solid color-mix(in oklab, var(--ins) 30%, white); }
+  .ask span { font-family: 'JetBrains Mono', monospace; font-size: 14px; font-weight: 700; letter-spacing: .14em; color: var(--ins); margin-right: 14px; }
+  .cols { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; flex: 1; }
+  .col { padding: 22px 24px; display: flex; flex-direction: column; gap: 12px; }
+  .col h3 { font-size: 27px; font-weight: 800; }
+  .col .who { font-size: 18px; color: var(--muted); line-height: 1.4; }
+  .col .ans { flex: 1; font-size: 21px; line-height: 1.45; }
+  .col .ans ul { list-style: none; font-family: 'JetBrains Mono', monospace; font-size: 19px; line-height: 1.6; color: var(--text); }
+  .goal { border-top: 1px solid var(--line-strong); padding-top: 12px; font-size: 17px; color: var(--muted); }
+  .goal b { color: var(--cg); font-family: 'JetBrains Mono', monospace; font-size: 14px; letter-spacing: .12em; text-transform: uppercase; display: block; margin-bottom: 2px; }
+</style>
+</head>
+<body>
+  <div class="eyebrow">Krok 3: persona</div>
+  <h1>Ten sam model, ta sama baza, trzy persony</h1>
+  <div class="thesis">Persona nie dodaje wiedzy. <b>Zmienia, co asystent zrobi z tą samą wiedzą.</b></div>
+  <div class="main">
+    <div class="ask"><span>USER</span>W sobotę gotuję dla 8 osób, myślę o risotto. Pomożesz?</div>
+    <div class="cols">
+      <div class="card col">
+        <h3>Sparingpartner</h3>
+        <div class="who">Krytyczny, szuka luk w planie, sceptyczny.</div>
+        <div class="blk ast ans"><div class="role">assistant</div>Risotto na 8 osób to ok. 20 minut mieszania przy kuchence, <b>gdy goście już siedzą</b>. Masz kogoś do pomocy? Jeśli nie, risotto zapiekane w piekarniku zdejmie Cię z posterunku.</div>
+        <div class="goal"><b>Cel</b>testowanie pomysłów</div>
+      </div>
+      <div class="card col">
+        <h3>Mentor sokratejski</h3>
+        <div class="who">Odpowiada pytaniami, zmusza do myślenia.</div>
+        <div class="blk ast ans"><div class="role">assistant</div>Chętnie. Zanim dam plan: <b>co Twoim zdaniem będzie najtrudniejsze</b> przy ośmiu porcjach naraz? I ile ryżu przyjąłbyś na osobę?</div>
+        <div class="goal"><b>Cel</b>nauka i rozwój</div>
+      </div>
+      <div class="card col">
+        <h3>Egzekutor</h3>
+        <div class="who">Zero emocji, czyste dane, skrajna zwięzłość.</div>
+        <div class="blk ast ans"><div class="role">assistant</div>
+          <ul><li>ryż arborio  640 g</li><li>bulion       2,5 l</li><li>parmezan     160 g</li><li>masło         80 g</li><li>cebula       2 szt.</li><li>wino białe   200 ml</li></ul></div>
+        <div class="goal"><b>Cel</b>szybka produkcja</div>
+      </div>
+    </div>
+  </div>
+  <div class="footer">
+    <div class="note">Nie ma jednej idealnej persony. Każda z trzech jest dobra, ale do innego zadania.</div>
+    <div class="rule">persona = funkcja agenta</div>
+  </div>
+</body>
+</html>

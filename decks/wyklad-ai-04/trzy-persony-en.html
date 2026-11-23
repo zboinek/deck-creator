@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Three personas</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="base.css" />
+<style>
+  .main { flex-direction: column; gap: 26px; }
+  .ask { align-self: center; font-size: 24px; font-weight: 600; padding: 14px 26px; border-radius: 14px; background: color-mix(in oklab, var(--ins) 8%, white); border: 1.5px solid color-mix(in oklab, var(--ins) 30%, white); }
+  .ask span { font-family: 'JetBrains Mono', monospace; font-size: 14px; font-weight: 700; letter-spacing: .14em; color: var(--ins); margin-right: 14px; }
+  .cols { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; flex: 1; }
+  .col { padding: 22px 24px; display: flex; flex-direction: column; gap: 12px; }
+  .col h3 { font-size: 27px; font-weight: 800; }
+  .col .who { font-size: 18px; color: var(--muted); line-height: 1.4; }
+  .col .ans { flex: 1; font-size: 21px; line-height: 1.45; }
+  .col .ans ul { list-style: none; font-family: 'JetBrains Mono', monospace; font-size: 19px; line-height: 1.6; color: var(--text); }
+  .goal { border-top: 1px solid var(--line-strong); padding-top: 12px; font-size: 17px; color: var(--muted); }
+  .goal b { color: var(--cg); font-family: 'JetBrains Mono', monospace; font-size: 14px; letter-spacing: .12em; text-transform: uppercase; display: block; margin-bottom: 2px; }
+</style>
+</head>
+<body>
+  <div class="eyebrow">Step 3: persona</div>
+  <h1>Same model, same database, three personas</h1>
+  <div class="thesis">A persona adds no knowledge. <b>It changes what the assistant does with the same knowledge.</b></div>
+  <div class="main">
+    <div class="ask"><span>USER</span>I'm cooking for 8 people on Saturday, thinking of risotto. Can you help?</div>
+    <div class="cols">
+      <div class="card col">
+        <h3>Sparring partner</h3>
+        <div class="who">Critical, looks for holes in the plan, sceptical.</div>
+        <div class="blk ast ans"><div class="role">assistant</div>Risotto for 8 means about 20 minutes of stirring at the stove <b>while the guests are already seated</b>. Do you have someone to help? If not, an oven-baked risotto takes you off duty.</div>
+        <div class="goal"><b>Goal</b>testing ideas</div>
+      </div>
+      <div class="card col">
+        <h3>Socratic mentor</h3>
+        <div class="who">Answers with questions, makes you think.</div>
+        <div class="blk ast ans"><div class="role">assistant</div>Gladly. Before I give you a plan: <b>what do you think will be hardest</b> with eight portions at once? And how much rice would you allow per person?</div>
+        <div class="goal"><b>Goal</b>learning and growth</div>
+      </div>
+      <div class="card col">
+        <h3>Executor</h3>
+        <div class="who">No emotion, pure data, extreme brevity.</div>
+        <div class="blk ast ans"><div class="role">assistant</div>
+          <ul><li>arborio rice 640 g</li><li>stock        2.5 l</li><li>parmesan     160 g</li><li>butter        80 g</li><li>onions       2 pcs</li><li>white wine   200 ml</li></ul></div>
+        <div class="goal"><b>Goal</b>fast production</div>
+      </div>
+    </div>
+  </div>
+  <div class="footer">
+    <div class="note">There is no single ideal persona. Each of the three is good, but for a different job.</div>
+    <div class="rule">persona = the agent's function</div>
+  </div>
+</body>
+</html>

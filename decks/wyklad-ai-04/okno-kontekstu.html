@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8" />
+<title>Co wypełnia okno kontekstowe</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="base.css" />
+<style>
+  .main { flex-direction: column; justify-content: center; gap: 44px; }
+  .bar { display: flex; height: 120px; border-radius: 14px; overflow: hidden; border: 1.5px solid var(--line-strong); }
+  .bar div { display: flex; align-items: center; justify-content: center; font-family: 'JetBrains Mono', monospace; font-size: 17px; font-weight: 700; color: #fff; white-space: nowrap; overflow: hidden; }
+  .scale { display: flex; justify-content: space-between; font-family: 'JetBrains Mono', monospace; font-size: 15px; color: var(--dim); margin-top: -22px; }
+  .legend { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px 30px; }
+  .it { display: flex; gap: 14px; align-items: flex-start; }
+  .it i { flex: none; width: 22px; height: 22px; border-radius: 6px; margin-top: 4px; }
+  .it .t { font-size: 22px; font-weight: 700; }
+  .it .t span { font-family: 'JetBrains Mono', monospace; font-size: 15px; color: var(--cg); font-weight: 700; margin-left: 6px; }
+  .it .d { font-size: 19px; color: var(--muted); line-height: 1.35; margin-top: 2px; }
+</style>
+</head>
+<body>
+  <div class="eyebrow">Krok 1: kontekst</div>
+  <h1>Jedno zapytanie pomocnika kucharza, od środka</h1>
+  <div class="thesis">Wszystko, co asystent „wie” w danej chwili, mieści się w jednym oknie. <b>Każdy kawałek konkuruje o to samo miejsce.</b></div>
+  <div class="main">
+    <div class="bar">
+      <div style="flex:400;background:#3f3f46">system</div>
+      <div style="flex:350;background:#6366f1">persona</div>
+      <div style="flex:300;background:#8b5cf6">profil</div>
+      <div style="flex:2000;background:#a855f7">fragmenty przepisów z RAG (W10)</div>
+      <div style="flex:2900;background:#c4b5fd;color:#3b0764">historia rozmowy</div>
+      <div style="flex:50;background:#6366f1"></div>
+      <div style="flex:1000;background:repeating-linear-gradient(45deg,#fde68a,#fde68a 10px,#fef3c7 10px,#fef3c7 20px);color:#92400e">miejsce na odpowiedź</div>
+    </div>
+    <div class="scale"><span>0</span><span>przykładowo ok. 7000 tokenów</span><span>limit okna</span></div>
+    <div class="legend">
+      <div class="it"><i style="background:#3f3f46"></i><div><div class="t">System prompt<span>krok 2</span></div><div class="d">Kim jest, co umie, data. Ten sam w każdym zapytaniu.</div></div></div>
+      <div class="it"><i style="background:#6366f1"></i><div><div class="t">Persona<span>krok 3</span></div><div class="d">Ton i zasady. Też w każdym zapytaniu.</div></div></div>
+      <div class="it"><i style="background:#8b5cf6"></i><div><div class="t">Profil użytkownika<span>krok 5</span></div><div class="d">Inny dla każdej osoby, stały w rozmowie.</div></div></div>
+      <div class="it"><i style="background:#a855f7"></i><div><div class="t">Fragmenty RAG<span>W10</span></div><div class="d">Zmieniają się z każdym pytaniem.</div></div></div>
+      <div class="it"><i style="background:#c4b5fd"></i><div><div class="t">Historia</div><div class="d">Rośnie z każdą wymianą, aż trzeba ją przyciąć albo streścić.</div></div></div>
+      <div class="it"><i style="background:#6366f1"></i><div><div class="t">Pytanie</div><div class="d">Najkrótszy kawałek całego zapytania.</div></div></div>
+      <div class="it"><i style="background:#fde68a"></i><div><div class="t">Odpowiedź</div><div class="d">Też liczy się do okna, trzeba zostawić jej miejsce.</div></div></div>
+      <div class="it"><i style="background:var(--grad-bar)"></i><div><div class="t">Koszt</div><div class="d">Każdy token to pamięć GPU i czas (W9).</div></div></div>
+    </div>
+  </div>
+  <div class="footer">
+    <div class="note">Proporcje poglądowe. Pytanie użytkownika to zwykle niecały procent tego, co dostaje model.</div>
+    <div class="rule">okno to budżet</div>
+  </div>
+</body>
+</html>

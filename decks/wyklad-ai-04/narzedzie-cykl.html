@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8" />
+<title>Cykl wywołania narzędzia</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="base.css" />
+<style>
+  .main { flex-direction: column; justify-content: center; gap: 12px; }
+  .row { display: grid; grid-template-columns: 46px 250px 1fr 340px; gap: 20px; align-items: center; }
+  .n { width: 46px; height: 46px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: 'JetBrains Mono', monospace; font-weight: 700; font-size: 20px; color: #fff; background: var(--c); }
+  .dir { font-family: 'JetBrains Mono', monospace; font-size: 17px; font-weight: 700; color: var(--c); }
+  .dir span { color: var(--dim); font-weight: 500; }
+  .body { padding: 12px 20px; border-radius: 12px; background: color-mix(in oklab, var(--c) 7%, white); border: 1.5px solid color-mix(in oklab, var(--c) 28%, white); font-size: 19px; line-height: 1.4; color: var(--muted); }
+  .body code { font-family: 'JetBrains Mono', monospace; font-size: 16px; color: var(--text); }
+  .body b { color: var(--text); }
+  .note { font-size: 17px; color: var(--muted); line-height: 1.4; }
+  .note b { color: var(--text); }
+  .app { --c: #3f3f46; } .mdl { --c: #6366f1; } .exe { --c: #f59e0b; } .res { --c: #a855f7; } .out { --c: #16a34a; }
+  .exe .body { border-style: dashed; }
+</style>
+</head>
+<body>
+  <div class="eyebrow">Krok 7: narzędzia</div>
+  <h1>Model prosi, aplikacja wykonuje</h1>
+  <div class="thesis">Ola pyta: <b>„Przelicz beszamel na 40 porcji”</b>. Model nie liczy i niczego nie uruchamia. <b>Pisze prośbę w JSON-ie.</b></div>
+  <div class="main">
+    <div class="row app"><div class="n">1</div><div class="dir">aplikacja <span>→</span> model</div>
+      <div class="body">Wiadomości jak w kroku 6 <b>plus opis narzędzi</b>: <code>przelicz_porcje(przepis_id, porcje)</code>: „Przelicza składniki przepisu z bazy na podaną liczbę porcji”</div>
+      <div class="note">Model widzi <b>opis</b>, nigdy kod funkcji.</div></div>
+    <div class="row mdl"><div class="n">2</div><div class="dir">model <span>→</span> aplikacja</div>
+      <div class="body"><code>{"name": "przelicz_porcje", "arguments": {"przepis_id": "beszamel", "porcje": 40}}</code></div>
+      <div class="note">Zamiast odpowiedzi: <b>prośba o wywołanie</b>. Ekstrakcja do JSON-a z W10.</div></div>
+    <div class="row exe"><div class="n">3</div><div class="dir">aplikacja <span>wykonuje</span></div>
+      <div class="body">Zwykła funkcja w Pythonie czyta przepis z bazy i mnoży: <code>{"maslo_g": 500, "maka_g": 500, "mleko_ml": 5000}</code></div>
+      <div class="note">Tu jest <b>sprawczość</b>: kod może liczyć, pisać, wysyłać, płacić.</div></div>
+    <div class="row res"><div class="n">4</div><div class="dir">aplikacja <span>→</span> model</div>
+      <div class="body">Wynik wraca jako nowa wiadomość z rolą <code>tool</code>, doklejona do listy</div>
+      <div class="note">Krok 1: wynik też musi trafić <b>do kontekstu</b>.</div></div>
+    <div class="row out"><div class="n">5</div><div class="dir">model <span>→</span> Ola</div>
+      <div class="body">„Na 40 porcji: <b>500 g masła, 500 g mąki, 5 l mleka</b>. Bez glutenu zamień mąkę na skrobię kukurydzianą.”</div>
+      <div class="note">Liczby z kodu, ton z persony, zamiennik z profilu.</div></div>
+  </div>
+  <div class="footer">
+    <div class="note">Uproszczony zapis formatu zgodnego z API OpenAI. Nazwy narzędzia i pól są nasze.</div>
+    <div class="rule">model pisze, kod robi</div>
+  </div>
+</body>
+</html>

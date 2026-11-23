@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8" />
+<title>Przytakiwanie</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="base.css" />
+<style>
+  .main { flex-direction: column; gap: 34px; justify-content: center; }
+  .ask { align-self: center; max-width: 1150px; text-align: center; font-size: 26px; font-weight: 600; padding: 16px 30px; border-radius: 14px; background: color-mix(in oklab, var(--ins) 8%, white); border: 1.5px solid color-mix(in oklab, var(--ins) 30%, white); }
+  .ask span { font-family: 'JetBrains Mono', monospace; font-size: 14px; font-weight: 700; letter-spacing: .14em; color: var(--ins); margin-right: 14px; }
+  .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 36px; }
+  .col { display: flex; flex-direction: column; gap: 12px; }
+  .col .lbl.bad { color: var(--bad); } .col .lbl.ok { color: var(--ok); }
+  .col .blk { font-size: 25px; flex: 1; padding: 20px 26px 20px 34px; }
+  .why { font-size: 21px; color: var(--muted); line-height: 1.45; }
+  .why b { color: var(--text); }
+</style>
+</head>
+<body>
+  <div class="eyebrow">Krok 3: persona</div>
+  <h1>Model z natury przytakuje</h1>
+  <div class="thesis">Po treningu na ludzkich ocenach (RLHF) model nauczył się, że zgoda zbiera lepsze oceny. <b>Persona musi to świadomie odkręcić.</b></div>
+  <div class="main">
+    <div class="ask"><span>USER</span>Nie mam proszku do pieczenia. Dam tyle samo sody, dobrze?</div>
+    <div class="cols">
+      <div class="col">
+        <div class="lbl bad">✗ domyślnie: uległy, przyklaskujący</div>
+        <div class="blk ast"><div class="role">assistant</div><b>Świetny pomysł!</b> Soda oczyszczona też spulchnia ciasto, więc śmiało możesz ją użyć w tej samej ilości. Smacznego!</div>
+        <div class="why">Brzmi miło i pewnie. Ciasto wyjdzie <b>gorzkie i mydlane</b>.</div>
+      </div>
+      <div class="col">
+        <div class="lbl ok">✓ persona z rygorem: kwestionuje założenie</div>
+        <div class="blk ast"><div class="role">assistant</div><b>Nie w tej samej ilości.</b> Soda jest ok. 3–4 razy mocniejsza i potrzebuje kwaśnego składnika. Zamiast 2 łyżeczek proszku daj ok. pół łyżeczki sody, a mleko zamień na jogurt albo maślankę.</div>
+        <div class="why">Mniej przyjemne. <b>Ciasto się uda.</b></div>
+      </div>
+    </div>
+  </div>
+  <div class="footer">
+    <div class="note">Sharma i in., „Towards Understanding Sycophancy in Language Models”, Anthropic 2023.</div>
+    <div class="rule">miło ≠ pomocnie</div>
+  </div>
+</body>
+</html>

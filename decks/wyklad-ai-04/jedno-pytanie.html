@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8" />
+<title>Jedno pytanie, dwie osoby</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="base.css" />
+<style>
+  .main { display: grid; grid-template-columns: 1fr 1.25fr 1fr; gap: 34px; align-items: center; }
+  .who { padding: 24px 26px; display: flex; flex-direction: column; gap: 14px; }
+  .who .name { font-size: 28px; font-weight: 800; }
+  .who .meta { font-size: 18px; color: var(--muted); line-height: 1.4; }
+  .who .q { font-size: 21px; font-weight: 600; padding: 12px 16px; background: #fff; border: 1px solid var(--line); border-radius: 12px; }
+  .need { margin-top: 10px; }
+  .need .lbl { color: var(--cg); margin-bottom: 6px; }
+  .need ul { list-style: none; font-size: 18px; color: var(--muted); line-height: 1.45; }
+  .need li::before { content: '→ '; color: var(--cg); font-weight: 700; }
+  .mid { display: flex; flex-direction: column; gap: 14px; justify-content: center; }
+  .same { text-align: center; font-family: 'JetBrains Mono', monospace; font-size: 17px; font-weight: 700; color: var(--bad); }
+  .arrows { display: flex; justify-content: space-between; font-size: 28px; color: var(--dim); padding: 0 10px; }
+</style>
+</head>
+<body>
+  <div class="eyebrow">Problem</div>
+  <h1>Jedno pytanie, dwie różne osoby, ta sama odpowiedź</h1>
+  <div class="thesis">Asystent z W10 trafia w dobry przepis. <b>Nie ma pojęcia, kto pyta, więc odpowiada „przeciętnemu” człowiekowi.</b></div>
+  <div class="main">
+    <div class="card who">
+      <div class="name">Kuba, 19 lat</div>
+      <div class="meta">Pierwszy semestr, akademik, jedna płyta indukcyjna. Nigdy nie robił sosu.</div>
+      <div class="q">„Jak zrobić beszamel?”</div>
+      <div class="need"><div class="lbl">Czego potrzebuje</div>
+        <ul><li>co to jest zasmażka</li><li>po czym poznać, że już</li><li>co zrobić z grudkami</li></ul></div>
+    </div>
+    <div class="mid">
+      <div class="arrows"><span>↘</span><span>↙</span></div>
+      <div class="blk ast"><div class="role">Asystent z W10</div>
+        Roztop <b>50 g masła</b>, dodaj <b>50 g mąki</b> i zasmażaj 2 minuty. Stopniowo wlewaj <b>500 ml ciepłego mleka</b>, cały czas mieszając. Gotuj 5 minut, dopraw solą i gałką muszkatołową <span class="ref">[1]</span>.</div>
+      <div class="same">ta sama odpowiedź dla obojga</div>
+      <div class="arrows"><span>↙</span><span>↘</span></div>
+    </div>
+    <div class="card who">
+      <div class="name">Ola, 34 lata</div>
+      <div class="meta">Kucharka w bistro. Jutro catering, jeden gość na diecie bezglutenowej.</div>
+      <div class="q">„Jak zrobić beszamel?”</div>
+      <div class="need"><div class="lbl">Czego potrzebuje</div>
+        <ul><li>proporcje na 40 porcji</li><li>czym zagęścić bez mąki pszennej</li><li>czy da się zrobić dzień wcześniej</li></ul></div>
+    </div>
+  </div>
+  <div class="footer">
+    <div class="note">Odpowiedź jest poprawna i ma źródło. Dla Kuby za krótka, dla Oli bezużyteczna.</div>
+    <div class="rule">poprawnie ≠ pomocnie</div>
+  </div>
+</body>
+</html>

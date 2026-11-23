@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>One tool call cycle</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="base.css" />
+<style>
+  .main { flex-direction: column; justify-content: center; gap: 12px; }
+  .row { display: grid; grid-template-columns: 46px 250px 1fr 340px; gap: 20px; align-items: center; }
+  .n { width: 46px; height: 46px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: 'JetBrains Mono', monospace; font-weight: 700; font-size: 20px; color: #fff; background: var(--c); }
+  .dir { font-family: 'JetBrains Mono', monospace; font-size: 17px; font-weight: 700; color: var(--c); }
+  .dir span { color: var(--dim); font-weight: 500; }
+  .body { padding: 12px 20px; border-radius: 12px; background: color-mix(in oklab, var(--c) 7%, white); border: 1.5px solid color-mix(in oklab, var(--c) 28%, white); font-size: 19px; line-height: 1.4; color: var(--muted); }
+  .body code { font-family: 'JetBrains Mono', monospace; font-size: 16px; color: var(--text); }
+  .body b { color: var(--text); }
+  .note { font-size: 17px; color: var(--muted); line-height: 1.4; }
+  .note b { color: var(--text); }
+  .app { --c: #3f3f46; } .mdl { --c: #6366f1; } .exe { --c: #f59e0b; } .res { --c: #a855f7; } .out { --c: #16a34a; }
+  .exe .body { border-style: dashed; }
+</style>
+</head>
+<body>
+  <div class="eyebrow">Step 7: tools</div>
+  <h1>The model asks, the app executes</h1>
+  <div class="thesis">Ola asks: <b>“Scale the béchamel to 40 portions”</b>. The model does not calculate or run anything. <b>It writes a request in JSON.</b></div>
+  <div class="main">
+    <div class="row app"><div class="n">1</div><div class="dir">app <span>→</span> model</div>
+      <div class="body">Messages as in step 6 <b>plus tool descriptions</b>: <code>scale_portions(recipe_id, portions)</code>: “Scales a recipe's ingredients from the database to the given number of portions”</div>
+      <div class="note">The model sees the <b>description</b>, never the function's code.</div></div>
+    <div class="row mdl"><div class="n">2</div><div class="dir">model <span>→</span> app</div>
+      <div class="body"><code>{"name": "scale_portions", "arguments": {"recipe_id": "bechamel", "portions": 40}}</code></div>
+      <div class="note">Instead of an answer: <b>a call request</b>. JSON extraction from L10.</div></div>
+    <div class="row exe"><div class="n">3</div><div class="dir">app <span>executes</span></div>
+      <div class="body">A plain Python function reads the recipe from the database and multiplies: <code>{"butter_g": 500, "flour_g": 500, "milk_ml": 5000}</code></div>
+      <div class="note">This is where the <b>agency</b> is: code can calculate, write, send, pay.</div></div>
+    <div class="row res"><div class="n">4</div><div class="dir">app <span>→</span> model</div>
+      <div class="body">The result comes back as a new message with the <code>tool</code> role, appended to the list</div>
+      <div class="note">Step 1: the result also has to go <b>into the context</b>.</div></div>
+    <div class="row out"><div class="n">5</div><div class="dir">model <span>→</span> Ola</div>
+      <div class="body">“For 40 portions: <b>500 g butter, 500 g flour, 5 l milk</b>. For gluten-free, swap the flour for cornstarch.”</div>
+      <div class="note">Numbers from code, tone from the persona, substitute from the profile.</div></div>
+  </div>
+  <div class="footer">
+    <div class="note">Simplified notation of the OpenAI-compatible API format. Tool and field names are ours.</div>
+    <div class="rule">the model writes, code acts</div>
+  </div>
+</body>
+</html>

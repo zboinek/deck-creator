@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>What fills the context window</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="base.css" />
+<style>
+  .main { flex-direction: column; justify-content: center; gap: 44px; }
+  .bar { display: flex; height: 120px; border-radius: 14px; overflow: hidden; border: 1.5px solid var(--line-strong); }
+  .bar div { display: flex; align-items: center; justify-content: center; font-family: 'JetBrains Mono', monospace; font-size: 17px; font-weight: 700; color: #fff; white-space: nowrap; overflow: hidden; }
+  .scale { display: flex; justify-content: space-between; font-family: 'JetBrains Mono', monospace; font-size: 15px; color: var(--dim); margin-top: -22px; }
+  .legend { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px 30px; }
+  .it { display: flex; gap: 14px; align-items: flex-start; }
+  .it i { flex: none; width: 22px; height: 22px; border-radius: 6px; margin-top: 4px; }
+  .it .t { font-size: 22px; font-weight: 700; }
+  .it .t span { font-family: 'JetBrains Mono', monospace; font-size: 15px; color: var(--cg); font-weight: 700; margin-left: 6px; }
+  .it .d { font-size: 19px; color: var(--muted); line-height: 1.35; margin-top: 2px; }
+</style>
+</head>
+<body>
+  <div class="eyebrow">Step 1: context</div>
+  <h1>One Chef's Helper request, from the inside</h1>
+  <div class="thesis">Everything the assistant “knows” at a given moment fits in one window. <b>Every piece competes for the same space.</b></div>
+  <div class="main">
+    <div class="bar">
+      <div style="flex:400;background:#3f3f46">system</div>
+      <div style="flex:350;background:#6366f1;font-size:14px">persona</div>
+      <div style="flex:300;background:#8b5cf6;font-size:14px">profile</div>
+      <div style="flex:2000;background:#a855f7">recipe chunks from RAG (L10)</div>
+      <div style="flex:2900;background:#c4b5fd;color:#3b0764">conversation history</div>
+      <div style="flex:50;background:#6366f1"></div>
+      <div style="flex:1000;background:repeating-linear-gradient(45deg,#fde68a,#fde68a 10px,#fef3c7 10px,#fef3c7 20px);color:#92400e">room for the answer</div>
+    </div>
+    <div class="scale"><span>0</span><span>for example, about 7000 tokens</span><span>window limit</span></div>
+    <div class="legend">
+      <div class="it"><i style="background:#3f3f46"></i><div><div class="t">System prompt<span>step 2</span></div><div class="d">Who it is, what it can do, the date. The same in every request.</div></div></div>
+      <div class="it"><i style="background:#6366f1"></i><div><div class="t">Persona<span>step 3</span></div><div class="d">Tone and rules. Also in every request.</div></div></div>
+      <div class="it"><i style="background:#8b5cf6"></i><div><div class="t">User profile<span>step 5</span></div><div class="d">Different for each person, fixed within a conversation.</div></div></div>
+      <div class="it"><i style="background:#a855f7"></i><div><div class="t">RAG chunks<span>L10</span></div><div class="d">Change with every question.</div></div></div>
+      <div class="it"><i style="background:#c4b5fd"></i><div><div class="t">History</div><div class="d">Grows with every exchange until it has to be trimmed or summarized.</div></div></div>
+      <div class="it"><i style="background:#6366f1"></i><div><div class="t">Question</div><div class="d">The shortest piece of the whole request.</div></div></div>
+      <div class="it"><i style="background:#fde68a"></i><div><div class="t">Answer</div><div class="d">Also counts towards the window, so leave room for it.</div></div></div>
+      <div class="it"><i style="background:var(--grad-bar)"></i><div><div class="t">Cost</div><div class="d">Every token costs GPU memory and time (L9).</div></div></div>
+    </div>
+  </div>
+  <div class="footer">
+    <div class="note">Proportions are illustrative. The user's question is usually under one percent of what the model receives.</div>
+    <div class="rule">the window is a budget</div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Sycophancy</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="base.css" />
+<style>
+  .main { flex-direction: column; gap: 34px; justify-content: center; }
+  .ask { align-self: center; max-width: 1150px; text-align: center; font-size: 26px; font-weight: 600; padding: 16px 30px; border-radius: 14px; background: color-mix(in oklab, var(--ins) 8%, white); border: 1.5px solid color-mix(in oklab, var(--ins) 30%, white); }
+  .ask span { font-family: 'JetBrains Mono', monospace; font-size: 14px; font-weight: 700; letter-spacing: .14em; color: var(--ins); margin-right: 14px; }
+  .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 36px; }
+  .col { display: flex; flex-direction: column; gap: 12px; }
+  .col .lbl.bad { color: var(--bad); } .col .lbl.ok { color: var(--ok); }
+  .col .blk { font-size: 25px; flex: 1; padding: 20px 26px 20px 34px; }
+  .why { font-size: 21px; color: var(--muted); line-height: 1.45; }
+  .why b { color: var(--text); }
+</style>
+</head>
+<body>
+  <div class="eyebrow">Step 3: persona</div>
+  <h1>The model agrees by nature</h1>
+  <div class="thesis">Trained on human ratings (RLHF), the model learned that agreeing earns better ratings. <b>The persona has to deliberately undo that.</b></div>
+  <div class="main">
+    <div class="ask"><span>USER</span>I'm out of baking powder. I'll use the same amount of baking soda, OK?</div>
+    <div class="cols">
+      <div class="col">
+        <div class="lbl bad">✗ default: compliant, always applauding</div>
+        <div class="blk ast"><div class="role">assistant</div><b>Great idea!</b> Baking soda also makes dough rise, so go ahead and use it in the same amount. Enjoy!</div>
+        <div class="why">Sounds nice and confident. The cake will come out <b>bitter and soapy</b>.</div>
+      </div>
+      <div class="col">
+        <div class="lbl ok">✓ persona with rigor: challenges the assumption</div>
+        <div class="blk ast"><div class="role">assistant</div><b>Not the same amount.</b> Baking soda is about 3–4 times stronger and needs an acidic ingredient. Instead of 2 tsp of powder use about half a teaspoon of soda, and swap the milk for yogurt or buttermilk.</div>
+        <div class="why">Less pleasant. <b>The cake will work.</b></div>
+      </div>
+    </div>
+  </div>
+  <div class="footer">
+    <div class="note">Sharma et al., “Towards Understanding Sycophancy in Language Models”, Anthropic 2023.</div>
+    <div class="rule">nice ≠ helpful</div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8" />
+<title>Skąd agent zna użytkownika</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="base.css" />
+<style>
+  :root { --s1: #3f3f46; --s2: #6366f1; --s3: #a855f7; --s4: #f59e0b; }
+  .main { display: grid; grid-template-columns: 1fr 1.05fr; gap: 44px; align-items: center; }
+  .srcs { display: flex; flex-direction: column; gap: 14px; }
+  .src { display: grid; grid-template-columns: 44px 1fr; gap: 16px; padding: 14px 20px; align-items: start; }
+  .src .n { width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: #fff; font-family: 'JetBrains Mono', monospace; font-weight: 700; font-size: 20px; background: var(--c); }
+  .src h3 { font-size: 22px; font-weight: 700; }
+  .src h3 span { font-family: 'JetBrains Mono', monospace; font-size: 14px; color: var(--dim); font-weight: 700; margin-left: 8px; }
+  .src p { font-size: 18px; color: var(--muted); line-height: 1.4; margin-top: 3px; }
+  .file { background: #18181b; border-radius: 16px; padding: 22px 26px; font-family: 'JetBrains Mono', monospace; font-size: 19px; line-height: 1.6; color: #e4e4e7; }
+  .file .name { color: #a1a1aa; font-size: 15px; margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px solid #3f3f46; }
+  .file .h { color: #c4b5fd; font-weight: 700; margin-top: 6px; }
+  .file .l { display: flex; gap: 12px; align-items: baseline; }
+  .file .l i { flex: none; width: 10px; height: 10px; border-radius: 3px; background: var(--c); transform: translateY(-1px); }
+</style>
+</head>
+<body>
+  <div class="eyebrow">Krok 5: profil użytkownika</div>
+  <h1>Skąd asystent wie, kim jest użytkownik?</h1>
+  <div class="thesis">Cztery źródła, jeden plik. <b>Każda linia w profilu ma swoje pochodzenie.</b></div>
+  <div class="main">
+    <div class="srcs">
+      <div class="card src" style="--c:var(--s1)"><div class="n">1</div><div><h3>Profil statyczny<span>na start</span></h3><p>Użytkownik sam wpisuje: „gotuję od miesiąca, mam jedną płytę”.</p></div></div>
+      <div class="card src" style="--c:var(--s2)"><div class="n">2</div><div><h3>Pamięć długoterminowa<span>poprzednie rozmowy</span></h3><p>Tydzień temu wspomniał, że nie znosi kolendry. Dziś jej nie dostanie.</p></div></div>
+      <div class="card src" style="--c:var(--s3)"><div class="n">3</div><div><h3>Wnioskowanie w locie<span>bieżące okno</span></h3><p>Pyta „co to jest zasmażka?”, więc to raczej początkujący.</p></div></div>
+      <div class="card src" style="--c:var(--s4)"><div class="n">4</div><div><h3>Pętla informacji zwrotnej<span>reakcja</span></h3><p>„To dla mnie za trudne” poprawia profil na przyszłość.</p></div></div>
+    </div>
+    <div class="file">
+      <div class="name">user_profile.md</div>
+      <div class="h"># Kuba</div>
+      <div class="l" style="--c:var(--s1)"><i></i>- student, 19 lat, akademik</div>
+      <div class="l" style="--c:var(--s1)"><i></i>- jedna płyta indukcyjna, bez piekarnika</div>
+      <div class="l" style="--c:var(--s1)"><i></i>- budżet: ok. 15 zł na obiad</div>
+      <div class="h">## Wiedza</div>
+      <div class="l" style="--c:var(--s3)"><i></i>- początkujący, nie zna technik</div>
+      <div class="l" style="--c:var(--s4)"><i></i>- jedno nowe pojęcie na odpowiedź</div>
+      <div class="h">## Preferencje</div>
+      <div class="l" style="--c:var(--s2)"><i></i>- nie znosi kolendry</div>
+      <div class="l" style="--c:var(--s2)"><i></i>- lubi kuchnię azjatycką</div>
+      <div class="l" style="--c:var(--s4)"><i></i>- woli kroki niż opisy</div>
+    </div>
+  </div>
+  <div class="footer">
+    <div class="note">Źródła 2 i 4 wymagają, żeby ktoś (aplikacja albo sam agent) dopisał linię do pliku. Inaczej wiedza ginie z końcem rozmowy.</div>
+    <div class="rule">profil to plik, nie magia</div>
+  </div>
+</body>
+</html>
