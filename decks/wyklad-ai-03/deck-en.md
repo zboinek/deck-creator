@@ -247,7 +247,7 @@ data = json.loads(ask_llm(prompt + "\n\n## Recipe\n\n" + text))
 ```
 When it comes to exchanging data on the Internet, JSON is (probably) the most important structure.
 
-> _Notatka prowadzącego:_ A list of allowed categories instead of free text: then the database won't have "Bread", "bread" and "Pieczywo" as three different values. Many model servers can enforce valid JSON (structured output), this comes back in semester 2. The numbers in the example are illustrative. In a moment these fields become chunk metadata.
+> _Notatka prowadzącego:_ A list of allowed categories instead of free text: then the database won't have "Bread", "bread" and "Pieczywo" as three different values. Many model servers can enforce valid JSON (structured output), this comes back in L12. The numbers in the example are illustrative. In a moment these fields become chunk metadata.
 
 ---
 
@@ -824,7 +824,7 @@ answer = client_llm.chat.completions.create(
 3. **Answer:** does it agree with the source and add nothing of its own?
 4. Changing the chunks, the model or the hybrid alpha? **Run the same questions again**
 
-> _Notatka prowadzącego:_ Without such a set every change is guesswork. The split matters: if search doesn't find the recipe, no LLM will answer well, and if it finds it but the answer is wrong, the problem is in steps 6 and 7. The questions are best collected from real users, not made up yourself. Evaluation comes back in more depth in semester 3.
+> _Notatka prowadzącego:_ Without such a set every change is guesswork. The split matters: if search doesn't find the recipe, no LLM will answer well, and if it finds it but the answer is wrong, the problem is in steps 6 and 7. The questions are best collected from real users, not made up yourself. Evaluation comes back in more depth in L12, and for agents in semester 3.
 
 ---
 
@@ -982,12 +982,14 @@ cgc compute list -d
 
 | Today | Where it returns | As what |
 |---|---|---|
-| Extraction to JSON | Semester 2 | Structured output and function calling |
+| Temperature, chat template | L11 | Talking to the model in code: parameters, cost, cache |
+| Extraction to JSON | L12 | Structured output: JSON enforced by a schema |
+| "How do we check it works?" | L12 | Test set, metrics, LLM as a judge |
 | RAG, chunks, embedding | Semester 3, L3 | Where an agent gets its context |
 | BM25 + vectors, RRF | Semester 3, L3 | Reranking and agentic search |
 | A command in a document | Semester 3, L2 | A fragment from the database is untrusted content |
 
-> _Notatka prowadzącego:_ We close the first part of the series: L8 said that RAG exists, L9 showed what a vector is, and L10 built a working system out of it. In semester 2 the model gets tools, and in semester 3 the same search becomes one of the agent's tools.
+> _Notatka prowadzącego:_ We close the first part of the series: L8 said that RAG exists, L9 showed what a vector is, and L10 built a working system out of it. In L11 and L12 we learn to talk to the model in code and measure its results, in semester 2 the model gets tools, and in semester 3 the same search becomes one of the agent's tools.
 
 ---
 

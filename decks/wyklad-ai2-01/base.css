@@ -1,4 +1,4 @@
-/* wspólny styl infografik wykładu AI2 cz. 1: jasne wydanie, akcent = gradient z paska postępu (--gradient-bar w globals.css) */
+/* wspólny styl infografik wykładu AI2 cz. 1 (wyklad-ai2-01): jasne wydanie, akcent = gradient z paska postępu (--gradient-bar w globals.css) */
 :root {
   --bg: #ffffff; --text: #0a0a0a; --muted: #52525b; --dim: #8b8b93;
   --line: #e4e4e7; --line-strong: #d4d4d8; --cg: #6366f1;

@@ -1,16 +1,16 @@
 ---
-title: "Wstęp do uczenia maszynowego w kontekście przetwarzania zbiorów tekstów cz. 4"
-date: 2025-12-08
+title: "Wstęp do uczenia maszynowego w kontekście przetwarzania zbiorów tekstów cz. 6"
+date: 2026-03-02
 author: "Jakub Zboina, Rafał Masłyk"
-description: "Wykład 11: asystent kulinarny z RAG dostaje charakter, wiedzę o rozmówcy i ręce. Bezstanowość modelu i kontekst, system prompt, persona i przytakiwanie po RLHF, teoria umysłu, profil użytkownika, narzędzia i pętla agenta, pliki markdown jako pamięć"
-category: AI1
+description: "AI2, wykład 1: asystent kulinarny z RAG dostaje charakter, wiedzę o rozmówcy i ręce. Bezstanowość modelu i kontekst, system prompt, persona i przytakiwanie po RLHF, teoria umysłu, profil użytkownika, narzędzia i pętla agenta, pliki markdown jako pamięć"
+category: AI2
 ---
 
-# Wstęp do uczenia maszynowego w kontekście przetwarzania zbiorów tekstów cz. 4
+# Wstęp do uczenia maszynowego w kontekście przetwarzania zbiorów tekstów cz. 6
 
-## Sztuczna Inteligencja i Data Science 1 - Wykład
+## Sztuczna Inteligencja i Data Science 2 - Wykład
 
-### Wstęp do uczenia maszynowego w kontekście przetwarzania zbiorów tekstów cz. 4
+### Wstęp do uczenia maszynowego w kontekście przetwarzania zbiorów tekstów cz. 6
 
 mgr inż. Jakub Zboina
 
@@ -25,6 +25,7 @@ mgr inż. Rafał Masłyk
 - W8: prompt, role, historia rozmowy, **RAG** jako blok w prompcie
 - W9: droga zdania przez model, **embeddingi**, okno kontekstowe
 - W10: asystent kulinarny w **siedmiu krokach**, od strony WWW do odpowiedzi ze źródłem
+- W11–W12: rozmowa z modelem w kodzie, koszt, **structured output** i ewaluacja
 
 <!-- columns -->
 
@@ -36,7 +37,7 @@ mgr inż. Rafał Masłyk
 
 **Nic dziś nie trenujemy. Wszystko, co zmienimy, to tekst w kontekście i trochę kodu wokół modelu.**
 
-> _Notatka prowadzącego:_ Most między RAG a agentami. W10 dał modelowi wiedzę, dziś dajemy mu tożsamość, odbiorcę i ręce, a w cyklu "Agenci AI" rozbieramy na części maszynę, która to wszystko kręci. Dzisiejszy wykład jest mało matematyczny, ale bardzo praktyczny: po nim każdy zbuduje własnego asystenta bez kodu, a z kodem (kilkanaście linii) prostego agenta.
+> _Notatka prowadzącego:_ Pierwszy wykład semestru 2, most między RAG a agentami. W10 dał modelowi wiedzę, W11 i W12 nauczyły rozmawiać z nim przez API i mierzyć wyniki, dziś dajemy mu tożsamość, odbiorcę i ręce, a w cyklu "Agenci AI" rozbieramy na części maszynę, która to wszystko kręci. Dzisiejszy wykład jest mało matematyczny, ale bardzo praktyczny: po nim każdy zbuduje własnego asystenta bez kodu, a z kodem (kilkanaście linii) prostego agenta.
 
 ---
 
@@ -604,7 +605,7 @@ msg.tool_calls[0].function.arguments     # '{"przepis_id": "beszamel", "porcje":
 
 ### Wywołania narzędzi to kolejne tokeny w szablonie
 
-- Pamiętacie szablon czatu z W10? Role to **tokeny specjalne**. Narzędzia też
+- Pamiętacie szablon czatu z W11? Role to **tokeny specjalne**. Narzędzia też
 - Opis narzędzi i każde wywołanie są wpisane w szablon w ustalonym miejscu
 - Model douczano na **tysiącach takich rozmów**: kiedy wywołać, z jakimi argumentami, co zrobić z wynikiem
 
@@ -615,7 +616,7 @@ msg.tool_calls[0].function.arguments     # '{"przepis_id": "beszamel", "porcje":
 | 2024 | MCP (Anthropic): jeden standard podłączania narzędzi |
 | 2025 | modele trenowane w pętli: agenci kodujący, przeglądarki, terminale |
 
-> _Notatka prowadzącego:_ Nie trzeba znać formatu, wystarczy wiedzieć, że istnieje, tak jak szablon z W10: zły szablon to model, który "nie umie" narzędzi, choć umie. ReAct (Yao i in., 2022) pokazał wzorzec myśl, działanie, obserwacja. Toolformer (Schick i in., 2023) uczył model samemu wstawiać wywołania API. OpenAI dodało function calling do API w czerwcu 2023, a Anthropic opublikowało MCP w listopadzie 2024. Ostatni wiersz rozwija wykład 1 z cyklu Agenci AI: modele są dziś trenowane właśnie do działania w pętli.
+> _Notatka prowadzącego:_ Nie trzeba znać formatu, wystarczy wiedzieć, że istnieje, tak jak szablon z W11: zły szablon to model, który "nie umie" narzędzi, choć umie. ReAct (Yao i in., 2022) pokazał wzorzec myśl, działanie, obserwacja. Toolformer (Schick i in., 2023) uczył model samemu wstawiać wywołania API. OpenAI dodało function calling do API w czerwcu 2023, a Anthropic opublikowało MCP w listopadzie 2024. Ostatni wiersz rozwija wykład 1 z cyklu Agenci AI: modele są dziś trenowane właśnie do działania w pętli.
 
 ---
 
@@ -802,7 +803,7 @@ pomocnik-kucharza/
 | Okno, `persona.md`, `user_profile.md` | Agenci AI, W3 | Pamięć agenta: kontekst, kompakcja, skille |
 | Przebieg planu trzech obiadów | Agenci AI, W4 | Planowanie, wielu agentów, ewaluacja |
 
-> _Notatka prowadzącego:_ Domykamy część o modelach językowych: W8 powiedział, czym jest prompt, W9 jak model czyta tekst, W10 jak dać mu wiedzę, a W11 jak dać mu tożsamość, odbiorcę i ręce. Cykl Agenci AI zaczyna dokładnie od pętli z dzisiejszego kroku 7 i rozkłada ją na części. Kto zrobi zadanie z poprzedniego slajdu, wejdzie tam z własnym agentem w ręku.
+> _Notatka prowadzącego:_ Domykamy część o modelach językowych: W8 powiedział, czym jest prompt, W9 jak model czyta tekst, W10 jak dać mu wiedzę, W11 i W12 jak z nim rozmawiać i go mierzyć, a dziś jak dać mu tożsamość, odbiorcę i ręce. Cykl Agenci AI zaczyna dokładnie od pętli z dzisiejszego kroku 7 i rozkłada ją na części. Kto zrobi zadanie z poprzedniego slajdu, wejdzie tam z własnym agentem w ręku.
 
 ---
 

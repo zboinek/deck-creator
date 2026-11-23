@@ -247,7 +247,7 @@ dane = json.loads(ask_llm(prompt + "\n\n## Przepis\n\n" + text))
 ```
 Jeśli chodzi o wymianę danych w Internecie to JSON jest (chyba) najważniejszą strukturą.
 
-> _Notatka prowadzącego:_ Lista dozwolonych kategorii zamiast wolnego tekstu: wtedy w bazie nie będzie "Pieczywo", "pieczywo" i "Bread" jako trzech różnych wartości. Wiele serwerów modeli potrafi wymusić poprawny JSON (structured output), wraca to na semestrze 2. Liczby w przykładzie poglądowe. Te pola za chwilę staną się metadanymi chunków.
+> _Notatka prowadzącego:_ Lista dozwolonych kategorii zamiast wolnego tekstu: wtedy w bazie nie będzie "Pieczywo", "pieczywo" i "Bread" jako trzech różnych wartości. Wiele serwerów modeli potrafi wymusić poprawny JSON (structured output), wraca to na W12. Liczby w przykładzie poglądowe. Te pola za chwilę staną się metadanymi chunków.
 
 ---
 
@@ -824,7 +824,7 @@ odpowiedz = client_llm.chat.completions.create(
 3. **Odpowiedź:** czy zgadza się ze źródłem i czy nie dodaje nic od siebie?
 4. Zmieniasz chunki, model albo alfę hybrydy? **Puść te same pytania jeszcze raz**
 
-> _Notatka prowadzącego:_ Bez takiego zestawu każda zmiana to zgadywanie. Rozdzielenie ma znaczenie: jeśli wyszukiwanie nie znajduje przepisu, żaden LLM nie odpowie dobrze, a jeśli znajduje, a odpowiedź jest zła, problem jest w krokach 6 i 7. Pytania najlepiej zebrać od prawdziwych użytkowników, nie wymyślać ich samemu. Ewaluacja wraca szerzej na semestrze 3.
+> _Notatka prowadzącego:_ Bez takiego zestawu każda zmiana to zgadywanie. Rozdzielenie ma znaczenie: jeśli wyszukiwanie nie znajduje przepisu, żaden LLM nie odpowie dobrze, a jeśli znajduje, a odpowiedź jest zła, problem jest w krokach 6 i 7. Pytania najlepiej zebrać od prawdziwych użytkowników, nie wymyślać ich samemu. Ewaluacja wraca szerzej na W12, a dla agentów na semestrze 3.
 
 ---
 
@@ -982,12 +982,14 @@ cgc compute list -d
 
 | Dziś | Gdzie wróci | Jako co |
 |---|---|---|
-| Ekstrakcja do JSON-a | Semestr 2 | Structured output i function calling |
+| Temperatura, szablon czatu | W11 | Rozmowa z modelem w kodzie: parametry, koszt, cache |
+| Ekstrakcja do JSON-a | W12 | Structured output, czyli JSON wymuszony schematem |
+| „Jak sprawdzić, czy działa?” | W12 | Zbiór testowy, metryki, LLM jako sędzia |
 | RAG, chunki, embedding | Semestr 3, W3 | Skąd agent bierze kontekst |
 | BM25 + wektory, RRF | Semestr 3, W3 | Reranking i agentic search |
 | Polecenie w dokumencie | Semestr 3, W2 | Fragment z bazy to niezaufana treść |
 
-> _Notatka prowadzącego:_ Domykamy pierwszą część cyklu: W8 powiedział, że RAG istnieje, W9 pokazał, czym jest wektor, a W10 złożył z tego działający system. Na semestrze 2 model dostaje narzędzia, a na semestrze 3 to samo wyszukiwanie staje się jednym z narzędzi agenta.
+> _Notatka prowadzącego:_ Domykamy pierwszą część cyklu: W8 powiedział, że RAG istnieje, W9 pokazał, czym jest wektor, a W10 złożył z tego działający system. Na W11 i W12 nauczymy się rozmawiać z modelem w kodzie i mierzyć jego wyniki, na semestrze 2 model dostaje narzędzia, a na semestrze 3 to samo wyszukiwanie staje się jednym z narzędzi agenta.
 
 ---
 

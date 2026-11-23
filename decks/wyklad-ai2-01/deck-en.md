@@ -1,16 +1,16 @@
 ---
-title: "Introduction to machine learning for processing text collections, part 4"
-date: 2025-12-08
+title: "Introduction to machine learning for processing text collections, part 6"
+date: 2026-03-02
 author: "Jakub Zboina, Rafał Masłyk"
-description: "Lecture 11: the RAG cooking assistant gets a character, knowledge of who it is talking to, and hands. Model statelessness and context, the system prompt, persona and RLHF sycophancy, theory of mind, the user profile, tools and the agent loop, markdown files as memory"
-category: AI1
+description: "AI2, lecture 1: the RAG cooking assistant gets a character, knowledge of who it is talking to, and hands. Model statelessness and context, the system prompt, persona and RLHF sycophancy, theory of mind, the user profile, tools and the agent loop, markdown files as memory"
+category: AI2
 ---
 
-# Introduction to machine learning for processing text collections, part 4
+# Introduction to machine learning for processing text collections, part 6
 
-## Artificial Intelligence and Data Science 1, Lecture
+## Artificial Intelligence and Data Science 2, Lecture
 
-### Introduction to machine learning for processing text collections, part 4
+### Introduction to machine learning for processing text collections, part 6
 
 Jakub Zboina, MSc Eng.
 
@@ -25,6 +25,7 @@ Rafał Masłyk, MSc Eng.
 - L8: the prompt, roles, conversation history, **RAG** as a block in the prompt
 - L9: the path of a sentence through the model, **embeddings**, the context window
 - L10: the cooking assistant in **seven steps**, from a web page to an answer with a source
+- L11–L12: talking to the model in code, cost, **structured output** and evaluation
 
 <!-- columns -->
 
@@ -36,7 +37,7 @@ Rafał Masłyk, MSc Eng.
 
 **We train nothing today. Everything we change is text in the context and a bit of code around the model.**
 
-> _Notatka prowadzącego:_ The bridge between RAG and agents. L10 gave the model knowledge; today we give it an identity, an audience and hands, and in the "AI Agents" series we take apart the machine that drives all of it. Today's lecture has little maths but is very practical: afterwards everyone can build their own assistant without code, and with code (a dozen or so lines) a simple agent.
+> _Notatka prowadzącego:_ The first lecture of semester 2, the bridge between RAG and agents. L10 gave the model knowledge, L11 and L12 taught how to talk to it through the API and measure the results; today we give it an identity, an audience and hands, and in the "AI Agents" series we take apart the machine that drives all of it. Today's lecture has little maths but is very practical: afterwards everyone can build their own assistant without code, and with code (a dozen or so lines) a simple agent.
 
 ---
 
@@ -595,7 +596,7 @@ msg.tool_calls[0].function.arguments     # '{"recipe_id": "bechamel", "portions"
 
 ### Tool calls are just more tokens in the template
 
-- Remember the chat template from L10? Roles are **special tokens**. So are tools
+- Remember the chat template from L11? Roles are **special tokens**. So are tools
 - The tool descriptions and every call are written into the template in a fixed place
 - The model was fine-tuned on **thousands of such conversations**: when to call, with what arguments, what to do with the result
 
@@ -606,7 +607,7 @@ msg.tool_calls[0].function.arguments     # '{"recipe_id": "bechamel", "portions"
 | 2024 | MCP (Anthropic): one standard for connecting tools |
 | 2025 | models trained in the loop: coding agents, browsers, terminals |
 
-> _Notatka prowadzącego:_ You do not need to know the format, only that it exists, just like the template from L10: a wrong template gives a model that "can't" use tools, even though it can. ReAct (Yao et al., 2022) showed the thought, action, observation pattern. Toolformer (Schick et al., 2023) taught a model to insert API calls on its own. OpenAI added function calling to its API in June 2023, and Anthropic published MCP in November 2024. The last row is expanded in lecture 1 of the AI Agents series: today models are trained precisely to work in a loop.
+> _Notatka prowadzącego:_ You do not need to know the format, only that it exists, just like the template from L11: a wrong template gives a model that "can't" use tools, even though it can. ReAct (Yao et al., 2022) showed the thought, action, observation pattern. Toolformer (Schick et al., 2023) taught a model to insert API calls on its own. OpenAI added function calling to its API in June 2023, and Anthropic published MCP in November 2024. The last row is expanded in lecture 1 of the AI Agents series: today models are trained precisely to work in a loop.
 
 ---
 
@@ -793,7 +794,7 @@ chefs-helper/
 | The window, `persona.md`, `user_profile.md` | AI Agents, L3 | Agent memory: context, compaction, skills |
 | The run planning three dinners | AI Agents, L4 | Planning, multiple agents, evaluation |
 
-> _Notatka prowadzącego:_ We close the part about language models: L8 said what a prompt is, L9 how the model reads text, L10 how to give it knowledge, and L11 how to give it an identity, an audience and hands. The AI Agents series starts exactly from the loop in today's step 7 and takes it apart. Whoever does the exercise from the previous slide will go there with their own agent in hand.
+> _Notatka prowadzącego:_ We close the part about language models: L8 said what a prompt is, L9 how the model reads text, L10 how to give it knowledge, L11 and L12 how to talk to it and measure it, and today how to give it an identity, an audience and hands. The AI Agents series starts exactly from the loop in today's step 7 and takes it apart. Whoever does the exercise from the previous slide will go there with their own agent in hand.
 
 ---
 
