@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Three ways JSON from a request breaks</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="base.css" />
+<style>
+  .main { flex: none; display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; }
+  .col { display: flex; flex-direction: column; gap: 16px; }
+  .col .lbl { color: var(--muted); }
+  pre { font-family: 'JetBrains Mono', monospace; font-size: 16.5px; line-height: 1.5; background: #fff; border: 1px solid var(--line-strong);
+        border-radius: 14px; padding: 18px 20px; white-space: pre-wrap; color: var(--text); min-height: 230px; }
+  pre .x { background: color-mix(in oklab, var(--bad) 14%, white); color: var(--bad); border-radius: 4px; padding: 0 3px; }
+  pre .d { color: var(--dim); }
+  .res { font-family: 'JetBrains Mono', monospace; font-size: 17px; font-weight: 700; padding: 12px 16px; border-radius: 12px; }
+  .res.err { color: var(--bad); background: color-mix(in oklab, var(--bad) 7%, white); border: 1.5px solid color-mix(in oklab, var(--bad) 30%, white); }
+  .res.silent { color: #b45309; background: #fffbeb; border: 1.5px solid #fcd34d; }
+  .why { font-size: 18px; color: var(--muted); line-height: 1.45; }
+  .why b { color: var(--text); }
+  .col.hi pre { border: 2px solid transparent; background: linear-gradient(#fff, #fff) padding-box, var(--grad-bar) border-box; }
+</style>
+</head>
+<body>
+  <div class="eyebrow">The problem</div>
+  <h1>“Reply with JSON only” works. Almost always</h1>
+  <div class="thesis">The extraction from L10, step 1, run on 1000 recipes. <b>Typical results that will show up sooner or later.</b></div>
+  <div class="main">
+    <div class="col">
+      <div class="lbl">1. A polite preamble</div>
+<pre><span class="x">Here is the data in JSON format:</span>
+
+{"title": "Zucchini fritters",
+ "ingredients": ["zucchini", "eggs",
+   "flour", "salt"],
+ "time_min": 30,
+ "category": "dinner"}</pre>
+      <div class="res err">json.loads → JSONDecodeError</div>
+      <div class="why">The model is trained on conversations, so it <b>converses</b>. The program crashes on the first character.</div>
+    </div>
+    <div class="col">
+      <div class="lbl">2. A markdown block and a comment</div>
+<pre><span class="x">```json</span>
+{"title": "Banana bread",
+ "ingredients": ["bananas", "flour"],
+ "time_min": <span class="x">"about an hour"</span>,
+ "category": "bread"}
+<span class="x">```</span>
+<span class="x">Time depends on the oven.</span></pre>
+      <div class="res err">JSONDecodeError, then str instead of int</div>
+      <div class="why">A regular expression can cut it off. <b>Until the next odd case.</b></div>
+    </div>
+    <div class="col hi">
+      <div class="lbl">3. Valid JSON, wrong values</div>
+<pre>{"category": <span class="x">"Bread"</span>}
+{"category": "bread"}
+{"category": <span class="x">"loaf"</span>}
+{"category": <span class="x">"baked goods"</span>}
+{"category": <span class="x">"bread / dessert"</span>}</pre>
+      <div class="res silent">parses without an error</div>
+      <div class="why">The worst case: nothing crashes, and the database has <b>five categories instead of one</b>. The filter from L10 stops working.</div>
+    </div>
+  </div>
+  <div class="callout" style="margin-top:auto">Errors 1 and 2 are <b>loud</b>: the program crashes and someone notices. Error 3 is <b>silent</b>: it comes to light weeks later, when the “bread” filter misses half of the loaves.</div>
+  <div class="footer">
+    <div class="note">With 1000 recipes even 1% of errors is 10 recipes that someone has to find and fix by hand.</div>
+    <div class="rule">request ≠ guarantee</div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>The conversation gets pricier every turn</title>
+<!-- Render: ./render.sh historia. Założenia: system 1000 tok., pytanie z fragmentami 700, odpowiedź 300; tura n wysyła 1700 + 1000(n-1).
+     Skala: 1 token = 0.04 px (10 700 tokenów = 428 px). Wysokości liczone w skrypcie z tej skali. -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="base.css" />
+<style>
+  .main { gap: 50px; align-items: flex-end; }
+  .chart { display: flex; gap: 18px; align-items: flex-end; height: 500px; padding-bottom: 36px; position: relative; border-bottom: 1.5px solid var(--line-strong); }
+  .col { width: 66px; display: flex; flex-direction: column-reverse; position: relative; }
+  .col div { width: 100%; }
+  .sys { background: #a1a1aa; border-radius: 0 0 6px 6px; }
+  .his { background: color-mix(in oklab, #a855f7 35%, white); }
+  .new { background: #6366f1; border-radius: 6px 6px 0 0; }
+  .col .n { position: absolute; bottom: -32px; left: 0; right: 0; text-align: center; font-family: 'JetBrains Mono', monospace; font-size: 15px; color: var(--dim); }
+  .col .v { position: absolute; top: -28px; left: -10px; right: -10px; text-align: center; font-family: 'JetBrains Mono', monospace; font-size: 14px; font-weight: 700; color: var(--muted); }
+  .xl { position: absolute; bottom: -62px; left: 0; font-size: 15px; color: var(--dim); }
+  .side { flex: 1; display: flex; flex-direction: column; gap: 22px; padding-bottom: 10px; }
+  .cmp { padding: 22px 26px; }
+  .cmp .k { font-size: 17px; color: var(--muted); }
+  .cmp .num { font-family: 'JetBrains Mono', monospace; font-size: 40px; font-weight: 700; margin-top: 4px; }
+  .legend { display: flex; gap: 26px; font-size: 17px; color: var(--muted); }
+  .legend i { display: inline-block; width: 18px; height: 18px; border-radius: 4px; vertical-align: -3px; margin-right: 8px; }
+</style>
+</head>
+<body>
+  <div class="eyebrow">Step 6 · history</div>
+  <h1>The conversation gets pricier every turn</h1>
+  <div class="thesis">The API has no memory, so <b>every request carries the whole conversation so far</b>.</div>
+  <div class="main">
+    <div class="chart" id="chart"></div>
+    <div class="side">
+      <div class="card cmp"><div class="k">10 questions, each in a new conversation</div><div class="num">17k</div><div class="k">input tokens</div></div>
+      <div class="card hi cmp"><div class="k">10 questions in one conversation</div><div class="num gt">62k</div><div class="k">input tokens, <b style="color:var(--text)">approx. 3.6× more</b></div></div>
+      <div class="callout">The prompt per turn grows <b>linearly</b>, the sum over the conversation <b>quadratically</b>. An agent makes dozens of such turns in one task.</div>
+    </div>
+  </div>
+  <div class="footer">
+    <div class="legend"><span style="color:var(--dim)">axis: conversation turns</span><span><i style="background:#a1a1aa"></i>system prompt</span><span><i style="background:color-mix(in oklab,#a855f7 35%,white)"></i>previous turns (sent again)</span><span><i style="background:#6366f1"></i>new question with chunks</span></div>
+    <div class="rule">every turn pays for all the previous ones</div>
+  </div>
+<script>
+  const PX = 0.04, ch = document.getElementById('chart');
+  for (let n = 1; n <= 10; n++) {
+    const his = 1000 * (n - 1), tot = 1700 + his;
+    const c = document.createElement('div'); c.className = 'col';
+    c.innerHTML = `<div class="sys" style="height:${1000*PX}px"></div><div class="his" style="height:${his*PX}px"></div><div class="new" style="height:${700*PX}px"></div>`
+      + `<span class="n">${n}</span><span class="v">${tot}</span>`;
+    ch.appendChild(c);
+  }
+</script>
+</body>
+</html>

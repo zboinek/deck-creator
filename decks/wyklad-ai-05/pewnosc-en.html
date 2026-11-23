@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Model confidence decides who checks</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="base.css" />
+<style>
+  /* skala: prawdopodobieństwo 1.0 = 480 px */
+  .main { flex-direction: column; gap: 28px; justify-content: center; }
+  .rec { display: grid; grid-template-columns: 320px 600px 1fr; gap: 34px; align-items: center; padding: 30px 32px; }
+  .rec .name { font-size: 25px; font-weight: 800; }
+  .rec .snip { font-size: 16px; color: var(--muted); margin-top: 6px; line-height: 1.4; }
+  .probs { position: relative; }
+  .p { display: grid; grid-template-columns: 96px 1fr; align-items: center; gap: 12px; height: 32px; }
+  .p .c { font-family: 'JetBrains Mono', monospace; font-size: 16px; font-weight: 700; text-align: right; color: var(--muted); }
+  .p .b { height: 20px; border-radius: 4px; background: var(--line-strong); display: flex; align-items: center; }
+  .p.top .b { background: var(--grad-bar); }
+  .p.top .c { color: var(--text); }
+  .p .b span { margin-left: calc(100% + 10px); font-family: 'JetBrains Mono', monospace; font-size: 15px; font-weight: 700; color: var(--muted); white-space: nowrap; }
+  .th { position: absolute; top: -8px; bottom: -8px; border-left: 2px dashed var(--dim); }
+  .th i { position: absolute; top: -22px; left: -16px; font-style: normal; font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--dim); }
+  .route { display: flex; flex-direction: column; gap: 6px; }
+  .route .to { font-size: 24px; font-weight: 800; }
+  .route .why { font-size: 17px; color: var(--muted); line-height: 1.35; }
+  .ok .to { color: var(--ok); } .mid .to { color: #d97706; } .hum .to { color: var(--bad); }
+</style>
+</head>
+<body>
+  <div class="eyebrow">Step 3: classification</div>
+  <h1>Three recipes, three levels of confidence</h1>
+  <div class="thesis">The enum says <b>what</b> the model chose. The probabilities say <b>whether it chose or guessed</b>.</div>
+  <div class="main">
+    <div class="card rec ok">
+      <div><div class="name">Zucchini fritters</div><div class="snip">“Grate the zucchini, squeeze it, add eggs and flour, fry in a pan ...”</div></div>
+      <div class="probs">
+        
+        <div class="p top"><div class="c">dinner</div><div class="b" style="width:461px"><span>0.96</span></div></div>
+        <div class="p"><div class="c">other</div><div class="b" style="width:14px"><span>0.03</span></div></div>
+      </div>
+      <div class="route"><div class="to">→ straight to the database</div><div class="why">confidence ≥ 0.9</div></div>
+    </div>
+    <div class="card rec mid">
+      <div><div class="name">Basil pesto</div><div class="snip">“Blend the basil, pine nuts, parmesan and olive oil ...”</div></div>
+      <div class="probs">
+        <div class="p top"><div class="c">other</div><div class="b" style="width:341px"><span>0.71</span></div></div>
+        <div class="p"><div class="c">dinner</div><div class="b" style="width:115px"><span>0.24</span></div></div>
+      </div>
+      <div class="route"><div class="to">→ a bigger model</div><div class="why">0.6 to 0.9: a second, more expensive look</div></div>
+    </div>
+    <div class="card rec hum">
+      <div><div class="name">Banana bread</div><div class="snip">“Mash the bananas, mix with flour and sugar, bake in a loaf tin ...”</div></div>
+      <div class="probs">
+        <div class="p top"><div class="c">bread</div><div class="b" style="width:250px"><span>0.52</span></div></div>
+        <div class="p"><div class="c">dessert</div><div class="b" style="width:216px"><span>0.45</span></div></div>
+      </div>
+      <div class="route"><div class="to">→ a human</div><div class="why">below 0.6: the problem lies in the category definitions, not the model</div></div>
+    </div>
+  </div>
+  <div class="footer">
+    <div class="note">Illustrative numbers and thresholds. Thresholds are set on the test set from step 4.</div>
+    <div class="rule">uncertain result = signal, not error</div>
+  </div>
+</body>
+</html>

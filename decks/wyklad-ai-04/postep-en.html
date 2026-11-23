@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Lecture map</title>
+<!-- Jedna mapa, osiem stanów: postep.html?krok=N (0 = mapa wykładu, 1-7 = bieżący krok, 8 = wszystko omówione). Wykład 11.. Render: ./render.sh -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="base.css" />
+<style>
+  .main { flex-direction: column; justify-content: center; }
+  .grid { display: grid; grid-template-columns: repeat(7, 1fr); column-gap: 26px; }
+  .group { font-family: 'JetBrains Mono', monospace; font-size: 15px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase;
+           color: var(--dim); padding-bottom: 10px; margin-bottom: 22px; border-bottom: 2px solid var(--line-strong); }
+  .group.g-send { border-image: linear-gradient(90deg, #6366f1, #a855f7) 1; color: #6366f1; }
+  .group.g-recv { border-image: linear-gradient(90deg, #a855f7, #f59e0b) 1; color: #a855f7; }
+  .group.g-act { border-image: linear-gradient(90deg, #f59e0b, #fde68a) 1; color: #d97706; }
+  .step { padding: 20px 10px 18px; text-align: center; position: relative; min-height: 200px; }
+  .step .n { font-family: 'JetBrains Mono', monospace; font-size: 15px; color: var(--dim); }
+  .step h3 { font-size: 22px; font-weight: 700; margin-top: 4px; }
+  .step p { font-size: 16px; color: var(--muted); margin-top: 8px; line-height: 1.35; }
+  .step.arrow::after { content: '→'; position: absolute; right: -22px; top: 50%; transform: translateY(-50%); font-size: 24px; color: var(--dim); }
+  .file { margin-top: 16px; text-align: center; font-family: 'JetBrains Mono', monospace; font-size: 15px; font-weight: 700; color: var(--muted); }
+  .file span { display: inline-block; padding: 6px 12px; border-radius: 8px; background: var(--panel); border: 1px solid var(--line); }
+  .bottom { margin-top: 40px; display: grid; grid-template-columns: 1fr 1.25fr; gap: 40px; align-items: center; }
+
+  .step.done .n { color: var(--muted); font-weight: 700; }
+  .step.done .n::before { content: '✓ '; }
+  .step.now .tag { position: absolute; left: 50%; top: -15px; transform: translateX(-50%); white-space: nowrap;
+                   font-family: 'JetBrains Mono', monospace; font-size: 14px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase;
+                   color: var(--text); background: var(--grad-bar); padding: 5px 14px; border-radius: 999px; }
+  .step.now h3 { width: fit-content; margin: 4px auto 0; background: var(--grad-text); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .step.todo { background: #fff; border: 1.5px dashed var(--line-strong); }
+  .step.todo h3 { color: var(--dim); }
+  .step.todo p { color: #a1a1aa; }
+  .file.todo span { color: #a1a1aa; background: #fff; border-style: dashed; }
+  .progress { display: flex; align-items: center; gap: 8px; font-family: 'JetBrains Mono', monospace; font-size: 17px; color: var(--dim); }
+  .progress i { width: 34px; height: 8px; border-radius: 4px; background: var(--line); }
+  .progress i.done { background: var(--muted); }
+  .progress i.now { background: var(--grad-bar); }
+  .progress span { margin-left: 10px; }
+</style>
+</head>
+<body>
+  <div class="eyebrow" id="eyebrow">Where we are</div>
+  <h1 id="title"></h1>
+  <div class="thesis" id="thesis"></div>
+  <div class="main">
+    <div class="grid">
+      <div class="group g-send" style="grid-column: span 2">What the model sees</div>
+      <div class="group g-recv" style="grid-column: span 2">How it answers</div>
+      <div class="group g-act" style="grid-column: span 3">What it costs</div>
+
+      <div class="card step arrow" data-k="1"><div class="n">1</div><h3>Text</h3><p>The model only appends. Chat, tools and thinking are tokens in the template</p></div>
+      <div class="card step arrow" data-k="2"><div class="n">2</div><h3>Request</h3><p>What we send to the API and what comes back in the response</p></div>
+      <div class="card step arrow" data-k="3"><div class="n">3</div><h3>Sampling</h3><p>Temperature and the other knobs. Why 0 is not determinism</p></div>
+      <div class="card step arrow" data-k="4"><div class="n">4</div><h3>Thinking</h3><p>Reasoning models, effort level and the limit trap</p></div>
+      <div class="card step arrow" data-k="5"><div class="n">5</div><h3>Time</h3><p>Prefill, decode and streaming: how long a student waits</p></div>
+      <div class="card step arrow" data-k="6"><div class="n">6</div><h3>Bill</h3><p>Input and output tokens, price list, monthly cost</p></div>
+      <div class="card step" data-k="7"><div class="n">7</div><h3>Cache and window</h3><p>Don't pay twice for the same thing. How much fits</p></div>
+
+      <div class="file" data-f="1"><span>&lt;|start|&gt;</span></div>
+      <div class="file" data-f="2"><span>messages[ ]</span></div>
+      <div class="file" data-f="3"><span>temperature</span></div>
+      <div class="file" data-f="4"><span>reasoning_effort</span></div>
+      <div class="file" data-f="5"><span>stream=True</span></div>
+      <div class="file" data-f="6"><span>usage</span></div>
+      <div class="file" data-f="7"><span>prefix</span></div>
+    </div>
+    <div class="bottom">
+      <div class="callout">Guiding example: <b>the cooking assistant from lecture 10</b>. It works for us, now it has to serve <b>1000 students</b>.</div>
+      <div class="callout" id="side">Under each step <b>an API field or parameter</b> that stops being magic after today's lecture.</div>
+    </div>
+  </div>
+  <div class="footer">
+    <div class="progress" id="progress"></div>
+    <div class="rule">it's all tokens</div>
+  </div>
+<script>
+  const S = {
+    0: ['One model call in seven steps', 'In L10 it was one line. Today: <b>what goes to the model</b>, <b>how it answers</b> and <b>what it costs</b>.'],
+    1: ['Step 1 of 7: text', 'Before we touch the API: <b>what does the model really get and what does it really write?</b>'],
+    2: ['Step 2 of 7: request', 'We know what the model sees. <b>What does it look like from our code?</b>'],
+    3: ['Step 3 of 7: sampling', 'We know what we send. <b>How does the model pick its reply, and why is it different every time?</b>'],
+    4: ['Step 4 of 7: thinking', 'We know how the model samples. <b>What does it do before it starts answering?</b>'],
+    5: ['Step 5 of 7: time', 'The IT department asks first: <b>how long will a student wait for an answer?</b>'],
+    6: ['Step 6 of 7: bill', 'The IT department asks next: <b>how much does it all cost per month?</b>'],
+    7: ['Step 7 of 7: cache and window', 'The last step: <b>how not to pay twice for the same thing, and how much fits in the window?</b>'],
+    8: ['Seven steps behind us', 'Every field in an API call has its reason. <b>It is all tokens.</b>'],
+  };
+  const k = Math.min(8, Math.max(0, parseInt(new URLSearchParams(location.search).get('krok') || '0', 10)));
+  document.title = S[k][0];
+  document.getElementById('title').textContent = S[k][0];
+  document.getElementById('thesis').innerHTML = S[k][1];
+  if (k === 0) {
+    document.getElementById('eyebrow').textContent = 'Lecture map';
+    document.getElementById('progress').innerHTML = '<span style="margin:0">We come back to this map at the start of every step.</span>';
+  } else {
+    document.querySelectorAll('[data-k]').forEach(el => {
+      const n = +el.dataset.k;
+      if (n < k) el.classList.add('done');
+      else if (n === k) { el.classList.add('now', 'hi'); el.insertAdjacentHTML('afterbegin', '<div class="tag">we are here</div>'); }
+      else el.classList.add('todo');
+    });
+    document.querySelectorAll('[data-f]').forEach(el => { if (+el.dataset.f > k) el.classList.add('todo'); });
+    const bars = [1,2,3,4,5,6,7].map(n => `<i class="${n < k ? 'done' : n === k ? 'now' : ''}"></i>`).join('');
+    const label = k === 8 ? 'covered: 7 of 7' : `covered: ${k - 1} of 7`;
+    document.getElementById('progress').innerHTML = bars + `<span>${label}</span>`;
+  }
+</script>
+</body>
+</html>

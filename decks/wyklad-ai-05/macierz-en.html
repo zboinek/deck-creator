@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Recipe categorisation confusion matrix</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="base.css" />
+<style>
+  .main { display: grid; grid-template-columns: 820px 1fr; gap: 56px; align-items: center; }
+  table { border-collapse: separate; border-spacing: 6px; font-family: 'JetBrains Mono', monospace; }
+  th { font-size: 16px; font-weight: 700; color: var(--muted); padding: 4px 8px; }
+  th.r { text-align: right; padding-right: 14px; }
+  td { width: 112px; height: 74px; text-align: center; font-size: 26px; font-weight: 700; border-radius: 10px; background: var(--soft); color: #a1a1aa; border: 1px solid var(--line); }
+  td.d { background: color-mix(in oklab, #6366f1 calc(var(--v) * 1%), white); color: var(--text); border-color: color-mix(in oklab, #6366f1 30%, white); }
+  td.e { background: #fff; color: var(--bad); border: 2px solid transparent;
+         background: linear-gradient(#fff, #fff) padding-box, var(--grad-bar) border-box; }
+  td.z { color: #d4d4d8; font-weight: 500; }
+  .axis { font-family: 'JetBrains Mono', monospace; font-size: 14px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--cg); }
+  .wrap { position: relative; padding-left: 40px; }
+  .ylab { position: absolute; left: -84px; top: 50%; transform: rotate(-90deg); white-space: nowrap; }
+  .xlab { text-align: center; margin-left: 140px; margin-bottom: 6px; }
+  .sum { margin-top: 14px; margin-left: 150px; font-family: 'JetBrains Mono', monospace; font-size: 19px; color: var(--muted); }
+  .sum b { color: var(--text); }
+  .reads { display: flex; flex-direction: column; gap: 22px; }
+  .read { padding: 20px 24px; }
+  .read .h { font-size: 22px; font-weight: 800; margin-bottom: 6px; }
+  .read .h .n { font-family: 'JetBrains Mono', monospace; color: var(--bad); margin-right: 8px; }
+  .read p { font-size: 18px; color: var(--muted); line-height: 1.42; }
+  .read p b { color: var(--text); }
+</style>
+</head>
+<body>
+  <div class="eyebrow">Step 5: measurement</div>
+  <h1>80% is a number. A confusion matrix is a diagnosis</h1>
+  <div class="thesis">60 recipes from step 4, the small model, prompt v1. <b>Row: the correct category. Column: what the model answered.</b></div>
+  <div class="main">
+    <div class="wrap">
+      <div class="axis ylab">correct category</div>
+      <div class="axis xlab">model answer</div>
+      <table>
+        <tr><th></th><th>dinner</th><th>soup</th><th>dessert</th><th>bread</th><th>other</th></tr>
+        <tr><th class="r">dinner</th><td class="d" style="--v:60">24</td><td>1</td><td class="z">0</td><td class="z">0</td><td class="e">2</td></tr>
+        <tr><th class="r">soup</th><td class="e">2</td><td class="d" style="--v:30">7</td><td class="z">0</td><td class="z">0</td><td class="z">0</td></tr>
+        <tr><th class="r">dessert</th><td>1</td><td class="z">0</td><td class="d" style="--v:32">8</td><td class="e">3</td><td class="z">0</td></tr>
+        <tr><th class="r">bread</th><td class="z">0</td><td class="z">0</td><td>1</td><td class="d" style="--v:28">6</td><td class="z">0</td></tr>
+        <tr><th class="r">other</th><td class="e">2</td><td class="z">0</td><td class="z">0</td><td class="z">0</td><td class="d" style="--v:20">3</td></tr>
+      </table>
+      <div class="sum">on the diagonal: <b>48 of 60 = 80%</b></div>
+    </div>
+    <div class="reads">
+      <div class="card read"><div class="h"><span class="n">3</span>desserts labelled as bread</div>
+        <p>Banana bread, a bundt cake, a sweet bun. The model is not stupid: <b>nobody told it where the boundary is</b>.</p></div>
+      <div class="card read"><div class="h"><span class="n">2 + 2</span>“other” confused with dinner</div>
+        <p>Sauces and preserves land in dinner, and two dinners in “other”. <b>The “other” category has no definition.</b></p></div>
+      <div class="card read hi"><div class="h">Conclusion: fix the prompt, not the model</div>
+        <p>Prompt v2 gets <b>a one-sentence definition per category</b>. A bigger model will not invent these boundaries on its own.</p></div>
+    </div>
+  </div>
+  <div class="footer">
+    <div class="note">Illustrative numbers, a set of 60 recipes: 27 dinners, 9 soups, 12 desserts, 7 breads, 5 other.</div>
+    <div class="rule">read the errors, not just the score</div>
+  </div>
+</body>
+</html>
