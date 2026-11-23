@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8" />
+<title>Mapa wykładu</title>
+<!-- Jedna mapa, osiem stanów: postep.html?krok=N (0 = mapa wykładu, 1-7 = bieżący krok, 8 = wszystko omówione). Wykład 11.. Render: ./render.sh -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="base.css" />
+<style>
+  .main { flex-direction: column; justify-content: center; }
+  .grid { display: grid; grid-template-columns: repeat(7, 1fr); column-gap: 26px; }
+  .group { font-family: 'JetBrains Mono', monospace; font-size: 15px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase;
+           color: var(--dim); padding-bottom: 10px; margin-bottom: 22px; border-bottom: 2px solid var(--line-strong); }
+  .group.g-send { border-image: linear-gradient(90deg, #6366f1, #a855f7) 1; color: #6366f1; }
+  .group.g-recv { border-image: linear-gradient(90deg, #a855f7, #f59e0b) 1; color: #a855f7; }
+  .group.g-act { border-image: linear-gradient(90deg, #f59e0b, #fde68a) 1; color: #d97706; }
+  .step { padding: 20px 10px 18px; text-align: center; position: relative; min-height: 200px; }
+  .step .n { font-family: 'JetBrains Mono', monospace; font-size: 15px; color: var(--dim); }
+  .step h3 { font-size: 22px; font-weight: 700; margin-top: 4px; }
+  .step p { font-size: 16px; color: var(--muted); margin-top: 8px; line-height: 1.35; }
+  .step.arrow::after { content: '→'; position: absolute; right: -22px; top: 50%; transform: translateY(-50%); font-size: 24px; color: var(--dim); }
+  .file { margin-top: 16px; text-align: center; font-family: 'JetBrains Mono', monospace; font-size: 15px; font-weight: 700; color: var(--muted); }
+  .file span { display: inline-block; padding: 6px 12px; border-radius: 8px; background: var(--panel); border: 1px solid var(--line); }
+  .bottom { margin-top: 40px; display: grid; grid-template-columns: 1fr 1.25fr; gap: 40px; align-items: center; }
+
+  .step.done .n { color: var(--muted); font-weight: 700; }
+  .step.done .n::before { content: '✓ '; }
+  .step.now .tag { position: absolute; left: 50%; top: -15px; transform: translateX(-50%); white-space: nowrap;
+                   font-family: 'JetBrains Mono', monospace; font-size: 14px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase;
+                   color: var(--text); background: var(--grad-bar); padding: 5px 14px; border-radius: 999px; }
+  .step.now h3 { width: fit-content; margin: 4px auto 0; background: var(--grad-text); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .step.todo { background: #fff; border: 1.5px dashed var(--line-strong); }
+  .step.todo h3 { color: var(--dim); }
+  .step.todo p { color: #a1a1aa; }
+  .file.todo span { color: #a1a1aa; background: #fff; border-style: dashed; }
+  .progress { display: flex; align-items: center; gap: 8px; font-family: 'JetBrains Mono', monospace; font-size: 17px; color: var(--dim); }
+  .progress i { width: 34px; height: 8px; border-radius: 4px; background: var(--line); }
+  .progress i.done { background: var(--muted); }
+  .progress i.now { background: var(--grad-bar); }
+  .progress span { margin-left: 10px; }
+</style>
+</head>
+<body>
+  <div class="eyebrow" id="eyebrow">Gdzie jesteśmy</div>
+  <h1 id="title"></h1>
+  <div class="thesis" id="thesis"></div>
+  <div class="main">
+    <div class="grid">
+      <div class="group g-send" style="grid-column: span 2">Co widzi model</div>
+      <div class="group g-recv" style="grid-column: span 2">Jak odpowiada</div>
+      <div class="group g-act" style="grid-column: span 3">Ile to kosztuje</div>
+
+      <div class="card step arrow" data-k="1"><div class="n">1</div><h3>Tekst</h3><p>Model tylko dopisuje. Czat, narzędzia i myślenie to tokeny w szablonie</p></div>
+      <div class="card step arrow" data-k="2"><div class="n">2</div><h3>Zapytanie</h3><p>Co wysyłamy do API i co wraca w odpowiedzi</p></div>
+      <div class="card step arrow" data-k="3"><div class="n">3</div><h3>Losowanie</h3><p>Temperatura i reszta pokręteł. Dlaczego 0 to nie determinizm</p></div>
+      <div class="card step arrow" data-k="4"><div class="n">4</div><h3>Myślenie</h3><p>Modele rozumujące, poziom wysiłku i pułapka limitu</p></div>
+      <div class="card step arrow" data-k="5"><div class="n">5</div><h3>Czas</h3><p>Prefill, decode i streaming: ile czeka student</p></div>
+      <div class="card step arrow" data-k="6"><div class="n">6</div><h3>Rachunek</h3><p>Tokeny wejścia i wyjścia, cennik, koszt miesiąca</p></div>
+      <div class="card step" data-k="7"><div class="n">7</div><h3>Cache i okno</h3><p>Nie płacić dwa razy za to samo. Ile się zmieści</p></div>
+
+      <div class="file" data-f="1"><span>&lt;|start|&gt;</span></div>
+      <div class="file" data-f="2"><span>messages[ ]</span></div>
+      <div class="file" data-f="3"><span>temperature</span></div>
+      <div class="file" data-f="4"><span>reasoning_effort</span></div>
+      <div class="file" data-f="5"><span>stream=True</span></div>
+      <div class="file" data-f="6"><span>usage</span></div>
+      <div class="file" data-f="7"><span>prefiks</span></div>
+    </div>
+    <div class="bottom">
+      <div class="callout">Przykład przewodni: <b>asystent kulinarny z wykładu 10</b>. Działa u nas, teraz ma obsłużyć <b>1000 studentów</b>.</div>
+      <div class="callout" id="side">Pod każdym krokiem <b>pole albo parametr API</b>, które po dzisiejszym wykładzie przestanie być magiczne.</div>
+    </div>
+  </div>
+  <div class="footer">
+    <div class="progress" id="progress"></div>
+    <div class="rule">wszystko to tokeny</div>
+  </div>
+<script>
+  const S = {
+    0: ['Jedno wywołanie modelu w siedmiu krokach', 'Na W10 to była jedna linijka. Dziś: <b>co leci do modelu</b>, <b>jak odpowiada</b> i <b>ile to kosztuje</b>.'],
+    1: ['Krok 1 z 7: tekst', 'Zanim dotkniemy API: <b>co model naprawdę dostaje i co naprawdę pisze?</b>'],
+    2: ['Krok 2 z 7: zapytanie', 'Wiemy, co widzi model. <b>Jak wygląda to z perspektywy naszego kodu?</b>'],
+    3: ['Krok 3 z 7: losowanie', 'Wiemy, co wysyłamy. <b>Jak model wybiera, co odpisać, i dlaczego za każdym razem inaczej?</b>'],
+    4: ['Krok 4 z 7: myślenie', 'Wiemy, jak model losuje. <b>Co robi, zanim zacznie odpowiadać?</b>'],
+    5: ['Krok 5 z 7: czas', 'Pierwsze pytanie działu IT: <b>ile student poczeka na odpowiedź?</b>'],
+    6: ['Krok 6 z 7: rachunek', 'Drugie pytanie działu IT: <b>ile to wszystko kosztuje miesięcznie?</b>'],
+    7: ['Krok 7 z 7: cache i okno', 'Ostatni krok: <b>jak nie płacić dwa razy za to samo i ile się zmieści w oknie?</b>'],
+    8: ['Siedem kroków za nami', 'Każde pole w wywołaniu API ma swoje uzasadnienie. <b>Wszystko to tokeny.</b>'],
+  };
+  const k = Math.min(8, Math.max(0, parseInt(new URLSearchParams(location.search).get('krok') || '0', 10)));
+  document.title = S[k][0];
+  document.getElementById('title').textContent = S[k][0];
+  document.getElementById('thesis').innerHTML = S[k][1];
+  if (k === 0) {
+    document.getElementById('eyebrow').textContent = 'Mapa wykładu';
+    document.getElementById('progress').innerHTML = '<span style="margin:0">Wracamy do tej mapy na początku każdego kroku.</span>';
+  } else {
+    document.querySelectorAll('[data-k]').forEach(el => {
+      const n = +el.dataset.k;
+      if (n < k) el.classList.add('done');
+      else if (n === k) { el.classList.add('now', 'hi'); el.insertAdjacentHTML('afterbegin', '<div class="tag">jesteśmy tutaj</div>'); }
+      else el.classList.add('todo');
+    });
+    document.querySelectorAll('[data-f]').forEach(el => { if (+el.dataset.f > k) el.classList.add('todo'); });
+    const bars = [1,2,3,4,5,6,7].map(n => `<i class="${n < k ? 'done' : n === k ? 'now' : ''}"></i>`).join('');
+    const label = k === 8 ? 'omówione: 7 z 7' : `omówione: ${k - 1} z 7`;
+    document.getElementById('progress').innerHTML = bars + `<span>${label}</span>`;
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8" />
+<title>Pułapka max_tokens</title>
+<!-- Render: ./render.sh max-tokens. Dolny wiersz: skala 1 token = 0.43 px, 2000 tokenów = 860 px. Liczby tokenów poglądowe. -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="base.css" />
+<style>
+  :root { --bar-w: 860px; --think: #a855f7; --ans: #6366f1; }
+  .main { flex-direction: column; gap: 48px; justify-content: center; }
+  .row { display: grid; grid-template-columns: 230px var(--bar-w) 1fr; column-gap: 28px; align-items: center; }
+  .lab { text-align: right; }
+  .lab .big { font-family: 'JetBrains Mono', monospace; font-size: 26px; font-weight: 700; }
+  .lab .sub { font-size: 17px; color: var(--dim); margin-top: 4px; }
+  .track { position: relative; height: 70px; display: flex; border-radius: 10px; overflow: hidden; border: 1.5px solid var(--line-strong); }
+  .seg { height: 100%; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 600; white-space: nowrap; }
+  .think { background: color-mix(in oklab, var(--think) 22%, white); color: #6b21a8; border-right: 2px solid #fff; }
+  .ans { background: color-mix(in oklab, var(--ans) 22%, white); color: #3730a3; }
+  .free { flex: 1; background: repeating-linear-gradient(-45deg, #ffffff 0 7px, #ededf0 7px 14px); color: var(--dim); }
+  .tokens { display: flex; gap: 8px; height: 70px; }
+  .tokens .t { width: 70px; border-radius: 10px; background: color-mix(in oklab, var(--think) 22%, white); border: 1.5px solid color-mix(in oklab, var(--think) 40%, white);
+               display: flex; align-items: center; justify-content: center; font-family: 'JetBrains Mono', monospace; font-size: 15px; color: #6b21a8; }
+  .tokens .empty { flex: 1; border: 2px dashed var(--bad); border-radius: 10px; display: flex; align-items: center; justify-content: center;
+                   font-family: 'JetBrains Mono', monospace; font-size: 19px; color: var(--bad); font-weight: 700; }
+  .verdict { font-family: 'JetBrains Mono', monospace; font-size: 19px; font-weight: 700; line-height: 1.5; white-space: nowrap; }
+  .verdict .bad { color: var(--bad); } .verdict .ok { color: var(--ok); }
+  .verdict small { display: block; font-family: Inter, sans-serif; font-weight: 500; font-size: 17px; color: var(--muted); }
+  .legend { display: flex; gap: 30px; font-size: 17px; color: var(--muted); }
+  .legend i { display: inline-block; width: 18px; height: 18px; border-radius: 4px; vertical-align: -3px; margin-right: 8px; }
+  .axis { position: relative; height: 22px; font-family: 'JetBrains Mono', monospace; font-size: 14px; color: var(--dim); }
+  .axis span { position: absolute; transform: translateX(-50%); }
+  .q { font-size: 21px; color: var(--muted); }
+  .q b { color: var(--text); }
+</style>
+</head>
+<body>
+  <div class="eyebrow">Krok 4 · max_tokens</div>
+  <h1>Rozumowanie zjada limit</h1>
+  <div class="thesis"><b>max_tokens liczy wszystkie wygenerowane tokeny</b>, także te z kanału analysis, których użytkownik nie widzi.</div>
+  <div class="main">
+    <div class="q">Pytanie: <b>„Czy można zamrozić ugotowany ryż? Odpowiedz tak albo nie.”</b></div>
+    <div class="row">
+      <div class="lab"><div class="big">max_tokens=5</div><div class="sub">„przecież wystarczy tak albo nie”</div></div>
+      <div class="tokens">
+        <div class="t">Użyt</div><div class="t">kown</div><div class="t">ik</div><div class="t"> pyta</div><div class="t"> o</div>
+        <div class="empty">content: None</div>
+      </div>
+      <div class="verdict"><span class="bad">finish_reason = "length"</span><small>budżet skończył się w trakcie myślenia</small></div>
+    </div>
+    <div>
+      <div class="row">
+        <div class="lab"><div class="big">max_tokens=2000</div><div class="sub">z zapasem</div></div>
+        <div class="track">
+          <div class="seg think" style="width:301px">rozumowanie ok. 700</div><!-- 700 × 0.43 -->
+          <div class="seg ans" style="width:129px">300</div><!-- 300 × 0.43 -->
+          <div class="seg free">zapas, nic nie kosztuje</div>
+        </div>
+        <div class="verdict"><span class="ok">finish_reason = "stop"</span><small>model sam skończył</small></div>
+      </div>
+      <div class="row" style="margin-top:6px">
+        <div></div>
+        <div class="axis"><span style="left:0;transform:none">0</span><span style="left:215px">500</span><span style="left:430px">1000</span><span style="left:645px">1500</span><span style="right:0;transform:none">2000 tokenów</span></div>
+        <div></div>
+      </div>
+    </div>
+    <div class="callout">Limit to <b>bezpiecznik, a nie oszczędność</b>: płacimy za tokeny faktycznie wygenerowane, nie za zarezerwowane. O długości odpowiedzi decyduje polecenie i <b>reasoning_effort</b>.</div>
+  </div>
+  <div class="footer">
+    <div class="legend"><span><i style="background:color-mix(in oklab,#a855f7 22%,white)"></i>rozumowanie (analysis)</span><span><i style="background:color-mix(in oklab,#6366f1 22%,white)"></i>odpowiedź (content)</span></div>
+    <div class="rule">zawsze sprawdzaj finish_reason</div>
+  </div>
+</body>
+</html>

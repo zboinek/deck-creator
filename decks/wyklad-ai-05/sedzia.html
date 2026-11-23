@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8" />
+<title>LLM jako sędzia z rubryką</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="base.css" />
+<style>
+  .main { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 28px; }
+  .col { display: flex; flex-direction: column; gap: 14px; }
+  .blk { font-size: 18px; }
+  .q { font-size: 21px; font-weight: 600; padding: 12px 16px; background: #fff; border: 1px solid var(--line); border-radius: 12px; }
+  .rub { padding: 20px 22px; display: flex; flex-direction: column; }
+  .rub .lbl { color: var(--cg); margin-bottom: 12px; }
+  .crit { display: grid; grid-template-columns: 1fr 54px 54px; align-items: center; gap: 8px; padding: 9px 0; border-bottom: 1px solid var(--line); font-size: 18px; }
+  .crit:last-child { border-bottom: none; }
+  .crit.head { font-family: 'JetBrains Mono', monospace; font-size: 14px; font-weight: 700; color: var(--dim); padding-top: 0; }
+  .crit .v { text-align: center; font-family: 'JetBrains Mono', monospace; font-weight: 700; font-size: 20px; }
+  .y { color: var(--ok); } .n { color: var(--bad); }
+  .why { margin-top: 12px; font-size: 16px; line-height: 1.42; color: var(--muted); font-family: 'JetBrains Mono', monospace; background: #fff; border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; }
+  .why b { color: var(--text); }
+  .score { display: flex; justify-content: space-between; margin-top: 12px; font-family: 'JetBrains Mono', monospace; font-weight: 700; font-size: 18px; }
+  .x { background: color-mix(in oklab, var(--bad) 14%, white); border-radius: 4px; padding: 0 3px; color: var(--text); }
+</style>
+</head>
+<body>
+  <div class="eyebrow">Krok 7: sędzia</div>
+  <h1>Drugi model ocenia odpowiedź według listy pytań tak lub nie</h1>
+  <div class="thesis">Odpowiedzi z kroku 7 w W10 nie porównamy znak w znak. <b>Porównamy je z rubryką i z fragmentami, które dostał model.</b></div>
+  <div class="main">
+    <div class="col">
+      <div class="q">„Czym zastąpić jajka w plackach z cukinii?”</div>
+      <div class="blk ctx"><div class="role">Fragment [1] z bazy</div>Zamiast jajka: <b>1 łyżka mielonego siemienia lnianego i 3 łyżki wody</b>, odstawić na 10 minut.</div>
+      <div class="blk ast"><div class="role">Odpowiedź A</div>Na każde jajko łyżka mielonego siemienia i 3 łyżki wody, odstaw na 10 minut <span class="ref">[1]</span>.</div>
+      <div class="blk ast"><div class="role">Odpowiedź B</div>Świetnie sprawdzi się <span class="x">aquafaba z ciecierzycy</span>, ok. 3 łyżki na jajko. Smacznego!</div>
+    </div>
+    <div class="card rub hi" style="grid-column: span 2">
+      <div class="lbl">Rubryka sędziego: każde pole to tak albo nie</div>
+      <div class="crit head"><span>kryterium</span><span class="v">A</span><span class="v">B</span></div>
+      <div class="crit"><span>Odpowiada na zadane pytanie</span><span class="v y">tak</span><span class="v y">tak</span></div>
+      <div class="crit"><span><b>Wszystko, co mówi, jest we fragmentach</b> (nic nie zmyśla)</span><span class="v y">tak</span><span class="v n">nie</span></div>
+      <div class="crit"><span>Wskazuje źródło, np. [1]</span><span class="v y">tak</span><span class="v n">nie</span></div>
+      <div class="crit"><span>Zwięźle, bez waty słownej</span><span class="v y">tak</span><span class="v n">nie</span></div>
+      <div class="why"><b>uzasadnienie (pole pierwsze):</b> B poleca aquafabę, której nie ma we fragmencie [1]. Rada może być dobra, ale nie pochodzi ze źródła, więc kryterium 2 = nie.</div>
+      <div class="score"><span>A: 4 z 4</span><span class="n">B: 1 z 4</span></div>
+      <div class="callout" style="margin-top:auto; font-size:19px">Sędzia dostaje <b>pytanie, fragmenty, odpowiedź i rubrykę</b>. Wzorcowej odpowiedzi nie ma, więc sprawdzamy <b>zgodność ze źródłem</b>, a nie z kluczem.</div>
+    </div>
+  </div>
+  <div class="footer">
+    <div class="note">Rubryka tak lub nie zamiast skali 1–10: ludzie i modele zgadzają się co do „tak” częściej niż co do „7”.</div>
+    <div class="rule">sędziego też trzeba sprawdzić</div>
+  </div>
+</body>
+</html>

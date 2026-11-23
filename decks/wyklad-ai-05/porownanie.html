@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8" />
+<title>Dokładność kontra koszt</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="base.css" />
+<style>
+  /* oś X: koszt na 1000 przepisów, log10, 0,1 zł .. 100 zł = 900 px (300 px na dekadę), x = 300 * log10(c / 0.1)
+     oś Y: dokładność 40% .. 100% = 440 px (7,333 px na punkt), y = (acc - 40) * 7.333 od dołu */
+  .main { display: grid; grid-template-columns: 1000px 1fr; gap: 50px; }
+  .plot { position: relative; width: 900px; height: 440px; margin: 40px 0 0 76px; border-left: 2px solid var(--line-strong); border-bottom: 2px solid var(--line-strong); }
+  .gx { position: absolute; top: 0; bottom: 0; border-left: 1px solid var(--line); }
+  .gy { position: absolute; left: 0; right: 0; border-top: 1px solid var(--line); }
+  .tx { position: absolute; bottom: -34px; transform: translateX(-50%); font-family: 'JetBrains Mono', monospace; font-size: 15px; color: var(--dim); white-space: nowrap; }
+  .ty { position: absolute; left: -64px; transform: translateY(50%); font-family: 'JetBrains Mono', monospace; font-size: 15px; color: var(--dim); width: 52px; text-align: right; }
+  .base { position: absolute; left: 0; right: 0; border-top: 2px dashed var(--dim); }
+  .base span { position: absolute; right: 8px; top: -28px; font-family: 'JetBrains Mono', monospace; font-size: 15px; color: var(--muted); }
+  .pt { position: absolute; width: 22px; height: 22px; border-radius: 50%; transform: translate(-50%, 50%); background: var(--muted); border: 3px solid #fff; box-shadow: 0 0 0 1.5px var(--muted); }
+  .pt.best { background: var(--grad-bar); box-shadow: 0 0 0 2px #6366f1; width: 28px; height: 28px; }
+  .lab { position: absolute; transform: translateY(50%); font-size: 17px; line-height: 1.35; white-space: nowrap; }
+  .lab b { font-size: 19px; }
+  .lab .m { font-family: 'JetBrains Mono', monospace; font-size: 14px; color: var(--muted); }
+  .xt { margin-top: 52px; margin-left: 76px; width: 900px; text-align: center; font-family: 'JetBrains Mono', monospace; font-size: 15px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--cg); }
+  .yt { position: absolute; left: -6px; top: 380px; transform: rotate(-90deg); transform-origin: left top; font-family: 'JetBrains Mono', monospace; font-size: 15px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--cg); white-space: nowrap; }
+  .left { position: relative; }
+  .side { display: flex; flex-direction: column; gap: 20px; justify-content: center; }
+  .side .callout { font-size: 20px; }
+</style>
+</head>
+<body>
+  <div class="eyebrow">Krok 6: porównanie</div>
+  <h1>Ostatnie 2 punkty kosztują 10 razy więcej</h1>
+  <div class="thesis">Ten sam zbiór 60 przepisów, cztery konfiguracje. <b>Dokładność, koszt i czas na jednym obrazku.</b></div>
+  <div class="main">
+    <div class="left">
+      <div class="yt">dokładność</div>
+      <div class="plot">
+        <div class="gx" style="left:300px"></div><div class="gx" style="left:600px"></div>
+        <div class="gy" style="bottom:73px"></div><div class="gy" style="bottom:147px"></div><div class="gy" style="bottom:220px"></div><div class="gy" style="bottom:293px"></div><div class="gy" style="bottom:367px"></div>
+        <div class="tx" style="left:0">0,10 zł</div><div class="tx" style="left:300px">1 zł</div><div class="tx" style="left:600px">10 zł</div><div class="tx" style="left:900px">100 zł</div>
+        <div class="ty" style="bottom:0">40%</div><div class="ty" style="bottom:147px">60%</div><div class="ty" style="bottom:293px">80%</div><div class="ty" style="bottom:440px">100%</div>
+        <div class="base" style="bottom:37px"><span>„zawsze obiad”: 45%, 0 zł</span></div>
+
+        <div class="pt" style="left:193px; bottom:293px"></div>
+        <div class="lab" style="left:218px; bottom:293px"><b>mały, prompt v1</b><br><span class="m">80% · 0,44 zł · 0,4 s</span></div>
+        <div class="pt best" style="left:199px; bottom:345px"></div>
+        <div class="lab" style="left:228px; bottom:362px"><b>mały, prompt v2</b><br><span class="m">87% · 0,46 zł · 0,4 s</span></div>
+        <div class="pt" style="left:512px; bottom:367px"></div>
+        <div class="lab" style="left:536px; bottom:350px"><b>duży, effort low</b><br><span class="m">90% · 5,10 zł · 2 s</span></div>
+        <div class="pt" style="left:807px; bottom:381px"></div>
+        <div class="lab" style="left:640px; bottom:430px"><b>duży, effort high</b><br><span class="m">92% · 49 zł · 12 s</span></div>
+      </div>
+      <div class="xt">koszt na 1000 przepisów (skala logarytmiczna)</div>
+    </div>
+    <div class="side">
+      <div class="callout"><b>Prompt v2 dał +7 punktów za darmo.</b> Definicje kategorii z kroku 5 zrobiły więcej niż zmiana modelu.</div>
+      <div class="callout"><b>Low kontra high: 2 punkty przy 60 przykładach</b> to jeden przepis. Może to być szum, a kosztuje 10 razy więcej i 6 razy dłużej.</div>
+      <div class="callout">Wybór zależy od zadania: do bazy przepisów <b>mały model z v2</b>, a wątpliwe przypadki z kroku 3 do dużego.</div>
+    </div>
+  </div>
+  <div class="footer">
+    <div class="note">Liczby poglądowe. Koszty z cennika CGC, ok. 800 tokenów wejścia na przepis.</div>
+    <div class="rule">jakość × koszt × czas</div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8" />
+<title>Pewność modelu decyduje, kto sprawdza</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="base.css" />
+<style>
+  /* skala: prawdopodobieństwo 1.0 = 480 px */
+  .main { flex-direction: column; gap: 28px; justify-content: center; }
+  .rec { display: grid; grid-template-columns: 320px 600px 1fr; gap: 34px; align-items: center; padding: 30px 32px; }
+  .rec .name { font-size: 25px; font-weight: 800; }
+  .rec .snip { font-size: 16px; color: var(--muted); margin-top: 6px; line-height: 1.4; }
+  .probs { position: relative; }
+  .p { display: grid; grid-template-columns: 96px 1fr; align-items: center; gap: 12px; height: 32px; }
+  .p .c { font-family: 'JetBrains Mono', monospace; font-size: 16px; font-weight: 700; text-align: right; color: var(--muted); }
+  .p .b { height: 20px; border-radius: 4px; background: var(--line-strong); display: flex; align-items: center; }
+  .p.top .b { background: var(--grad-bar); }
+  .p.top .c { color: var(--text); }
+  .p .b span { margin-left: calc(100% + 10px); font-family: 'JetBrains Mono', monospace; font-size: 15px; font-weight: 700; color: var(--muted); white-space: nowrap; }
+  .th { position: absolute; top: -8px; bottom: -8px; border-left: 2px dashed var(--dim); }
+  .th i { position: absolute; top: -22px; left: -16px; font-style: normal; font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--dim); }
+  .route { display: flex; flex-direction: column; gap: 6px; }
+  .route .to { font-size: 24px; font-weight: 800; }
+  .route .why { font-size: 17px; color: var(--muted); line-height: 1.35; }
+  .ok .to { color: var(--ok); } .mid .to { color: #d97706; } .hum .to { color: var(--bad); }
+</style>
+</head>
+<body>
+  <div class="eyebrow">Krok 3: klasyfikacja</div>
+  <h1>Trzy przepisy, trzy poziomy pewności</h1>
+  <div class="thesis">Enum mówi, <b>co</b> model wybrał. Prawdopodobieństwa mówią, <b>czy wybierał, czy zgadywał</b>.</div>
+  <div class="main">
+    <div class="card rec ok">
+      <div><div class="name">Placki z cukinii</div><div class="snip">„Zetrzyj cukinię, odciśnij, dodaj jajka i mąkę, smaż na patelni ...”</div></div>
+      <div class="probs">
+        
+        <div class="p top"><div class="c">obiad</div><div class="b" style="width:461px"><span>0,96</span></div></div>
+        <div class="p"><div class="c">inne</div><div class="b" style="width:14px"><span>0,03</span></div></div>
+      </div>
+      <div class="route"><div class="to">→ prosto do bazy</div><div class="why">pewność ≥ 0,9</div></div>
+    </div>
+    <div class="card rec mid">
+      <div><div class="name">Pesto z bazylii</div><div class="snip">„Zmiksuj bazylię, orzeszki pinii, parmezan i oliwę ...”</div></div>
+      <div class="probs">
+        <div class="p top"><div class="c">inne</div><div class="b" style="width:341px"><span>0,71</span></div></div>
+        <div class="p"><div class="c">obiad</div><div class="b" style="width:115px"><span>0,24</span></div></div>
+      </div>
+      <div class="route"><div class="to">→ większy model</div><div class="why">0,6 do 0,9: drugi, droższy rzut oka</div></div>
+    </div>
+    <div class="card rec hum">
+      <div><div class="name">Chleb bananowy</div><div class="snip">„Rozgnieć banany, wymieszaj z mąką i cukrem, piecz w keksówce ...”</div></div>
+      <div class="probs">
+        <div class="p top"><div class="c">pieczywo</div><div class="b" style="width:250px"><span>0,52</span></div></div>
+        <div class="p"><div class="c">deser</div><div class="b" style="width:216px"><span>0,45</span></div></div>
+      </div>
+      <div class="route"><div class="to">→ człowiek</div><div class="why">poniżej 0,6: problem leży w definicji kategorii, nie w modelu</div></div>
+    </div>
+  </div>
+  <div class="footer">
+    <div class="note">Liczby i progi poglądowe. Progi ustala się na zbiorze testowym z kroku 4.</div>
+    <div class="rule">niepewny wynik = sygnał, nie błąd</div>
+  </div>
+</body>
+</html>

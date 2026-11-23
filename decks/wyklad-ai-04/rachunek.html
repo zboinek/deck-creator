@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8" />
+<title>Rachunek za stołówkę</title>
+<!-- Render: ./render.sh rachunek. 150 000 pytań/mies.; 4000 tok. wejścia, 300 tok. odpowiedzi, rozumowanie 150 / 700 / 2500 (poglądowe).
+     Ceny CGC (zł / 1 mln): gpt-oss-120b 0,2731 / 32,7778; gemma-4-26b-a4b 0,4097 / 10,9259.
+     Skala: 1 zł = 0.06 px. gpt-oss: wejście 164 zł = 10 px, odpowiedź 1475 zł = 88 px, rozumowanie 737 / 3442 / 12292 zł = 44 / 207 / 737 px.
+     gemma: wejście 246 zł = 15 px, odpowiedź 492 zł = 30 px. -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="base.css" />
+<style>
+  :root { --in: #f59e0b; --ans: #6366f1; --th: #a855f7; }
+  .main { flex-direction: column; gap: 30px; justify-content: center; }
+  .row { display: grid; grid-template-columns: 290px 1fr; column-gap: 24px; align-items: center; }
+  .lab { text-align: right; }
+  .lab .big { font-family: 'JetBrains Mono', monospace; font-size: 21px; font-weight: 700; }
+  .lab .sub { font-size: 16px; color: var(--dim); margin-top: 3px; }
+  .bar { display: flex; height: 54px; align-items: center; }
+  .bar .tot { height: auto; margin-left: 22px; }
+  .bar div { height: 100%; }
+  .s-in { background: var(--in); border-radius: 6px 0 0 6px; }
+  .s-ans { background: color-mix(in oklab, var(--ans) 55%, white); }
+  .s-th { background: color-mix(in oklab, var(--th) 45%, white); border-radius: 0 6px 6px 0; }
+  .s-ans.last { border-radius: 0 6px 6px 0; }
+  .tot { font-family: 'JetBrains Mono', monospace; font-size: 28px; font-weight: 700; white-space: nowrap; }
+  .tot small { display: block; font-family: Inter, sans-serif; font-size: 15px; font-weight: 500; color: var(--dim); }
+  .row.hi .tot { background: var(--grad-text); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .sep { border-top: 1px dashed var(--line-strong); }
+  .legend { display: flex; gap: 28px; font-size: 17px; color: var(--muted); }
+  .legend i { display: inline-block; width: 18px; height: 18px; border-radius: 4px; vertical-align: -3px; margin-right: 8px; }
+</style>
+</head>
+<body>
+  <div class="eyebrow">Krok 6 · rachunek</div>
+  <h1>Asystent dla 1000 studentów: miesiąc</h1>
+  <div class="thesis">150 tys. pytań, każde <b>4000 tokenów wejścia i 300 tokenów odpowiedzi</b>. Różni się tylko to, ile model myśli.</div>
+  <div class="main">
+    <div class="row hi">
+      <div class="lab"><div class="big">gpt-oss, low</div><div class="sub">ok. 150 tokenów rozumowania</div></div>
+      <div class="bar"><div class="s-in" style="width:10px"></div><div class="s-ans" style="width:88px"></div><div class="s-th" style="width:44px"></div><div class="tot">ok. 2,4 tys. zł</div></div>
+    </div>
+    <div class="row">
+      <div class="lab"><div class="big">gpt-oss, medium</div><div class="sub">ok. 700 tokenów rozumowania</div></div>
+      <div class="bar"><div class="s-in" style="width:10px"></div><div class="s-ans" style="width:88px"></div><div class="s-th" style="width:207px"></div><div class="tot">ok. 5,1 tys. zł</div></div>
+    </div>
+    <div class="row">
+      <div class="lab"><div class="big">gpt-oss, high</div><div class="sub">ok. 2500 tokenów rozumowania</div></div>
+      <div class="bar"><div class="s-in" style="width:10px"></div><div class="s-ans" style="width:88px"></div><div class="s-th" style="width:737px"></div><div class="tot">ok. 13,9 tys. zł</div></div>
+    </div>
+    <div class="sep"></div>
+    <div class="row">
+      <div class="lab"><div class="big">gemma-4-26b</div><div class="sub">mały model, bez rozumowania</div></div>
+      <div class="bar"><div class="s-in" style="width:15px"></div><div class="s-ans last" style="width:30px"></div><div class="tot">ok. 0,7 tys. zł<small>ale czy wystarczająco dobry? W12</small></div></div>
+    </div>
+    <div class="callout">Wejście, czyli cały prompt z fragmentami z RAG, to <b>ok. 160 zł</b> w każdym wariancie gpt-oss. <b>Rachunek robi wyjście</b>, a w nim rozumowanie: jeden parametr to różnica <b>prawie 6 razy</b>.</div>
+  </div>
+  <div class="footer">
+    <div class="legend"><span><i style="background:#f59e0b"></i>wejście</span><span><i style="background:color-mix(in oklab,#6366f1 55%,white)"></i>odpowiedź</span><span><i style="background:color-mix(in oklab,#a855f7 45%,white)"></i>rozumowanie</span><span style="color:var(--dim)">ceny CGC, listopad 2026</span></div>
+    <div class="rule">płacisz za to, co model pisze</div>
+  </div>
+</body>
+</html>

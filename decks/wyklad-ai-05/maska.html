@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8" />
+<title>Maska na rozkładzie następnego tokenu</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="base.css" />
+<style>
+  /* skala: 1% = 6.5 px  ->  92% = 598 px */
+  .prefix { margin-top: 26px; font-family: 'JetBrains Mono', monospace; font-size: 22px; padding: 14px 20px; background: var(--panel);
+            border: 1px solid var(--line); border-radius: 12px; width: fit-content; }
+  .prefix .cur { display: inline-block; width: 13px; height: 26px; vertical-align: -5px; background: var(--grad-bar-v); border-radius: 2px; margin-left: 2px; }
+  .main { display: grid; grid-template-columns: 1fr 150px 1fr; gap: 20px; margin-top: 24px; }
+  .panel h3 { font-size: 22px; font-weight: 700; margin-bottom: 4px; }
+  .panel .sub { font-size: 17px; color: var(--muted); margin-bottom: 16px; }
+  .row { display: grid; grid-template-columns: 170px 1fr; align-items: center; gap: 14px; height: 40px; }
+  .tok { font-family: 'JetBrains Mono', monospace; font-size: 18px; text-align: right; font-weight: 700; }
+  .bar { height: 24px; border-radius: 5px; display: flex; align-items: center; }
+  .bar span { font-family: 'JetBrains Mono', monospace; font-size: 15px; font-weight: 700; margin-left: calc(100% + 10px); white-space: nowrap; color: var(--muted); }
+  .ok .bar { background: var(--grad-bar); }
+  .ok .tok { color: var(--text); }
+  .bad .tok { color: #a1a1aa; text-decoration: line-through; }
+  .bad .bar { background: repeating-linear-gradient(-45deg, #ffffff 0 7px, #ededf0 7px 14px); border: 1px dashed var(--line-strong); }
+  .bad .bar span { color: #a1a1aa; }
+  .gray .bar { background: var(--line-strong); }
+  .mid { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; text-align: center; }
+  .mid .arrow { font-size: 44px; color: var(--dim); }
+  .mid .lbl { font-size: 13px; }
+  .chip { font-family: 'JetBrains Mono', monospace; font-size: 14px; font-weight: 700; padding: 4px 10px; border-radius: 7px; background: #fff; border: 1.5px solid var(--line-strong); }
+</style>
+</head>
+<body>
+  <div class="eyebrow">Krok 2: maska</div>
+  <h1>Serwer nie prosi model o format. Zabrania mu reszty</h1>
+  <div class="thesis">Model dalej losuje z rozkładu, jak w W9. Serwer przed losowaniem <b>zeruje każdy token, który złamałby schemat</b>.</div>
+  <div class="prefix">{"tytul": "Placki z cukinii", "kategoria": "<span class="cur"></span></div>
+  <div class="main">
+    <div class="panel">
+      <h3>Co model chciałby napisać</h3>
+      <div class="sub">Rozkład następnego tokenu z W9, krok 6</div>
+      <div class="row ok"><div class="tok">obiad</div><div class="bar" style="width:299px"><span>46%</span></div></div>
+      <div class="row bad"><div class="tok">Obiad</div><div class="bar" style="width:137px"><span>21%</span></div></div>
+      <div class="row bad"><div class="tok">danie główne</div><div class="bar" style="width:78px"><span>12%</span></div></div>
+      <div class="row bad"><div class="tok">lunch</div><div class="bar" style="width:52px"><span>8%</span></div></div>
+      <div class="row bad"><div class="tok">przekąska</div><div class="bar" style="width:33px"><span>5%</span></div></div>
+      <div class="row ok"><div class="tok">deser</div><div class="bar" style="width:13px"><span>2%</span></div></div>
+      <div class="row ok"><div class="tok">inne</div><div class="bar" style="width:7px"><span>1%</span></div></div>
+      <div class="row ok"><div class="tok">zupa, pieczywo</div><div class="bar" style="width:7px"><span>1%</span></div></div>
+      <div class="row bad"><div class="tok">reszta słownika</div><div class="bar" style="width:26px"><span>4%</span></div></div>
+    </div>
+    <div class="mid">
+      <div class="lbl">schemat</div>
+      <div class="chip">obiad</div><div class="chip">zupa</div><div class="chip">deser</div><div class="chip">pieczywo</div><div class="chip">inne</div>
+      <div class="arrow">→</div>
+    </div>
+    <div class="panel">
+      <h3>Co może napisać po masce</h3>
+      <div class="sub">Zakazane tokeny dostają zero, reszta jest skalowana do 100%</div>
+      <div class="row ok"><div class="tok">obiad</div><div class="bar" style="width:598px"><span style="margin-left:auto;margin-right:12px;color:#0a0a0a">92%</span></div></div>
+      <div class="row ok"><div class="tok">deser</div><div class="bar" style="width:26px"><span>4%</span></div></div>
+      <div class="row ok"><div class="tok">inne</div><div class="bar" style="width:13px"><span>2%</span></div></div>
+      <div class="row ok"><div class="tok">zupa, pieczywo</div><div class="bar" style="width:13px"><span>2%</span></div></div>
+      <div class="callout" style="margin-top:34px; font-size:20px">„Obiad” z wielkiej litery, „lunch” i „danie główne” <b>w ogóle nie mogą zostać wylosowane</b>. Po słowie maska przepuszcza już tylko <b>"</b>, a potem tylko <b>,</b> albo <b>}</b>.</div>
+    </div>
+  </div>
+  <div class="footer">
+    <div class="note">Liczby poglądowe. W praktyce maska działa na tokenach, nie na całych słowach.</div>
+    <div class="rule">schemat = gramatyka, nie prośba</div>
+  </div>
+</body>
+</html>

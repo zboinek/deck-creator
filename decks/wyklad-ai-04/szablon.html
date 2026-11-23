@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8" />
+<title>Czat to też dopisywanie</title>
+<!-- Prawdziwy szablon gpt-oss (harmony), wyrenderowany z chat_template.jinja z Hugging Face. Render: ./render.sh szablon -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="base.css" />
+<style>
+  .main { gap: 34px; align-items: stretch; }
+  .left { width: 470px; display: flex; flex-direction: column; gap: 16px; }
+  .right { flex: 1; display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+  .code { font-family: 'JetBrains Mono', monospace; font-size: 17px; line-height: 1.5; padding: 20px 22px; white-space: pre-wrap; color: var(--text); }
+  .code .k { color: var(--dim); }
+  .arrow { display: flex; align-items: center; justify-content: center; gap: 10px; font-family: 'JetBrains Mono', monospace;
+           font-size: 15px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+  .arrow::before, .arrow::after { content: ''; flex: 1; height: 2px; background: var(--grad-bar); }
+  .tpl { font-family: "JetBrains Mono", monospace; font-size: 18px; line-height: 1.55; white-space: pre-wrap; word-break: break-word;
+         padding: 18px 22px; flex: 1; }
+  .tok { color: #6366f1; font-weight: 700; }
+  .seg { border-radius: 8px; padding: 1px 4px; }
+  .s-srv { background: color-mix(in oklab, #f59e0b 16%, white); }
+  .s-dev { background: color-mix(in oklab, #6366f1 12%, white); }
+  .s-usr { background: color-mix(in oklab, #a855f7 12%, white); }
+  .end { background: var(--grad-bar); padding: 2px 6px; border-radius: 6px; color: #0a0a0a; font-weight: 700; }
+  .badge { display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: 50%;
+           font-family: 'JetBrains Mono', monospace; font-size: 15px; font-weight: 700; color: #fff; vertical-align: middle; margin-left: 6px; }
+  .b1 { background: #d97706; } .b2 { background: #6366f1; } .b3 { background: #0a0a0a; }
+  .notes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+  .notes div { font-size: 18px; line-height: 1.4; color: var(--muted); display: flex; gap: 10px; align-items: flex-start; }
+  .notes b { color: var(--text); }
+  .notes .badge { flex: none; margin: 0; }
+</style>
+</head>
+<body>
+  <div class="eyebrow">Krok 1 · szablon czatu</div>
+  <h1>Czat to też dopisywanie</h1>
+  <div class="thesis">Serwer skleja listę wiadomości w <b>jeden napis</b>, a model po prostu pisze dalej.</div>
+  <div class="main">
+    <div class="left">
+      <div class="lbl">Co wysyła nasz kod</div>
+      <div class="card code">messages = [
+  {<span class="k">"role":</span> "system",
+   <span class="k">"content":</span> "Jesteś asystentem
+     kulinarnym. Odpowiadaj
+     krótko."},
+  {<span class="k">"role":</span> "user",
+   <span class="k">"content":</span> "Co zrobić
+     z cukinii?"},
+]</div>
+      <div class="arrow">serwer nakłada szablon</div>
+      <div class="callout" style="font-size:20px">Lista z rolami <b>istnieje tylko w naszym kodzie</b>. Model dostaje to, co po prawej.</div>
+    </div>
+    <div class="right">
+      <div class="lbl">Co widzi model (gpt-oss, format harmony)</div>
+      <div class="card hi tpl"><span class="seg s-srv"><span class="tok">&lt;|start|&gt;</span>system<span class="tok">&lt;|message|&gt;</span>You are ChatGPT, a large language model trained by OpenAI.
+Knowledge cutoff: 2024-06
+Current date: 2025-12-08
+
+Reasoning: medium
+
+# Valid channels: analysis, commentary, final.</span><span class="badge b1">1</span><span class="tok">&lt;|end|&gt;</span>
+<span class="seg s-dev"><span class="tok">&lt;|start|&gt;</span>developer<span class="tok">&lt;|message|&gt;</span># Instructions
+
+Jesteś asystentem kulinarnym. Odpowiadaj krótko.</span><span class="badge b2">2</span><span class="tok">&lt;|end|&gt;</span>
+<span class="seg s-usr"><span class="tok">&lt;|start|&gt;</span>user<span class="tok">&lt;|message|&gt;</span>Co zrobić z cukinii?</span><span class="tok">&lt;|end|&gt;</span>
+<span class="end">&lt;|start|&gt;assistant</span><span class="badge b3">3</span></div>
+      <div class="notes">
+        <div><span class="badge b1">1</span><span><b>Serwer dopisał swój tekst:</b> datę odcięcia wiedzy, dzisiejszą datę i poziom rozumowania</span></div>
+        <div><span class="badge b2">2</span><span><b>Nasz „system”</b> stał się wiadomością <b>developer</b></span></div>
+        <div><span class="badge b3">3</span><span><b>Napis urywa się</b> na starcie odpowiedzi. Model dopisuje ciąg dalszy</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="footer">
+    <div class="note">Fioletowe znaczniki to tokeny specjalne: każdy to jeden token ze słownika (W9).</div>
+    <div class="rule">czat = jeden napis</div>
+  </div>
+</body>
+</html>

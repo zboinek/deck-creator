@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8" />
+<title>Macierz pomyłek kategoryzacji przepisów</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="base.css" />
+<style>
+  .main { display: grid; grid-template-columns: 820px 1fr; gap: 56px; align-items: center; }
+  table { border-collapse: separate; border-spacing: 6px; font-family: 'JetBrains Mono', monospace; }
+  th { font-size: 16px; font-weight: 700; color: var(--muted); padding: 4px 8px; }
+  th.r { text-align: right; padding-right: 14px; }
+  td { width: 112px; height: 74px; text-align: center; font-size: 26px; font-weight: 700; border-radius: 10px; background: var(--soft); color: #a1a1aa; border: 1px solid var(--line); }
+  td.d { background: color-mix(in oklab, #6366f1 calc(var(--v) * 1%), white); color: var(--text); border-color: color-mix(in oklab, #6366f1 30%, white); }
+  td.e { background: #fff; color: var(--bad); border: 2px solid transparent;
+         background: linear-gradient(#fff, #fff) padding-box, var(--grad-bar) border-box; }
+  td.z { color: #d4d4d8; font-weight: 500; }
+  .axis { font-family: 'JetBrains Mono', monospace; font-size: 14px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--cg); }
+  .wrap { position: relative; padding-left: 40px; }
+  .ylab { position: absolute; left: -84px; top: 50%; transform: rotate(-90deg); white-space: nowrap; }
+  .xlab { text-align: center; margin-left: 140px; margin-bottom: 6px; }
+  .sum { margin-top: 14px; margin-left: 150px; font-family: 'JetBrains Mono', monospace; font-size: 19px; color: var(--muted); }
+  .sum b { color: var(--text); }
+  .reads { display: flex; flex-direction: column; gap: 22px; }
+  .read { padding: 20px 24px; }
+  .read .h { font-size: 22px; font-weight: 800; margin-bottom: 6px; }
+  .read .h .n { font-family: 'JetBrains Mono', monospace; color: var(--bad); margin-right: 8px; }
+  .read p { font-size: 18px; color: var(--muted); line-height: 1.42; }
+  .read p b { color: var(--text); }
+</style>
+</head>
+<body>
+  <div class="eyebrow">Krok 5: pomiar</div>
+  <h1>80% to liczba. Macierz pomyłek to diagnoza</h1>
+  <div class="thesis">60 przepisów z kroku 4, mały model, prompt v1. <b>Wiersz: poprawna kategoria. Kolumna: co odpowiedział model.</b></div>
+  <div class="main">
+    <div class="wrap">
+      <div class="axis ylab">poprawna kategoria</div>
+      <div class="axis xlab">odpowiedź modelu</div>
+      <table>
+        <tr><th></th><th>obiad</th><th>zupa</th><th>deser</th><th>pieczywo</th><th>inne</th></tr>
+        <tr><th class="r">obiad</th><td class="d" style="--v:60">24</td><td>1</td><td class="z">0</td><td class="z">0</td><td class="e">2</td></tr>
+        <tr><th class="r">zupa</th><td class="e">2</td><td class="d" style="--v:30">7</td><td class="z">0</td><td class="z">0</td><td class="z">0</td></tr>
+        <tr><th class="r">deser</th><td>1</td><td class="z">0</td><td class="d" style="--v:32">8</td><td class="e">3</td><td class="z">0</td></tr>
+        <tr><th class="r">pieczywo</th><td class="z">0</td><td class="z">0</td><td>1</td><td class="d" style="--v:28">6</td><td class="z">0</td></tr>
+        <tr><th class="r">inne</th><td class="e">2</td><td class="z">0</td><td class="z">0</td><td class="z">0</td><td class="d" style="--v:20">3</td></tr>
+      </table>
+      <div class="sum">na przekątnej: <b>48 z 60 = 80%</b></div>
+    </div>
+    <div class="reads">
+      <div class="card read"><div class="h"><span class="n">3</span>desery uznane za pieczywo</div>
+        <p>Chleb bananowy, babka, drożdżówka. Model nie jest głupi: <b>nikt mu nie powiedział, gdzie jest granica</b>.</p></div>
+      <div class="card read"><div class="h"><span class="n">2 + 2</span>„inne” mylone z obiadem</div>
+        <p>Sosy i przetwory trafiają do obiadów, a dwa obiady do „inne”. <b>Kategoria „inne” nie ma definicji.</b></p></div>
+      <div class="card read hi"><div class="h">Wniosek: popraw prompt, nie model</div>
+        <p>Prompt v2 dostaje <b>jedno zdanie definicji na kategorię</b>. Większy model tych granic sam nie wymyśli.</p></div>
+    </div>
+  </div>
+  <div class="footer">
+    <div class="note">Liczby poglądowe, zbiór 60 przepisów: 27 obiadów, 9 zup, 12 deserów, 7 pieczyw, 5 innych.</div>
+    <div class="rule">czytaj błędy, nie tylko wynik</div>
+  </div>
+</body>
+</html>

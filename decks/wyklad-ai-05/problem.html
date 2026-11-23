@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8" />
+<title>Trzy sposoby, w jakie psuje się JSON z prośby</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="base.css" />
+<style>
+  .main { flex: none; display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; }
+  .col { display: flex; flex-direction: column; gap: 16px; }
+  .col .lbl { color: var(--muted); }
+  pre { font-family: 'JetBrains Mono', monospace; font-size: 16.5px; line-height: 1.5; background: #fff; border: 1px solid var(--line-strong);
+        border-radius: 14px; padding: 18px 20px; white-space: pre-wrap; color: var(--text); min-height: 230px; }
+  pre .x { background: color-mix(in oklab, var(--bad) 14%, white); color: var(--bad); border-radius: 4px; padding: 0 3px; }
+  pre .d { color: var(--dim); }
+  .res { font-family: 'JetBrains Mono', monospace; font-size: 17px; font-weight: 700; padding: 12px 16px; border-radius: 12px; }
+  .res.err { color: var(--bad); background: color-mix(in oklab, var(--bad) 7%, white); border: 1.5px solid color-mix(in oklab, var(--bad) 30%, white); }
+  .res.silent { color: #b45309; background: #fffbeb; border: 1.5px solid #fcd34d; }
+  .why { font-size: 18px; color: var(--muted); line-height: 1.45; }
+  .why b { color: var(--text); }
+  .col.hi pre { border: 2px solid transparent; background: linear-gradient(#fff, #fff) padding-box, var(--grad-bar) border-box; }
+</style>
+</head>
+<body>
+  <div class="eyebrow">Problem</div>
+  <h1>„Odpowiedz wyłącznie JSON-em” działa. Prawie zawsze</h1>
+  <div class="thesis">Ekstrakcja z W10, krok 1, puszczona na 1000 przepisów. <b>Typowe wyniki, które prędzej czy później się pojawią.</b></div>
+  <div class="main">
+    <div class="col">
+      <div class="lbl">1. Uprzejmy wstęp</div>
+<pre><span class="x">Oto dane w formacie JSON:</span>
+
+{"tytul": "Placki z cukinii",
+ "skladniki": ["cukinia", "jajka",
+   "mąka", "sól"],
+ "czas_min": 30,
+ "kategoria": "obiad"}</pre>
+      <div class="res err">json.loads → JSONDecodeError</div>
+      <div class="why">Model jest trenowany na rozmowach, więc <b>rozmawia</b>. Program padnie przy pierwszym znaku.</div>
+    </div>
+    <div class="col">
+      <div class="lbl">2. Blok markdown i komentarz</div>
+<pre><span class="x">```json</span>
+{"tytul": "Chleb bananowy",
+ "skladniki": ["banany", "mąka"],
+ "czas_min": <span class="x">"ok. godziny"</span>,
+ "kategoria": "pieczywo"}
+<span class="x">```</span>
+<span class="x">Czas zależy od piekarnika.</span></pre>
+      <div class="res err">JSONDecodeError, potem str zamiast int</div>
+      <div class="why">Da się to odciąć wyrażeniem regularnym. <b>Do następnego dziwnego przypadku.</b></div>
+    </div>
+    <div class="col hi">
+      <div class="lbl">3. Poprawny JSON, złe wartości</div>
+<pre>{"kategoria": <span class="x">"Pieczywo"</span>}
+{"kategoria": "pieczywo"}
+{"kategoria": <span class="x">"bread"</span>}
+{"kategoria": <span class="x">"wypieki"</span>}
+{"kategoria": <span class="x">"pieczywo / deser"</span>}</pre>
+      <div class="res silent">parsuje się bez błędu</div>
+      <div class="why">Najgorszy przypadek: nic się nie wywala, a w bazie jest <b>pięć kategorii zamiast jednej</b>. Filtr z W10 przestaje działać.</div>
+    </div>
+  </div>
+  <div class="callout" style="margin-top:auto">Błędy 1 i 2 są <b>głośne</b>: program padnie i ktoś to zauważy. Błąd 3 jest <b>cichy</b>: wychodzi na jaw tygodnie później, gdy filtr „pieczywo” nie znajduje połowy chlebów.</div>
+  <div class="footer">
+    <div class="note">Przy 1000 przepisów nawet 1% błędów to 10 przepisów, które ktoś musi znaleźć i poprawić ręcznie.</div>
+    <div class="rule">prośba ≠ gwarancja</div>
+  </div>
+</body>
+</html>
